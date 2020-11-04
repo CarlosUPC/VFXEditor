@@ -4,9 +4,11 @@
 #include "Module.h"
 
 class Module;
+class ModuleWindow;
 
 class Application
 {
+//METHODS
 public:
 	Application();
 	~Application();
@@ -16,10 +18,12 @@ public:
 	bool CleanUp();
 private:
 	void AddModule(Module* module);
-private:
 
+//VARIABLES
+public:
+	ModuleWindow*			window = nullptr;
+private:
 	std::list<Module*> modules;
-	
 };
 
 extern Application* App;

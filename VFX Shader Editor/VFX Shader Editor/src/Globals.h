@@ -1,5 +1,9 @@
 #pragma once
+#include <windows.h>
+#include <stdio.h>
 
+#define LOG(format, ...) log(__FILE__, __LINE__, format, __VA_ARGS__);
+void log(const char file[], int line, const char* format, ...);
 
 // Deletes a buffer
 #define RELEASE( x ) \
@@ -21,6 +25,9 @@
 	    }                            \
                               \
 }
+
+// USER DEFINITIONS
+typedef unsigned int uint;
 
 #define DEGTORAD 0.0174532925199432957f
 #define RADTODEG 57.295779513082320876f

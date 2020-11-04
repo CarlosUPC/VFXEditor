@@ -1,7 +1,12 @@
 #include "Application.h"
 
+// Include all Modules
+#include "ModuleWindow.h"
+
 Application::Application()
 {
+	window = new ModuleWindow();
+	AddModule(window);
 }
 
 Application::~Application()
