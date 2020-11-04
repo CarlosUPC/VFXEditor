@@ -1,6 +1,7 @@
 #include <iostream>
 #include "Application.h"
 #include "Globals.h"
+#include "GL/glew.h"
 
 enum main_states
 {
