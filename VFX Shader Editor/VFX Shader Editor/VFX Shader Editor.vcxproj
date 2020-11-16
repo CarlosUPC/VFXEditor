@@ -92,10 +92,11 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)VFX Shader Editor\Dependencies\GLEW\include;$(SolutionDir)VFX Shader Editor\Dependencies</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>GLEW_STATIC;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
-      <AdditionalDependencies>glew32s.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glu32.lib; opengl32.lib;glew32s.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)VFX Shader Editor\Dependencies\GLEW\lib\Win32</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -144,12 +145,16 @@
     <ClCompile Include="src\Application.cpp" />
     <ClCompile Include="src\log.cpp" />
     <ClCompile Include="src\Main.cpp" />
+    <ClCompile Include="src\ModuleInput.cpp" />
+    <ClCompile Include="src\ModuleRenderer.cpp" />
     <ClCompile Include="src\ModuleWindow.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Application.h" />
     <ClInclude Include="src\Globals.h" />
     <ClInclude Include="src\Module.h" />
+    <ClInclude Include="src\ModuleInput.h" />
+    <ClInclude Include="src\ModuleRenderer.h" />
     <ClInclude Include="src\ModuleWindow.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -2,11 +2,17 @@
 
 // Include all Modules
 #include "ModuleWindow.h"
-
+#include "ModuleRenderer.h"
+#include "ModuleInput.h"
 Application::Application()
 {
 	window = new ModuleWindow();
+	input = new ModuleInput();
+	renderer = new ModuleRenderer();
+
 	AddModule(window);
+	AddModule(input);
+	AddModule(renderer);
 }
 
 Application::~Application()

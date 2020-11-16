@@ -23,10 +23,10 @@ bool ModuleWindow::Init()
 	}
 	else
 	{
-		SDL_DisplayMode desktopSize;
+		/*SDL_DisplayMode desktopSize;
 		SDL_GetDesktopDisplayMode(0, &desktopSize);
 		width = desktopSize.w;
-		height = desktopSize.h;
+		height = desktopSize.h;*/
 
 		//Hardcoded temporal stuff
 		width = 960;

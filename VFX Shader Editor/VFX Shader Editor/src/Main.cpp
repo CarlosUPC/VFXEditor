@@ -67,10 +67,9 @@ int main(int argc, char** argv)
 			{
 				main_return = EXIT_SUCCESS;
 			}
-			else
-			{
-				state = MAIN_EXIT;
-			}
+			
+			state = MAIN_EXIT;
+			
 			break;
 		}
 	}

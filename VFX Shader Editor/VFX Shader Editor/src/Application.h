@@ -5,6 +5,8 @@
 
 class Module;
 class ModuleWindow;
+class ModuleRenderer;
+class ModuleInput;
 
 class Application
 {
@@ -22,6 +24,8 @@ private:
 //VARIABLES
 public:
 	ModuleWindow*			window = nullptr;
+	ModuleRenderer*			renderer = nullptr;
+	ModuleInput*			input = nullptr;
 private:
 	std::list<Module*> modules;
 };
