@@ -1,6 +1,7 @@
-#include "ModuleRenderer.h"
 #include "Application.h"
+#include "ModuleRenderer.h"
 #include "ModuleWindow.h"
+#include "ModuleGUI.h"
 #include <iostream>
 
 //#pragma comment (lib, "glu32.lib")    /* link OpenGL Utility lib     */
@@ -86,7 +87,7 @@ update_state ModuleRenderer::PostUpdate()
 	glClear(GL_COLOR_BUFFER_BIT);
 	
 
-	
+	App->gui->Draw();
 
 	SDL_GL_SwapWindow(App->window->window);
 

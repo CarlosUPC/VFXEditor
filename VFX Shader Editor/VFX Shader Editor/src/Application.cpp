@@ -4,14 +4,18 @@
 #include "ModuleWindow.h"
 #include "ModuleRenderer.h"
 #include "ModuleInput.h"
+#include "ModuleGUI.h"
+
 Application::Application()
 {
 	window = new ModuleWindow();
 	input = new ModuleInput();
+	gui = new ModuleGUI();
 	renderer = new ModuleRenderer();
 
 	AddModule(window);
 	AddModule(input);
+	AddModule(gui);
 	AddModule(renderer);
 }
 

@@ -7,6 +7,7 @@ class Module;
 class ModuleWindow;
 class ModuleRenderer;
 class ModuleInput;
+class ModuleGUI;
 
 class Application
 {
@@ -26,6 +27,7 @@ public:
 	ModuleWindow*			window = nullptr;
 	ModuleRenderer*			renderer = nullptr;
 	ModuleInput*			input = nullptr;
+	ModuleGUI*				gui = nullptr;
 private:
 	std::list<Module*> modules;
 };

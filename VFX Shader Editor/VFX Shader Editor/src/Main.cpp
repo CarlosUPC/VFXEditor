@@ -1,7 +1,7 @@
 #include <iostream>
 #include "Application.h"
 #include "Globals.h"
-#include "GL/glew.h"
+//#include "GL/glew.h"
 
 #include "SDL/include/SDL.h"
 #pragma comment( lib, "Dependencies/SDL/libx86/SDL2.lib" )

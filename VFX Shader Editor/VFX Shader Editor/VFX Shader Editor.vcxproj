@@ -154,17 +154,33 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Dependencies\ImGui\imgui.cpp" />
+    <ClCompile Include="Dependencies\ImGui\imgui_demo.cpp" />
+    <ClCompile Include="Dependencies\ImGui\imgui_draw.cpp" />
+    <ClCompile Include="Dependencies\ImGui\imgui_impl_opengl2.cpp" />
+    <ClCompile Include="Dependencies\ImGui\imgui_impl_sdl.cpp" />
+    <ClCompile Include="Dependencies\ImGui\imgui_widgets.cpp" />
     <ClCompile Include="src\Application.cpp" />
     <ClCompile Include="src\log.cpp" />
     <ClCompile Include="src\Main.cpp" />
+    <ClCompile Include="src\ModuleGUI.cpp" />
     <ClCompile Include="src\ModuleInput.cpp" />
     <ClCompile Include="src\ModuleRenderer.cpp" />
     <ClCompile Include="src\ModuleWindow.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Dependencies\ImGui\imconfig.h" />
+    <ClInclude Include="Dependencies\ImGui\imgui.h" />
+    <ClInclude Include="Dependencies\ImGui\imgui_impl_opengl2.h" />
+    <ClInclude Include="Dependencies\ImGui\imgui_impl_sdl.h" />
+    <ClInclude Include="Dependencies\ImGui\imgui_internal.h" />
+    <ClInclude Include="Dependencies\ImGui\imstb_rectpack.h" />
+    <ClInclude Include="Dependencies\ImGui\imstb_textedit.h" />
+    <ClInclude Include="Dependencies\ImGui\imstb_truetype.h" />
     <ClInclude Include="src\Application.h" />
     <ClInclude Include="src\Globals.h" />
     <ClInclude Include="src\Module.h" />
+    <ClInclude Include="src\ModuleGUI.h" />
     <ClInclude Include="src\ModuleInput.h" />
     <ClInclude Include="src\ModuleRenderer.h" />
     <ClInclude Include="src\ModuleWindow.h" />
