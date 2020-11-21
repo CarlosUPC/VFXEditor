@@ -3,6 +3,8 @@
 #include "ModuleWindow.h"
 #include "ModuleGUI.h"
 #include <iostream>
+#include "ModuleCamera.h"
+#include "Primitive.h"
 
 //#pragma comment (lib, "glu32.lib")    /* link OpenGL Utility lib     */
 //#pragma comment (lib, "opengl32.lib") /* link Microsoft OpenGL lib   */
@@ -47,7 +49,14 @@ bool ModuleRenderer::Init()
 		if (SDL_GL_SetSwapInterval(1) < 0)
 			LOG("Warning: Unable to set VSync! SDL Error: %s\n", SDL_GetError());
 
-		
+		glMatrixMode(GL_PROJECTION);//Applies subsequent matrix operations to the projection matrix stack. (screen position)
+		glLoadIdentity();
+		glLoadMatrixf(App->camera->getProjectionMatrix());
+
+		glMatrixMode(GL_MODELVIEW);
+		glLoadIdentity();
+		glLoadMatrixf(App->camera->getViewMatrix());
+
 		//specify implementation of The most correct, or highest quality, option should be chosen.
 		//glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 
@@ -85,9 +94,17 @@ update_state ModuleRenderer::PostUpdate()
 	
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
-	
 
-	App->gui->Draw();
+
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	glLoadMatrixf(App->camera->getViewMatrix());
+
+	MPlane base_plane(0, 1, 0, 0);
+	base_plane.axis = true;
+	base_plane.Render();
+
+	//App->gui->Draw();
 
 	SDL_GL_SwapWindow(App->window->window);
 

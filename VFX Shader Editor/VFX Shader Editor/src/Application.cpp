@@ -5,17 +5,20 @@
 #include "ModuleRenderer.h"
 #include "ModuleInput.h"
 #include "ModuleGUI.h"
+#include "ModuleCamera.h"
 
 Application::Application()
 {
 	window = new ModuleWindow();
 	input = new ModuleInput();
-	gui = new ModuleGUI();
+	//gui = new ModuleGUI();
+	camera = new ModuleCamera();
 	renderer = new ModuleRenderer();
 
 	AddModule(window);
 	AddModule(input);
-	AddModule(gui);
+	//AddModule(gui);
+	AddModule(camera);
 	AddModule(renderer);
 }
 

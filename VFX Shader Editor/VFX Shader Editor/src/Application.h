@@ -8,6 +8,7 @@ class ModuleWindow;
 class ModuleRenderer;
 class ModuleInput;
 class ModuleGUI;
+class ModuleCamera;
 
 class Application
 {
@@ -28,6 +29,7 @@ public:
 	ModuleRenderer*			renderer = nullptr;
 	ModuleInput*			input = nullptr;
 	ModuleGUI*				gui = nullptr;
+	ModuleCamera*			camera = nullptr;
 private:
 	std::list<Module*> modules;
 };
