@@ -6,6 +6,7 @@
 #include "ModuleCamera.h"
 #include "Primitive.h"
 
+#include "Shader.h"
 //#pragma comment (lib, "glu32.lib")    /* link OpenGL Utility lib     */
 //#pragma comment (lib, "opengl32.lib") /* link Microsoft OpenGL lib   */
 
@@ -74,6 +75,8 @@ bool ModuleRenderer::Init()
 			ret = false;
 		}
 
+		default_shader = new Shader("../../Game/Shaders/default.vs", "../../Game/Shaders/default.fs");
+
 	
 	}
 
@@ -100,9 +103,15 @@ update_state ModuleRenderer::PostUpdate()
 	glLoadIdentity();
 	glLoadMatrixf(App->camera->getViewMatrix());
 
+	//Use Shader
+	//default_shader->Use();
+
 	MPlane base_plane(0, 1, 0, 0);
 	base_plane.axis = true;
 	base_plane.Render();
+
+	MCube cube(2.0f, 2.0f, 2.0f, { 0.0f,1.0f,0.0f });
+	cube.Render();
 
 	//App->gui->Draw();
 

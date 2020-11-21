@@ -2,6 +2,8 @@
 #include "Module.h"
 #include "GL/glew.h"
 
+class Shader;
+
 class ModuleRenderer : public Module
 {
 public:
@@ -16,4 +18,5 @@ public:
 	//GLuint framebuffer = 0;
 	SDL_GLContext context;
 
+	Shader* default_shader = nullptr;
 };
