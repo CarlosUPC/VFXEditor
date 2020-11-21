@@ -5,51 +5,35 @@
 #include <sstream> //stringstream
 Shader::Shader(const char* vertexPath, const char* fragmentPath)
 {
-	//Read vertex and fragment shaders files
-	const char* vShaderCode = getShaderCode(vertexPath);
-	const char* fShaderCode = getShaderCode(fragmentPath);
+	//Parse shaders files
+	const char* vShaderSource = ParseShader(vertexPath);
+	const char* fShaderSource = ParseShader(fragmentPath);
 
-	//Compile both shaders
-	uint vertexShader = compileShader(vShaderCode, GL_VERTEX_SHADER);
-	uint fragmentShader = compileShader(fShaderCode, GL_FRAGMENT_SHADER);
-
-	//Create program
-	programID = glCreateProgram();
-	glAttachShader(programID, vertexShader);
-	glAttachShader(programID, fragmentShader);
-	glLinkProgram(programID);
-
-	//Check for errors
-	int success;
-	char infoLog[512];
-	glGetProgramiv(programID, GL_LINK_STATUS, &success);
-	if (!success)
-	{
-		glGetProgramInfoLog(programID, 512, NULL, infoLog);
-		LOG("Error linking program: %s", infoLog);
-	}
-
-	//Delete shaders (already linked into program)
-	glDeleteShader(vertexShader);
-	glDeleteShader(fragmentShader);
+	m_programID = CreateShader(vShaderSource, fShaderSource);
 }
 
 Shader::~Shader()
 {
-	glDeleteProgram(programID);
+	glDeleteProgram(m_programID);
 }
 
-void Shader::Use()
+void Shader::Bind()
 {
-	glUseProgram(programID);
+	glUseProgram(m_programID);
 }
 
-const char* Shader::getShaderCode(const char* shaderPath)
+void Shader::Unbind()
 {
-	std::string shaderCode;
+	glUseProgram(0);
+}
+
+const char* Shader::ParseShader(const char* shaderPath)
+{
 	std::ifstream shaderFile;
-
 	shaderFile.open(shaderPath);
+
+	std::string shaderSource;
+
 	if (!shaderFile)
 	{
 		LOG("Error opening shader file: %s", shaderPath);
@@ -61,29 +45,84 @@ const char* Shader::getShaderCode(const char* shaderPath)
 
 		shaderFile.close();
 
-		shaderCode = shaderStream.str();
+		shaderSource = shaderStream.str();
 	}
 
-	return shaderCode.c_str();
+	return shaderSource.c_str();
 }
 
-uint Shader::compileShader(const char* shaderCode, GLenum shaderType)
+uint Shader::CompileShader(const char*& shaderSource, uint type)
 {
-	uint shader = 0;
+	uint id = 0;
+	
+	id = glCreateShader(type);
+	glShaderSource(id, 1, &shaderSource, NULL);
+	glCompileShader(id);
+	
+	//Check for errors
+	int success;
+	char infoLog[512];
+	glGetShaderiv(id, GL_COMPILE_STATUS, &success);
+	if (!success)
+	{
+		glGetShaderInfoLog(id, 512, NULL, infoLog);
+		LOG("Error compiling shader: %s", infoLog);
+	}
+	
+	return id;
+	
+}
 
-	shader = glCreateShader(shaderType);
-	glShaderSource(shader, 1, &shaderCode, NULL);
-	glCompileShader(shader);
+uint Shader::CreateShader(const char*& vertexShader, const char*& fragmentShader)
+{
+	
+	//Compile shaders
+	uint vs = CompileShader(vertexShader, GL_VERTEX_SHADER);
+	uint fs = CompileShader(fragmentShader, GL_FRAGMENT_SHADER);
+
+	//Create program
+	uint program = glCreateProgram();
+
+	glAttachShader(program, vs);
+	glAttachShader(program, fs);
+
+	glLinkProgram(program);
+	glValidateProgram(program);
 
 	//Check for errors
 	int success;
 	char infoLog[512];
-	glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
+	glGetProgramiv(program, GL_LINK_STATUS, &success);
 	if (!success)
 	{
-		glGetShaderInfoLog(shader, 512, NULL, infoLog);
-		LOG("Error compiling shader: %s", infoLog);
+		glGetProgramInfoLog(program, 512, NULL, infoLog);
+		LOG("Error linking program: %s", infoLog);
 	}
 
-	return shader;
+	//Delete shaders (already linked into program)
+	glDeleteShader(vs);
+	glDeleteShader(fs);
+
+	return program;
 }
+
+//uint Shader::compileShader(const char* shaderCode, GLenum shaderType)
+//{
+//	uint shader = 0;
+//
+//	shader = glCreateShader(shaderType);
+//	glShaderSource(shader, 1, &shaderCode, NULL);
+//	glCompileShader(shader);
+//
+//	//Check for errors
+//	int success;
+//	char infoLog[512];
+//	glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
+//	if (!success)
+//	{
+//		glGetShaderInfoLog(shader, 512, NULL, infoLog);
+//		LOG("Error compiling shader: %s", infoLog);
+//	}
+//
+//	return shader;
+//}
