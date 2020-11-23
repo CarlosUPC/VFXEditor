@@ -1,25 +1,51 @@
+#include "Application.h"
 #include "Shader.h"
 
 #include <string>
-#include <fstream> //ifstream
-#include <sstream> //stringstream
-Shader::Shader(const char* vertexPath, const char* fragmentPath)
-{
-	//Parse shaders files
-	const char* vShaderSource = ParseShader(vertexPath);
-	const char* fShaderSource = ParseShader(fragmentPath);
+#include <fstream> 
+#include <sstream> 
 
-	m_programID = CreateShader(vShaderSource, fShaderSource);
+Shader::Shader(const char* vertexShaderPath, const char* fragmentShaderPath)
+{
+	//Read vertex and fragment shaders files
+	std::string vertexString = ReadShaderFromFile(vertexShaderPath);
+	const char* vertexSource = vertexString.c_str();
+
+	std::string fragString = ReadShaderFromFile(fragmentShaderPath);
+	const char* fragmentSource = fragString.c_str();
+
+
+	//const char* vShaderCode2 = getShaderCode(vertexShaderPath).c_str(); error junk chars
+	
+	std::cout << "\nVERTEX SHADER: \n\n" << vertexSource << std::endl;
+
+	std::cout << "\nFRAGMENT SHADER: \n\n" << fragmentSource << std::endl;
+
+	programID = CreateShader(vertexSource, fragmentSource);
+}
+
+
+std::string Shader::ReadShaderFromFile(const char* filename)
+{
+	std::ifstream file(filename, std::ios::in);
+	std::string content;
+	if (file.good())
+	{
+		std::stringstream buffer;
+		buffer << file.rdbuf();
+		content = buffer.str();
+	}
+	return content;
 }
 
 Shader::~Shader()
 {
-	glDeleteProgram(m_programID);
+	glDeleteProgram(programID);
 }
 
 void Shader::Bind()
 {
-	glUseProgram(m_programID);
+	glUseProgram(programID);
 }
 
 void Shader::Unbind()
@@ -27,65 +53,48 @@ void Shader::Unbind()
 	glUseProgram(0);
 }
 
-const char* Shader::ParseShader(const char* shaderPath)
+void Shader::SetUniformMat4f(const char* name, float* value) const
 {
-	std::ifstream shaderFile;
-	shaderFile.open(shaderPath);
+	int location = glGetUniformLocation(programID, name);
+	if(location == -1)
+		std::cout << "[WARNING]: uniform: " << name << "doesn't exist!" << std::endl;
 
-	std::string shaderSource;
-
-	if (!shaderFile)
-	{
-		LOG("Error opening shader file: %s", shaderPath);
-	}
-	else
-	{
-		std::stringstream shaderStream;
-		shaderStream << shaderFile.rdbuf();
-
-		shaderFile.close();
-
-		shaderSource = shaderStream.str();
-	}
-
-	return shaderSource.c_str();
+	glUniformMatrix4fv(location, 1, GL_FALSE, value);
 }
 
-uint Shader::CompileShader(const char*& shaderSource, uint type)
+
+uint Shader::CompileShader(const char* shaderSource, GLenum shaderType)
 {
-	uint id = 0;
-	
-	id = glCreateShader(type);
-	glShaderSource(id, 1, &shaderSource, NULL);
-	glCompileShader(id);
-	
+	uint shader = 0;
+
+	shader = glCreateShader(shaderType);
+	glShaderSource(shader, 1, &shaderSource, NULL);
+	glCompileShader(shader);
+
 	//Check for errors
 	int success;
 	char infoLog[512];
-	glGetShaderiv(id, GL_COMPILE_STATUS, &success);
+	glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
 	if (!success)
 	{
-		glGetShaderInfoLog(id, 512, NULL, infoLog);
+		glGetShaderInfoLog(shader, 512, NULL, infoLog);
 		LOG("Error compiling shader: %s", infoLog);
 	}
-	
-	return id;
-	
+
+	return shader;
 }
 
-uint Shader::CreateShader(const char*& vertexShader, const char*& fragmentShader)
+uint Shader::CreateShader(const char* vertexSource, const char* fragmentSource)
 {
-	
-	//Compile shaders
-	uint vs = CompileShader(vertexShader, GL_VERTEX_SHADER);
-	uint fs = CompileShader(fragmentShader, GL_FRAGMENT_SHADER);
+	//Compile both shaders
+	uint vertexShader = CompileShader(vertexSource, GL_VERTEX_SHADER);
+	uint fragmentShader = CompileShader(fragmentSource, GL_FRAGMENT_SHADER);
 
 	//Create program
-	uint program = glCreateProgram();
-
-	glAttachShader(program, vs);
-	glAttachShader(program, fs);
-
+	uint program;
+	program = glCreateProgram();
+	glAttachShader(program, vertexShader);
+	glAttachShader(program, fragmentShader);
 	glLinkProgram(program);
 	glValidateProgram(program);
 
@@ -100,29 +109,8 @@ uint Shader::CreateShader(const char*& vertexShader, const char*& fragmentShader
 	}
 
 	//Delete shaders (already linked into program)
-	glDeleteShader(vs);
-	glDeleteShader(fs);
+	glDeleteShader(vertexShader);
+	glDeleteShader(fragmentShader);
 
 	return program;
 }
-
-//uint Shader::compileShader(const char* shaderCode, GLenum shaderType)
-//{
-//	uint shader = 0;
-//
-//	shader = glCreateShader(shaderType);
-//	glShaderSource(shader, 1, &shaderCode, NULL);
-//	glCompileShader(shader);
-//
-//	//Check for errors
-//	int success;
-//	char infoLog[512];
-//	glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
-//	if (!success)
-//	{
-//		glGetShaderInfoLog(shader, 512, NULL, infoLog);
-//		LOG("Error compiling shader: %s", infoLog);
-//	}
-//
-//	return shader;
-//}

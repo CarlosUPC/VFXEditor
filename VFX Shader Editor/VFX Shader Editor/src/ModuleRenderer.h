@@ -1,12 +1,16 @@
-#pragma once
+#ifndef __MODULERENDER_H__
+#define __MODULERENDER_H__
+
 #include "Module.h"
-#include "GL/glew.h"
+
+#define MAX_LIGHTS 8
 
 class Shader;
 
 class ModuleRenderer : public Module
 {
 public:
+
 	ModuleRenderer(bool start_enabled = true);
 	~ModuleRenderer();
 
@@ -14,9 +18,18 @@ public:
 	update_state PreUpdate();
 	update_state PostUpdate();
 	bool CleanUp();
+
+	//void OnResize(int width, int height);
+
 public:
-	//GLuint framebuffer = 0;
+
+	unsigned int frameBuffer = 0;
+
 	SDL_GLContext context;
 
-	Shader* default_shader = nullptr;
+	Shader* defaultShader = nullptr;
+
+	uint VAO = 0;
 };
+
+#endif // !__MODULERENDER_H__

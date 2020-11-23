@@ -1,25 +1,29 @@
-#pragma once
+#ifndef __SHADER_H__
+#define __SHADER_H__
 
 #include "Globals.h"
 #include "GL/glew.h"
-
-
 class Shader
 {
 public:
-	Shader(const char* vertexPath, const char* fragmentPath);
+	Shader(const char* vertexShaderPath, const char* fragmentShaderPath);
 	~Shader();
 
 	void Bind();
 	void Unbind();
 
-	//Set Uniform Types
+	//Uniforms
+	void SetUniformMat4f(const char* name, float* value) const;
 
 private:
-	const char* ParseShader(const char* shaderPath);
-	uint CompileShader(const char*& source, uint type);
-	uint CreateShader(const char*& vertexShader, const char*& fragmentShader);
+
+
+	std::string ReadShaderFromFile(const char* filename);
+	uint CompileShader(const char* shaderCode, GLenum shaderType);
+	uint CreateShader(const char* vertexSource, const char* fragmentSource);
 
 public:
-	uint m_programID;
+
+	uint programID;
 };
+#endif // !__SHADER_H__

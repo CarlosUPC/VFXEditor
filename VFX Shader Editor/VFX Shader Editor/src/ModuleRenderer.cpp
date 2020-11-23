@@ -2,16 +2,17 @@
 #include "ModuleRenderer.h"
 #include "ModuleWindow.h"
 #include "ModuleGUI.h"
-#include <iostream>
 #include "ModuleCamera.h"
+#include "Shader.h"
+
+//TMP
 #include "Primitive.h"
 
-#include "Shader.h"
-//#pragma comment (lib, "glu32.lib")    /* link OpenGL Utility lib     */
-//#pragma comment (lib, "opengl32.lib") /* link Microsoft OpenGL lib   */
+#pragma comment (lib, "glu32.lib")    /* link OpenGL Utility lib     */
+#pragma comment (lib, "opengl32.lib") /* link Microsoft OpenGL lib   */
+//#pragma comment (lib, "Glew/libx86/glew32.lib") /* link Microsoft OpenGL lib   */
 
-ModuleRenderer::ModuleRenderer(bool start_enabled)
-	:Module(start_enabled)
+ModuleRenderer::ModuleRenderer(bool start_enabled) : Module(start_enabled)
 {
 }
 
@@ -38,35 +39,33 @@ bool ModuleRenderer::Init()
 		ret = false;
 	}
 
-	if (ret)
+	if (ret == true)
 	{
-		std::cout << "Using Glew: " << glewGetString(GLEW_VERSION) << std::endl;
-		std::cout << "Vendor: " << glGetString(GL_RENDERER) << std::endl;
-		std::cout << "OpenGL version supported: " << glGetString(GL_VERSION) << std::endl;
-		std::cout << "GLSL: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
+		LOG("Using Glew %s", glewGetString(GLEW_VERSION));
 
-		
+		LOG("Vendor: %s", glGetString(GL_VENDOR));
+		LOG("Renderer: %s", glGetString(GL_RENDERER));
+		LOG("OpenGL version supported %s", glGetString(GL_VERSION));
+		LOG("GLSL: %s\n", glGetString(GL_SHADING_LANGUAGE_VERSION));
+
 		//Use Vsync
 		if (SDL_GL_SetSwapInterval(1) < 0)
 			LOG("Warning: Unable to set VSync! SDL Error: %s\n", SDL_GetError());
 
-		glMatrixMode(GL_PROJECTION);//Applies subsequent matrix operations to the projection matrix stack. (screen position)
-		glLoadIdentity();
-		glLoadMatrixf(App->camera->getProjectionMatrix());
-
-		glMatrixMode(GL_MODELVIEW);
-		glLoadIdentity();
-		glLoadMatrixf(App->camera->getViewMatrix());
-
-		//specify implementation of The most correct, or highest quality, option should be chosen.
-		//glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
-
-		//Color and Depth buffers
-		glClearDepth(1.0f);
-		glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT);
+		
+		//glMatrixMode(GL_PROJECTION);
+		//glLoadIdentity();
+		//glLoadMatrixf(App->camera->getProjectionMatrix());
 
 		
+		//glMatrixMode(GL_MODELVIEW);
+		//glLoadIdentity();
+
+		
+		glClearDepth(1.0f);
+		glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+
+
 		//Check for error
 		error = glGetError();
 		if (error != GL_NO_ERROR)
@@ -75,11 +74,46 @@ bool ModuleRenderer::Init()
 			ret = false;
 		}
 
-		default_shader = new Shader("../../Game/Shaders/default.vs", "../../Game/Shaders/default.fs");
+		
+		
 
-	
+		//Test
+		{
+			float vertices[] = {
+			 0.5f,  0.5f, 0.0f,  
+			 0.5f, -0.5f, 0.0f,  
+			-0.5f, -0.5f, 0.0f,  
+			-0.5f,  0.5f, 0.0f   
+			};
+			unsigned int indices[] = {  
+				0, 1, 3,  
+				1, 2, 3   
+			};
+			unsigned int VBO, EBO;
+			glGenVertexArrays(1, &VAO);
+			glGenBuffers(1, &VBO);
+			glGenBuffers(1, &EBO);
+			
+			glBindVertexArray(VAO);
+
+			glBindBuffer(GL_ARRAY_BUFFER, VBO);
+			glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+			glEnableVertexAttribArray(0);
+
+			
+			glBindBuffer(GL_ARRAY_BUFFER, 0);
+			glBindVertexArray(0);
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+		}
+
+		//Create Shader program
+		defaultShader = new Shader("Shaders/default.vs", "Shaders/default.fs");
 	}
-
 
 	return ret;
 }
@@ -87,33 +121,29 @@ bool ModuleRenderer::Init()
 update_state ModuleRenderer::PreUpdate()
 {
 	//Render lights
-
+	
 	return UPDATE_CONTINUE;
 }
 
 update_state ModuleRenderer::PostUpdate()
 {
-	//Draw Scene
 	
-	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 
+	////Bind shader
+	defaultShader->Bind();
 
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-	glLoadMatrixf(App->camera->getViewMatrix());
+	////Send data to shader
+	defaultShader->SetUniformMat4f("u_Projection", App->camera->getProjectionMatrix());
+	defaultShader->SetUniformMat4f("u_View", App->camera->getViewMatrix());
 
-	//Use Shader
-	//default_shader->Use();
+	//Draw data
+	glBindVertexArray(VAO);
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
-	MPlane base_plane(0, 1, 0, 0);
-	base_plane.axis = true;
-	base_plane.Render();
-
-	MCube cube(2.0f, 2.0f, 2.0f, { 0.0f,1.0f,0.0f });
-	cube.Render();
-
-	//App->gui->Draw();
+	
+	//App->gui->Draw(); // Draw GUI
 
 	SDL_GL_SwapWindow(App->window->window);
 
@@ -128,3 +158,16 @@ bool ModuleRenderer::CleanUp()
 
 	return true;
 }
+
+//void ModuleRenderer::OnResize(int width, int height)
+//{
+//	glViewport(0, 0, width, height);
+//
+//	glMatrixMode(GL_PROJECTION);
+//	glLoadIdentity();
+//
+//	glLoadMatrixf(App->camera->getProjectionMatrix());
+//
+//	glMatrixMode(GL_MODELVIEW);
+//	glLoadIdentity();
+//}

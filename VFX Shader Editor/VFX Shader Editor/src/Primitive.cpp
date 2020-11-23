@@ -1,4 +1,3 @@
-
 #include "Application.h"
 #include "Globals.h"
 #include "Primitive.h"
@@ -20,7 +19,7 @@ Primitive::Primitive() : color(White), wire(false), axis(false), type(PrimitiveT
 
 Primitive::~Primitive()
 {
-	glDeleteBuffers(1, &my_id);
+	//glDeleteBuffers(1, &my_id);
 	shape.clear();
 	indices.clear();
 }
@@ -33,9 +32,13 @@ PrimitiveTypes Primitive::GetType() const
 
 void Primitive::generateBuffer()
 {
-	glGenBuffers(1, (GLuint*) & (my_id));
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, my_id);
+	//glGenBuffers(1, (GLuint*)&(my_id));
+	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, my_id);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * indices.size(), &indices[0], GL_STATIC_DRAW);
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), NULL);
+	glEnableVertexAttribArray(0);
+
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
@@ -82,7 +85,7 @@ void Primitive::Render() const
 	//Draw shape
 	glEnableClientState(GL_VERTEX_ARRAY);
 
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, my_id);
+	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, my_id);
 	glVertexPointer(3, GL_FLOAT, 0, &shape[0]);
 	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, NULL);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
@@ -99,7 +102,7 @@ void Primitive::SetPos(float x, float y, float z)
 }
 
 // ------------------------------------------------------------
-void Primitive::SetRotation(float angle, const float3& u)
+void Primitive::SetRotation(float angle, const vec& u)
 {
 	transform.RotateAxisAngle(u, angle);
 }
@@ -116,16 +119,16 @@ MCube::MCube() : Primitive(), size(1.0f, 1.0f, 1.0f)
 	type = PrimitiveTypes::Primitive_Cube;
 }
 
-MCube::MCube(float sizeX, float sizeY, float sizeZ, float3 center) : Primitive(), size(sizeX, sizeY, sizeZ)
+MCube::MCube(float sizeX, float sizeY, float sizeZ, vec center) : Primitive(), size(sizeX, sizeY, sizeZ)
 {
 	float sx = size.x * 0.5f;
 	float sy = size.y * 0.5f;
 	float sz = size.z * 0.5f;
 
 	
-	//uint aux[36] = { 0,1,2,1,3,2,3,1,5,5,7,3,7,5,4,6,7,4,6,4,0,0,2,6,6,2,3,6,3,7,0,4,5,0,5,1 };
+	uint aux[36] = { 0,1,2,1,3,2,3,1,5,5,7,3,7,5,4,6,7,4,6,4,0,0,2,6,6,2,3,6,3,7,0,4,5,0,5,1 };
 
-
+	
 	shape.push_back(center.x - sx); shape.push_back(center.y - sy); shape.push_back(center.z + sz);	//A
 	shape.push_back(center.x + sx); shape.push_back(center.y - sy); shape.push_back(center.z + sz);	//B
 	shape.push_back(center.x - sx); shape.push_back(center.y + sy); shape.push_back(center.z + sz);	//C
@@ -137,6 +140,7 @@ MCube::MCube(float sizeX, float sizeY, float sizeZ, float3 center) : Primitive()
 	shape.push_back(center.x + sx); shape.push_back(center.y + sy); shape.push_back(center.z - sz);	//H
 
 	
+
 	indices.push_back(0); indices.push_back(1); indices.push_back(2);
 	indices.push_back(1); indices.push_back(3); indices.push_back(2);
 
@@ -160,17 +164,26 @@ MCube::MCube(float sizeX, float sizeY, float sizeZ, float3 center) : Primitive()
 	type = PrimitiveTypes::Primitive_Cube;
 }
 
+void MCube::Render() const
+{
+	/*glEnableClientState(GL_VERTEX_ARRAY);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, my_id);
+	glVertexPointer(3, GL_FLOAT, 0, &shape[0]);
+	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, NULL);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);*/
+}
+
 // SPHERE ============================================
 MSphere::MSphere() : MSphere(0.05f, 6, 12, { 0,0,0 })
 {
 }
 
-MSphere::MSphere(float radius, int rings, int sectors, float3 pos) : Primitive(), radius(radius)
+MSphere::MSphere(float radius, int rings, int sectors, vec pos) : Primitive(), radius(radius)
 {
 	type = PrimitiveTypes::Primitive_Sphere;
 
 	//TEMP
-	float3 initialPos = pos;
+	vec initialPos = pos;
 
 	float x, y, z, xz;                              // vertex position
 
@@ -233,9 +246,9 @@ MCylinder::MCylinder() : Primitive(), radius(1.0f), height(1.0f)
 	type = PrimitiveTypes::Primitive_Cylinder;
 }
 
-MCylinder::MCylinder(float radius, float heigh, int rings, int sectors, float3 pos) : Primitive(), radius(radius), height(height)
+MCylinder::MCylinder(float radius, float heigh, int rings, int sectors, vec pos) : Primitive(), radius(radius), height(height)
 {
-	float3 initialPos = pos;
+	vec initialPos = pos;
 
 	float x, y, z, xz;                              // vertex position
 
@@ -331,7 +344,7 @@ MLine::MLine() : Primitive(), origin(0, 0, 0), destination(1, 1, 1)
 	type = PrimitiveTypes::Primitive_Line;
 }
 
-MLine::MLine(float x, float y, float z, float3 origin) : Primitive(), origin(origin.x, origin.y, origin.z), destination(x, y, z)
+MLine::MLine(float x, float y, float z, vec origin) : Primitive(), origin(origin.x, origin.y, origin.z), destination(x, y, z)
 {
 	type = PrimitiveTypes::Primitive_Line;
 }
@@ -361,59 +374,47 @@ MPlane::MPlane() : Primitive(), normal(0, 1, 0), constant(1)
 MPlane::MPlane(float x, float y, float z, float d) : Primitive(), normal(x, y, z), constant(d)
 {
 	type = PrimitiveTypes::Primitive_Plane;
+	int index = 0;
+	for (float i = -d; i <= d; i += 1.0f)
+	{
+		shape.push_back(i); shape.push_back(y); shape.push_back(-d);
+		shape.push_back(i); shape.push_back(y); shape.push_back(d);
+		shape.push_back(-d); shape.push_back(y); shape.push_back(i);
+		shape.push_back(d); shape.push_back(y); shape.push_back(i);
+
+		indices.push_back(index++);
+		indices.push_back(index++);
+		indices.push_back(index++);
+		indices.push_back(index++);
+	}
+
+	unsigned int VBO, EBO;
+	glGenVertexArrays(1, &VAO);
+	glGenBuffers(1, &VBO);
+	glGenBuffers(1, &EBO);
+	
+	glBindVertexArray(VAO);
+
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(shape), &shape[0], GL_STATIC_DRAW);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), &indices[0], GL_STATIC_DRAW);
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
 void MPlane::Render() const
 {
-	//TEMP -----------------------------------------------
-	if (axis == true)
-	{
-		// Draw Axis Grid
-		glLineWidth(2.0f);
-
-		glBegin(GL_LINES);
-
-		glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
-
-		glVertex3f(0.0f, 0.0f, 0.0f); glVertex3f(1.0f, 0.0f, 0.0f);
-		glVertex3f(1.0f, 0.1f, 0.0f); glVertex3f(1.1f, -0.1f, 0.0f);
-		glVertex3f(1.1f, 0.1f, 0.0f); glVertex3f(1.0f, -0.1f, 0.0f);
-
-		glColor4f(0.0f, 1.0f, 0.0f, 1.0f);
-
-		glVertex3f(0.0f, 0.0f, 0.0f); glVertex3f(0.0f, 1.0f, 0.0f);
-		glVertex3f(-0.05f, 1.25f, 0.0f); glVertex3f(0.0f, 1.15f, 0.0f);
-		glVertex3f(0.05f, 1.25f, 0.0f); glVertex3f(0.0f, 1.15f, 0.0f);
-		glVertex3f(0.0f, 1.15f, 0.0f); glVertex3f(0.0f, 1.05f, 0.0f);
-
-		glColor4f(0.0f, 0.0f, 1.0f, 1.0f);
-
-		glVertex3f(0.0f, 0.0f, 0.0f); glVertex3f(0.0f, 0.0f, 1.0f);
-		glVertex3f(-0.05f, 0.1f, 1.05f); glVertex3f(0.05f, 0.1f, 1.05f);
-		glVertex3f(0.05f, 0.1f, 1.05f); glVertex3f(-0.05f, -0.1f, 1.05f);
-		glVertex3f(-0.05f, -0.1f, 1.05f); glVertex3f(0.05f, -0.1f, 1.05f);
-
-		glEnd();
-
-		glLineWidth(1.0f);
-	}
-
-	glColor3f(color.r, color.g, color.b);
-	//----------------------------------------------------
-
 	glLineWidth(1.0f);
-	glBegin(GL_LINES);
-
-	float d = 200.0f;
-	for (float i = -d; i <= d; i += 1.0f)
-	{
-		glVertex3f(i, 0.0f, -d);
-		glVertex3f(i, 0.0f, d);
-		glVertex3f(-d, 0.0f, i);
-		glVertex3f(d, 0.0f, i);
-	}
-
-	glEnd();
+	glBindVertexArray(VAO);
+	glDrawElements(GL_LINES, indices.size(), GL_UNSIGNED_INT, 0);
 }
 
 MArrow::MArrow() : Primitive(), origin(0, 0, 0), destination(1, 1, 1)
@@ -421,13 +422,13 @@ MArrow::MArrow() : Primitive(), origin(0, 0, 0), destination(1, 1, 1)
 	type = PrimitiveTypes::Primitive_Line;
 }
 
-MArrow::MArrow(float x, float y, float z, float3 pos) : Primitive(), origin(pos.x, pos.y, pos.z), destination(x, y, z)
+MArrow::MArrow(float x, float y, float z, vec pos) : Primitive(), origin(pos.x, pos.y, pos.z), destination(x, y, z)
 {
 	type = PrimitiveTypes::Primitive_Line;
 
-	float3 Y{ 0.0f,1.0f,0.0f }; //Vertical Axis
-	float3 direction = destination - origin;
-	float3 rotAxis = Cross(direction, Y); //Get the rotation axis of the head
+	vec Y{ 0.0f,1.0f,0.0f }; //Vertical Axis
+	vec direction = destination - origin;
+	vec rotAxis = Cross(direction, Y); //Get the rotation axis of the head
 	rotAxis.Normalize();
 	float3x3 rotMatrix;
 
@@ -467,7 +468,7 @@ MAxis::MAxis() : Primitive(), origin(0, 0, 0), size(1)
 	type = PrimitiveTypes::Primitive_Axis;
 }
 
-MAxis::MAxis(float size, float3 pos) : Primitive(), origin(pos.x, pos.y, pos.z), size(size)
+MAxis::MAxis(float size, vec pos) : Primitive(), origin(pos.x, pos.y, pos.z), size(size)
 {
 	type = PrimitiveTypes::Primitive_Axis;
 }
@@ -509,7 +510,7 @@ MCapsule::MCapsule()
 	type = PrimitiveTypes::Primitive_Capsule;
 }
 
-MCapsule::MCapsule(float radius, float height, int rings, int sectors, float3 pos)
+MCapsule::MCapsule(float radius, float height, int rings, int sectors, vec pos)
 {
 	type = PrimitiveTypes::Primitive_Capsule;
 
@@ -578,7 +579,7 @@ MFrustum::MFrustum() : distance(1.0f), depth(5.0f), width(5.0f), height(3.0f), c
 	type = PrimitiveTypes::Primitive_Frustum;
 }
 
-MFrustum::MFrustum(float distance, float depth, float width, float height, float3 center) : distance(distance), depth(depth), width(width), height(height), center(center)
+MFrustum::MFrustum(float distance, float depth, float width, float height, vec center) : distance(distance), depth(depth), width(width), height(height), center(center)
 {
 	type = PrimitiveTypes::Primitive_Frustum;
 
@@ -615,3 +616,5 @@ MFrustum::MFrustum(float distance, float depth, float width, float height, float
 
 	generateBuffer();
 }
+
+
