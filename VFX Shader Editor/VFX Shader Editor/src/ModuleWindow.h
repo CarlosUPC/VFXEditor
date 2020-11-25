@@ -11,6 +11,8 @@ public:
 	bool Init();
 	bool CleanUp();
 
+	void OnResize(int width, int height);
+
 public:
 	SDL_Window* window = nullptr;
 	SDL_Surface* screen_surface = nullptr;

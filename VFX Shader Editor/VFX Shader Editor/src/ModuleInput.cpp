@@ -1,4 +1,8 @@
+#include "Application.h"
 #include "ModuleInput.h"
+#include "ModuleWindow.h"
+#include "ModuleCamera.h"
+#include "ModuleRenderer.h"
 
 ModuleInput::ModuleInput(bool start_enabled)
 {
@@ -92,6 +96,16 @@ update_state ModuleInput::PreUpdate()
 			mouseDeltaX = event.motion.xrel;
 			mouseDeltaY = event.motion.yrel;
 			break;
+		case SDL_WINDOWEVENT:
+		{
+			if (event.window.event == SDL_WINDOWEVENT_RESIZED)
+			{
+				App->window->OnResize(event.window.data1, event.window.data2);
+				App->camera->OnResize(event.window.data1, event.window.data2);
+				App->renderer->OnResize(event.window.data1, event.window.data2);
+			}
+			break;
+		}
 		case SDL_QUIT:
 			quit = true;
 			break;

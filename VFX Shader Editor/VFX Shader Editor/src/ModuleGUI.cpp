@@ -3,7 +3,7 @@
 
 #include "ImGui\imgui.h"
 #include "ImGui\imgui_impl_sdl.h"
-#include "ImGui\imgui_impl_opengl2.h"
+#include "ImGui\imgui_impl_opengl3.h"
 
 
 #include "ModuleWindow.h"
@@ -23,11 +23,11 @@ bool ModuleGUI::Init()
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO();
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-	io.IniFilename = "../Settings/imgui.ini";
+	io.IniFilename = "Config/imgui.ini";
+
 
 	ImGui_ImplSDL2_InitForOpenGL(App->window->window, App->renderer->context);
-	ImGui_ImplOpenGL2_Init();
-
+	ImGui_ImplOpenGL3_Init();
 	
 
 	return true;
@@ -44,16 +44,23 @@ bool ModuleGUI::Start()
 
 update_state ModuleGUI::PreUpdate()
 {
-	ImGui_ImplOpenGL2_NewFrame();
+	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplSDL2_NewFrame(App->window->window);
 	ImGui::NewFrame();
 
 	//Draw Central Docking Window
 	ImGui::SetNextWindowPos({ 0,0 });
 	ImGui::SetNextWindowSize({ (float)App->window->width, (float)App->window->height });
-	ImGui::SetNextWindowBgAlpha(0.0f);
+	//ImGui::SetNextWindowBgAlpha(0.0f);
 
-	ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
+
+	return UPDATE_CONTINUE;
+}
+
+update_state ModuleGUI::Update()
+{
+
+	ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoDocking;
 	window_flags |= ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
 	window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
 
@@ -66,17 +73,26 @@ update_state ModuleGUI::PreUpdate()
 	ImGuiID dockspace_id = ImGui::GetID("MyDockspace");
 	ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f));
 
-	ImGui::End();
-	return UPDATE_CONTINUE;
-}
 
-update_state ModuleGUI::Update()
-{
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
+	ImGui::Begin("Scene");
+	ImGui::PopStyleVar(3);
+	ImVec2 avail_size = ImGui::GetContentRegionAvail();
+	ImGui::Image((ImTextureID)App->renderer->texture, avail_size, { 0,1 }, { 1,0 });
+
+	ImGui::End();
+
+	ImGui::End();
+	
+
 	return UPDATE_CONTINUE;
 }
 
 update_state ModuleGUI::PostUpdate()
 {
+	
 	return UPDATE_CONTINUE;
 }
 
@@ -84,7 +100,7 @@ update_state ModuleGUI::PostUpdate()
 bool ModuleGUI::CleanUp()
 {
 	ImGui_ImplSDL2_Shutdown();
-	ImGui_ImplOpenGL2_Shutdown();
+	ImGui_ImplOpenGL3_Shutdown();
 	ImGui::DestroyContext();
 
 	return true;
@@ -92,7 +108,6 @@ bool ModuleGUI::CleanUp()
 
 void ModuleGUI::Draw()
 {
-
 	ImGui::Render();
-	ImGui_ImplOpenGL2_RenderDrawData(ImGui::GetDrawData());
+	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }

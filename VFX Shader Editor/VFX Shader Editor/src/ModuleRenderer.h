@@ -2,6 +2,7 @@
 #define __MODULERENDER_H__
 
 #include "Module.h"
+#include "GL/glew.h"
 
 #define MAX_LIGHTS 8
 
@@ -19,11 +20,13 @@ public:
 	update_state PostUpdate();
 	bool CleanUp();
 
-	//void OnResize(int width, int height);
+	void OnResize(int width, int height);
+	void GenerateFrameBuffer(int width, int height);
 
 public:
 
-	unsigned int frameBuffer = 0;
+	GLuint frameBuffer = 0;
+	GLuint texture = 0;
 
 	SDL_GLContext context;
 
