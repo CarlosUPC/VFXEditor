@@ -53,14 +53,14 @@ bool ModuleRenderer::Init()
 			LOG("Warning: Unable to set VSync! SDL Error: %s\n", SDL_GetError());
 
 		
-		/*glMatrixMode(GL_PROJECTION);
+		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
 		glLoadMatrixf(App->camera->getProjectionMatrix());
 
 		
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
-		glLoadMatrixf(App->camera->getViewMatrix());*/
+		glLoadMatrixf(App->camera->getViewMatrix());
 		
 		glClearDepth(1.0f);
 		glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
@@ -136,6 +136,11 @@ update_state ModuleRenderer::PostUpdate()
 	glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	//Temporal (Debug)
+	glMatrixMode(GL_MODELVIEW);
+	glLoadMatrixf(App->camera->getViewMatrix());
+	DrawGrid();
+	
 
 	////Bind shader
 	defaultShader->Bind();
@@ -151,8 +156,10 @@ update_state ModuleRenderer::PostUpdate()
 	glBindVertexArray(0);
 	defaultShader->Unbind();
 
+	
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	
+
 	App->gui->Draw(); // Draw GUI
 
 	SDL_GL_SwapWindow(App->window->window);
@@ -197,6 +204,29 @@ void ModuleRenderer::GenerateFrameBuffer(int width, int height)
 	glViewport(0, 0, width, height);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+
+}
+
+void ModuleRenderer::DrawGrid()
+{
+	glLineWidth(1.0f);
+
+	//glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+	glBegin(GL_LINES);
+
+	float d = 5.0f;
+
+	for (float i = -d; i <= d; i += 1.0f)
+	{
+		glVertex3f(i, 0.0f, -d);
+		glVertex3f(i, 0.0f, d);
+		glVertex3f(-d, 0.0f, i);
+		glVertex3f(d, 0.0f, i);
+	}
+
+	glEnd();
+
 
 
 }

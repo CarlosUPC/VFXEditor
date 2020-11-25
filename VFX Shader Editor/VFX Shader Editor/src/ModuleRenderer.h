@@ -23,6 +23,7 @@ public:
 	void OnResize(int width, int height);
 	void GenerateFrameBuffer(int width, int height);
 
+	void DrawGrid();
 public:
 
 	GLuint frameBuffer = 0;
