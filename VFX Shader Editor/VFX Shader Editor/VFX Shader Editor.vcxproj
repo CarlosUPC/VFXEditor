@@ -197,6 +197,7 @@
     <ClCompile Include="Dependencies\MathGeoLib\include\MathGeoLib\Math\SSEMath.cpp" />
     <ClCompile Include="Dependencies\MathGeoLib\include\MathGeoLib\Math\TransformOps.cpp" />
     <ClCompile Include="Dependencies\MathGeoLib\include\MathGeoLib\Time\Clock.cpp" />
+    <ClCompile Include="Dependencies\pcg\extras\entropy.c" />
     <ClCompile Include="src\Application.cpp" />
     <ClCompile Include="src\Color.cpp" />
     <ClCompile Include="src\log.cpp" />
@@ -207,7 +208,9 @@
     <ClCompile Include="src\ModuleRenderer.cpp" />
     <ClCompile Include="src\ModuleWindow.cpp" />
     <ClCompile Include="src\Primitive.cpp" />
+    <ClCompile Include="src\Random.cpp" />
     <ClCompile Include="src\Shader.cpp" />
+    <ClCompile Include="src\Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Dependencies\ImGui\imconfig.h" />
@@ -276,6 +279,9 @@
     <ClInclude Include="Dependencies\MathGeoLib\include\MathGeoLib\Math\sse_mathfun.h" />
     <ClInclude Include="Dependencies\MathGeoLib\include\MathGeoLib\Math\TransformOps.h" />
     <ClInclude Include="Dependencies\MathGeoLib\include\MathGeoLib\Time\Clock.h" />
+    <ClInclude Include="Dependencies\pcg\extras\entropy.h" />
+    <ClInclude Include="Dependencies\pcg\extras\pcg_spinlock.h" />
+    <ClInclude Include="Dependencies\pcg\include\pcg_variants.h" />
     <ClInclude Include="src\Application.h" />
     <ClInclude Include="src\Color.h" />
     <ClInclude Include="src\Globals.h" />
@@ -286,7 +292,9 @@
     <ClInclude Include="src\ModuleRenderer.h" />
     <ClInclude Include="src\ModuleWindow.h" />
     <ClInclude Include="src\Primitive.h" />
+    <ClInclude Include="src\Random.h" />
     <ClInclude Include="src\Shader.h" />
+    <ClInclude Include="src\Timer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

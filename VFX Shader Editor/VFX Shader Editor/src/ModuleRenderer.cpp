@@ -201,7 +201,7 @@ void ModuleRenderer::GenerateFrameBuffer(int width, int height)
 		LOG("[ERROR]: Framebuffer is not complete!");
 	}
 
-	glViewport(0, 0, width, height);
+	//glViewport(0, 0, width, height);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
