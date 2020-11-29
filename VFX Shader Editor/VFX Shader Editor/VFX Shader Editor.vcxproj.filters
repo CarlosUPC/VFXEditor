@@ -171,6 +171,9 @@
     <ClCompile Include="Dependencies\pcg\extras\entropy.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\PanelPreview.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Application.h">
@@ -417,6 +420,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Dependencies\pcg\include\pcg_variants.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Panel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\PanelPreview.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Module.h"
+#include "Panel.h"
 
 class ModuleGUI : public Module
 {
@@ -18,4 +19,7 @@ public:
 	bool CleanUp();
 
 	void Draw();
+
+public:
+	std::list<Panel*> panels;
 };
