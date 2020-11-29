@@ -115,8 +115,8 @@ bool ModuleRenderer::Init()
 		defaultShader = new Shader("Shaders/default.vs", "Shaders/default.fs");
 	}
 
-	GenerateFrameBuffer(960, 540);
-
+	GenerateFrameBuffer(App->window->width, App->window->height);
+	
 	return ret;
 }
 
@@ -132,11 +132,14 @@ update_state ModuleRenderer::PostUpdate(float dt)
 	
 	glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
 	
-	glViewport(0, 0, App->window->width, App->window->height);
+	glViewport(0, 0, viewport_w, viewport_h);
 	glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	//Temporal (Debug)
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glLoadMatrixf(App->camera->getProjectionMatrix());
 	glMatrixMode(GL_MODELVIEW);
 	glLoadMatrixf(App->camera->getViewMatrix());
 	DrawGrid();
@@ -178,6 +181,8 @@ bool ModuleRenderer::CleanUp()
 
 void ModuleRenderer::GenerateFrameBuffer(int width, int height)
 {
+	viewport_w = width;
+	viewport_h = height;
 	//Generate framebuffer
 	glGenFramebuffers(1, &frameBuffer);
 	glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
@@ -193,8 +198,8 @@ void ModuleRenderer::GenerateFrameBuffer(int width, int height)
 	//Attach it to currently framebuffer
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0);
 
-	/*GLenum DrawBuffers[1] = { GL_COLOR_ATTACHMENT0 };
-	glDrawBuffers(1, DrawBuffers);*/
+	GLenum DrawBuffers[1] = { GL_COLOR_ATTACHMENT0 };
+	glDrawBuffers(1, DrawBuffers);
 
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 	{
@@ -233,13 +238,21 @@ void ModuleRenderer::DrawGrid()
 
 void ModuleRenderer::OnResize(int width, int height)
 {
-	glViewport(0, 0, width, height);
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-
 	glLoadMatrixf(App->camera->getProjectionMatrix());
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
+	glLoadMatrixf(App->camera->getViewMatrix());
+
+	// Delete previous Framebuffer & texture
+	glDeleteFramebuffers(1, &frameBuffer);
+	glDeleteTextures(1, &texture);
+
+	//Resize Framebuffer
+	GenerateFrameBuffer(width, height);
+	
+	//glViewport(0, 0, width, height);
 }

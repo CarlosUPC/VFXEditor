@@ -34,6 +34,9 @@ public:
 	Shader* defaultShader = nullptr;
 
 	uint VAO = 0;
+
+	uint viewport_w;
+	uint viewport_h;
 };
 
 #endif // !__MODULERENDER_H__
