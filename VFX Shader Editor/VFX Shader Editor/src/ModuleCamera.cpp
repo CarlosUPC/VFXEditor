@@ -32,7 +32,7 @@ bool ModuleCamera::Init()
 	return true;
 }
 
-update_state ModuleCamera::Update()
+update_state ModuleCamera::Update(float dt)
 {
 	if (App->input->GetMouseButton(SDL_BUTTON_RIGHT) == KEY_REPEAT)
 	{

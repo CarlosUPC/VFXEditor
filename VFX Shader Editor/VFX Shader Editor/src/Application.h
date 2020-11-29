@@ -2,6 +2,8 @@
 #include "Globals.h"
 #include <list>
 #include "Module.h"
+#include "Timer.h"
+#include "Random.h"
 
 class Module;
 class ModuleWindow;
@@ -18,6 +20,7 @@ public:
 	~Application();
 
 	bool Init();
+	void CalcFrameTime();
 	update_state Update();
 	bool CleanUp();
 private:
@@ -32,6 +35,8 @@ public:
 	ModuleCamera*			camera = nullptr;
 private:
 	std::list<Module*> modules;
+	Timer timer;
+	float dt;
 };
 
 extern Application* App;

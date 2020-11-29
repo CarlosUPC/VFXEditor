@@ -16,4 +16,4 @@ private:
 	static pcg32_random_t rng;
 };
 
-pcg32_random_t Random::rng;
+//pcg32_random_t Random::rng;

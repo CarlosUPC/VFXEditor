@@ -13,7 +13,7 @@ public:
 	~ModuleCamera();
 
 	bool Init();
-	update_state Update();
+	update_state Update(float dt);
 	bool CleanUp();
 
 	void OnResize(int width, int height);

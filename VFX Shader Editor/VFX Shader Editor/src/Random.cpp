@@ -2,6 +2,8 @@
 #include <time.h>
 #include <math.h>
 
+pcg32_random_t Random::rng;
+
 void Random::StartRNGSeed()
 {
 	pcg32_srandom_r(&rng, time(NULL), (intptr_t)&rng);

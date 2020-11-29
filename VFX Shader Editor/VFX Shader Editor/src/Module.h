@@ -23,15 +23,15 @@ public:
 		return true;
 	}
 
-	virtual update_state PreUpdate()
+	virtual update_state PreUpdate(float dt)
 	{
 		return UPDATE_CONTINUE;
 	}
-	virtual update_state Update()
+	virtual update_state Update(float dt)
 	{
 		return UPDATE_CONTINUE;
 	}
-	virtual update_state PostUpdate()
+	virtual update_state PostUpdate(float dt)
 	{
 		return UPDATE_CONTINUE;
 	}

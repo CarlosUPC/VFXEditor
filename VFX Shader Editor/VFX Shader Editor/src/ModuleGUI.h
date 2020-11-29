@@ -12,9 +12,9 @@ public:
 
 	bool Init();
 	bool Start();
-	update_state PreUpdate();
-	update_state Update();
-	update_state PostUpdate();
+	update_state PreUpdate(float dt);
+	update_state Update(float dt);
+	update_state PostUpdate(float dt);
 	bool CleanUp();
 
 	void Draw();

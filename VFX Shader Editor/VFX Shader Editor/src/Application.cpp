@@ -21,6 +21,8 @@ Application::Application()
 	AddModule(gui);
 
 	AddModule(renderer);
+
+	timer.Start();
 }
 
 Application::~Application()
@@ -45,26 +47,36 @@ bool Application::Init()
 		ret = (*module)->Start();
 	}
 
+	Random::StartRNGSeed();
+
 	return ret;
+}
+
+void Application::CalcFrameTime()
+{
+	dt = (float)timer.ReadTime() / 1000.0f;
+	std::cout << "Delta Time: " << dt << std::endl;
+	timer.Start();
 }
 
 update_state Application::Update()
 {
 	update_state ret = update_state::UPDATE_CONTINUE;
+	CalcFrameTime();
 
 	for (std::list<Module*>::iterator module = modules.begin(); module != modules.end() && ret == UPDATE_CONTINUE; ++module)
 	{
-		ret = (*module)->PreUpdate();
+		ret = (*module)->PreUpdate(dt);
 	}
 
 	for (std::list<Module*>::iterator module = modules.begin(); module != modules.end() && ret == UPDATE_CONTINUE; ++module)
 	{
-		ret = (*module)->Update();
+		ret = (*module)->Update(dt);
 	}
 
 	for (std::list<Module*>::iterator module = modules.begin(); module != modules.end() && ret == UPDATE_CONTINUE; ++module)
 	{
-		ret = (*module)->PostUpdate();
+		ret = (*module)->PostUpdate(dt);
 	}
 	
 

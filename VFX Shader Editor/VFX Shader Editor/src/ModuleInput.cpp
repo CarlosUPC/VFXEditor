@@ -33,7 +33,7 @@ bool ModuleInput::Init()
 	return ret;
 }
 
-update_state ModuleInput::PreUpdate()
+update_state ModuleInput::PreUpdate(float dt)
 {
 	SDL_PumpEvents();
 	const Uint8* keys = SDL_GetKeyboardState(NULL);

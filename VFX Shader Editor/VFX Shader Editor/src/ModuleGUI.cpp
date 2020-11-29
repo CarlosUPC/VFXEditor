@@ -42,7 +42,7 @@ bool ModuleGUI::Start()
 	return true;
 }
 
-update_state ModuleGUI::PreUpdate()
+update_state ModuleGUI::PreUpdate(float dt)
 {
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplSDL2_NewFrame(App->window->window);
@@ -57,7 +57,7 @@ update_state ModuleGUI::PreUpdate()
 	return UPDATE_CONTINUE;
 }
 
-update_state ModuleGUI::Update()
+update_state ModuleGUI::Update(float dt)
 {
 
 	ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoDocking;
@@ -90,7 +90,7 @@ update_state ModuleGUI::Update()
 	return UPDATE_CONTINUE;
 }
 
-update_state ModuleGUI::PostUpdate()
+update_state ModuleGUI::PostUpdate(float dt)
 {
 	
 	return UPDATE_CONTINUE;

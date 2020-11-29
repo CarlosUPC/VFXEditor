@@ -120,14 +120,14 @@ bool ModuleRenderer::Init()
 	return ret;
 }
 
-update_state ModuleRenderer::PreUpdate()
+update_state ModuleRenderer::PreUpdate(float dt)
 {
 	//Render lights
 	
 	return UPDATE_CONTINUE;
 }
 
-update_state ModuleRenderer::PostUpdate()
+update_state ModuleRenderer::PostUpdate(float dt)
 {
 	
 	glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);

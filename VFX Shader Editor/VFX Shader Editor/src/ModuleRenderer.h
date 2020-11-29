@@ -16,8 +16,8 @@ public:
 	~ModuleRenderer();
 
 	bool Init();
-	update_state PreUpdate();
-	update_state PostUpdate();
+	update_state PreUpdate(float dt);
+	update_state PostUpdate(float dt);
 	bool CleanUp();
 
 	void OnResize(int width, int height);
