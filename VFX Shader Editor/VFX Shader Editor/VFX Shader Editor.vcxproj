@@ -207,6 +207,7 @@
     <ClCompile Include="src\ModuleInput.cpp" />
     <ClCompile Include="src\ModuleRenderer.cpp" />
     <ClCompile Include="src\ModuleWindow.cpp" />
+    <ClCompile Include="src\PanelNodeGraph.cpp" />
     <ClCompile Include="src\PanelPreview.cpp" />
     <ClCompile Include="src\Primitive.cpp" />
     <ClCompile Include="src\Random.cpp" />
@@ -293,6 +294,7 @@
     <ClInclude Include="src\ModuleRenderer.h" />
     <ClInclude Include="src\ModuleWindow.h" />
     <ClInclude Include="src\Panel.h" />
+    <ClInclude Include="src\PanelNodeGraph.h" />
     <ClInclude Include="src\PanelPreview.h" />
     <ClInclude Include="src\Primitive.h" />
     <ClInclude Include="src\Random.h" />

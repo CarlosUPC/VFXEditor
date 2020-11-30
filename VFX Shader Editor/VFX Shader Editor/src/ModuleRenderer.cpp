@@ -132,7 +132,7 @@ update_state ModuleRenderer::PostUpdate(float dt)
 	
 	glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
 	
-	glViewport(0, 0, viewport_w, viewport_h);
+	glViewport(0, 0, viewport_w, viewport_h);				
 	glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -181,8 +181,8 @@ bool ModuleRenderer::CleanUp()
 
 void ModuleRenderer::GenerateFrameBuffer(int width, int height)
 {
-	viewport_w = width;
-	viewport_h = height;
+	viewport_w = width; viewport_h = height;
+
 	//Generate framebuffer
 	glGenFramebuffers(1, &frameBuffer);
 	glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
@@ -239,13 +239,13 @@ void ModuleRenderer::DrawGrid()
 void ModuleRenderer::OnResize(int width, int height)
 {
 
-	glMatrixMode(GL_PROJECTION);
+	/*glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glLoadMatrixf(App->camera->getProjectionMatrix());
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	glLoadMatrixf(App->camera->getViewMatrix());
+	glLoadMatrixf(App->camera->getViewMatrix());*/
 
 	// Delete previous Framebuffer & texture
 	glDeleteFramebuffers(1, &frameBuffer);
