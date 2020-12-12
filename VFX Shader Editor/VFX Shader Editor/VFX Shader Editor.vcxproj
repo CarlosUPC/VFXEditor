@@ -93,7 +93,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)VFX Shader Editor\Dependencies\MathGeoLib\include;$(SolutionDir)VFX Shader Editor\Dependencies\GLEW\include;$(SolutionDir)VFX Shader Editor\Dependencies</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)VFX Shader Editor\src\Utilities;$(SolutionDir)VFX Shader Editor\src\Tools;$(SolutionDir)VFX Shader Editor\src\Panels;$(SolutionDir)VFX Shader Editor\src\Modules;$(SolutionDir)VFX Shader Editor\src\Core;$(SolutionDir)VFX Shader Editor\Dependencies\MathGeoLib\include;$(SolutionDir)VFX Shader Editor\Dependencies\GLEW\include;$(SolutionDir)VFX Shader Editor\Dependencies</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>GLEW_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <LanguageStandard>Default</LanguageStandard>
@@ -127,7 +127,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)VFX Shader Editor\Dependencies\MathGeoLib\include;$(SolutionDir)VFX Shader Editor\Dependencies\GLEW\include;$(SolutionDir)VFX Shader Editor\Dependencies</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)VFX Shader Editor\src\Utilities;$(SolutionDir)VFX Shader Editor\src\Tools;$(SolutionDir)VFX Shader Editor\src\Panels;$(SolutionDir)VFX Shader Editor\src\Modules;$(SolutionDir)VFX Shader Editor\src\Core;$(SolutionDir)VFX Shader Editor\Dependencies\MathGeoLib\include;$(SolutionDir)VFX Shader Editor\Dependencies\GLEW\include;$(SolutionDir)VFX Shader Editor\Dependencies</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>GLEW_STATIC;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
@@ -198,21 +198,25 @@
     <ClCompile Include="Dependencies\MathGeoLib\include\MathGeoLib\Math\TransformOps.cpp" />
     <ClCompile Include="Dependencies\MathGeoLib\include\MathGeoLib\Time\Clock.cpp" />
     <ClCompile Include="Dependencies\pcg\extras\entropy.c" />
-    <ClCompile Include="src\Application.cpp" />
-    <ClCompile Include="src\Color.cpp" />
-    <ClCompile Include="src\log.cpp" />
-    <ClCompile Include="src\Main.cpp" />
-    <ClCompile Include="src\ModuleCamera.cpp" />
-    <ClCompile Include="src\ModuleGUI.cpp" />
-    <ClCompile Include="src\ModuleInput.cpp" />
-    <ClCompile Include="src\ModuleRenderer.cpp" />
-    <ClCompile Include="src\ModuleWindow.cpp" />
-    <ClCompile Include="src\PanelNodeGraph.cpp" />
-    <ClCompile Include="src\PanelPreview.cpp" />
-    <ClCompile Include="src\Primitive.cpp" />
-    <ClCompile Include="src\Random.cpp" />
-    <ClCompile Include="src\Shader.cpp" />
-    <ClCompile Include="src\Timer.cpp" />
+    
+    <ClCompile Include="src\Core\Application.cpp" />
+    <ClCompile Include="src\Core\Main.cpp" />
+   
+    <ClCompile Include="src\Modules\ModuleCamera.cpp" />
+    <ClCompile Include="src\Modules\ModuleGUI.cpp" />
+    <ClCompile Include="src\Modules\ModuleInput.cpp" />
+    <ClCompile Include="src\Modules\ModuleRenderer.cpp" />
+    <ClCompile Include="src\Modules\ModuleWindow.cpp" />
+   
+    <ClCompile Include="src\Panels\PanelNodeGraph.cpp" />
+    <ClCompile Include="src\Panels\PanelPreview.cpp" />
+   
+    <ClCompile Include="src\Tools\Random.cpp" />
+    <ClCompile Include="src\Tools\Shader.cpp" />
+    <ClCompile Include="src\Tools\Timer.cpp" />
+    <ClCompile Include="src\Utilities\Color.cpp" />
+    <ClCompile Include="src\Utilities\log.cpp" />
+    <ClCompile Include="src\Utilities\Primitive.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Dependencies\ImGui\imconfig.h" />
@@ -284,22 +288,26 @@
     <ClInclude Include="Dependencies\pcg\extras\entropy.h" />
     <ClInclude Include="Dependencies\pcg\extras\pcg_spinlock.h" />
     <ClInclude Include="Dependencies\pcg\include\pcg_variants.h" />
-    <ClInclude Include="src\Application.h" />
-    <ClInclude Include="src\Color.h" />
-    <ClInclude Include="src\Globals.h" />
-    <ClInclude Include="src\Module.h" />
-    <ClInclude Include="src\ModuleCamera.h" />
-    <ClInclude Include="src\ModuleGUI.h" />
-    <ClInclude Include="src\ModuleInput.h" />
-    <ClInclude Include="src\ModuleRenderer.h" />
-    <ClInclude Include="src\ModuleWindow.h" />
-    <ClInclude Include="src\Panel.h" />
-    <ClInclude Include="src\PanelNodeGraph.h" />
-    <ClInclude Include="src\PanelPreview.h" />
-    <ClInclude Include="src\Primitive.h" />
-    <ClInclude Include="src\Random.h" />
-    <ClInclude Include="src\Shader.h" />
-    <ClInclude Include="src\Timer.h" />
+   
+    <ClInclude Include="src\Core\Application.h" />
+    <ClInclude Include="src\Core\Globals.h" />
+   
+    <ClInclude Include="src\Modules\Module.h" />
+    <ClInclude Include="src\Modules\ModuleCamera.h" />
+    <ClInclude Include="src\Modules\ModuleGUI.h" />
+    <ClInclude Include="src\Modules\ModuleInput.h" />
+    <ClInclude Include="src\Modules\ModuleRenderer.h" />
+    <ClInclude Include="src\Modules\ModuleWindow.h" />
+    
+    <ClInclude Include="src\Panels\Panel.h" />
+    <ClInclude Include="src\Panels\PanelNodeGraph.h" />
+    <ClInclude Include="src\Panels\PanelPreview.h" />
+   
+    <ClInclude Include="src\Tools\Random.h" />
+    <ClInclude Include="src\Tools\Shader.h" />
+    <ClInclude Include="src\Tools\Timer.h" />
+    <ClInclude Include="src\Utilities\Color.h" />
+    <ClInclude Include="src\Utilities\Primitive.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

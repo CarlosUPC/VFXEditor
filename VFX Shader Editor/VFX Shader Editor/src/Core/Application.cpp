@@ -55,6 +55,7 @@ bool Application::Init()
 void Application::CalcFrameTime()
 {
 	dt = (float)timer.ReadTime() / 1000.0f;
+	
 	std::cout << "Delta Time: " << dt << std::endl;
 	timer.Start();
 }

@@ -13,5 +13,6 @@ public:
 
 private:
 	bool grid = true;
+	float2 scrollCoords = { 0.0f, 0.0f };
 
 };
