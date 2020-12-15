@@ -11,6 +11,7 @@ class ModuleRenderer;
 class ModuleInput;
 class ModuleGUI;
 class ModuleCamera;
+class ModuleResources;
 
 class Application
 {
@@ -33,6 +34,7 @@ public:
 	ModuleInput*			input = nullptr;
 	ModuleGUI*				gui = nullptr;
 	ModuleCamera*			camera = nullptr;
+	ModuleResources*		resources = nullptr;
 private:
 	std::list<Module*> modules;
 	Timer timer;

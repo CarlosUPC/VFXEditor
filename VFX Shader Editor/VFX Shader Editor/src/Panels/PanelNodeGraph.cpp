@@ -14,8 +14,8 @@ void PanelNodeGraph::Draw()
 	ImGui::Begin(name.c_str(), &active, flags);
 
 	ImGui::Text("Hold middle mouse button to scroll (%.2f,%.2f)", scrollCoords.x, scrollCoords.y);
-	ImVec2 win_pos = ImGui::GetCursorPos();
-	ImGui::Text("ScreenCursorPos (%.2f,%.2f)", win_pos.x, win_pos.y);
+	ImVec2 win_pos2 = ImGui::GetCursorPos();
+	ImGui::Text("CursorPos (%.2f,%.2f)", win_pos2.x, win_pos2.y);
 	ImGui::SameLine(ImGui::GetWindowWidth() - 100);
 	ImGui::Checkbox("Show grid", &grid);
 
@@ -25,9 +25,9 @@ void PanelNodeGraph::Draw()
 	ImGui::PushStyleColor(ImGuiCol_ChildBg, IM_COL32(50, 50, 55, 200));
 
 	ImGui::BeginChild("scrolling_region", ImVec2(0, 0), true, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollWithMouse);
-	ImGui::PushItemWidth(120.0f);
+	//ImGui::PushItemWidth(120.0f);
 
-	//ImVec2 offset = { ImGui::GetCursorScreenPos().x + scrollCoords.x, ImGui::GetCursorScreenPos().y + scrollCoords.y };
+	ImVec2 offset = { ImGui::GetCursorScreenPos().x + scrollCoords.x, ImGui::GetCursorScreenPos().y + scrollCoords.y };
 	ImDrawList* draw_list = ImGui::GetWindowDrawList();
 
 	if (grid)
@@ -44,7 +44,8 @@ void PanelNodeGraph::Draw()
 	if (ImGui::IsWindowHovered() && !ImGui::IsAnyItemActive() && ImGui::IsMouseDragging(2, 0.0f))
 		scrollCoords = { scrollCoords.x + ImGui::GetIO().MouseDelta.x, scrollCoords.y + ImGui::GetIO().MouseDelta.y };
 	
-	ImGui::PopItemWidth();
+	ImGui::MenuItem("hello");
+	//ImGui::PopItemWidth();
 	ImGui::EndChild();
 	ImGui::PopStyleColor();
 	ImGui::PopStyleVar(2);

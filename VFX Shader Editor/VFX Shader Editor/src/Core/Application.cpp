@@ -6,6 +6,7 @@
 #include "ModuleInput.h"
 #include "ModuleGUI.h"
 #include "ModuleCamera.h"
+#include "ModuleResources.h"
 
 Application::Application()
 {
@@ -14,12 +15,14 @@ Application::Application()
 	gui = new ModuleGUI();
 	camera = new ModuleCamera();
 	renderer = new ModuleRenderer();
+	resources = new ModuleResources();
 
 	AddModule(window);
 	AddModule(input);
 	AddModule(camera);
-	AddModule(gui);
+	AddModule(resources);
 
+	AddModule(gui);
 	AddModule(renderer);
 
 	timer.Start();

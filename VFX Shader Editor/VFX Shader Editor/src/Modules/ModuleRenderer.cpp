@@ -3,7 +3,7 @@
 #include "ModuleWindow.h"
 #include "ModuleGUI.h"
 #include "ModuleCamera.h"
-#include "Shader.h"
+#include "ResourceShader.h"
 
 //TMP
 #include "Primitive.h"
@@ -112,7 +112,7 @@ bool ModuleRenderer::Init()
 		}
 
 		//Create Shader program
-		defaultShader = new Shader("Shaders/default.vs", "Shaders/default.fs");
+		defaultShader = new ResourceShader("Shaders/default.vs", "Shaders/default.fs");
 	}
 
 	GenerateFrameBuffer(App->window->width, App->window->height);

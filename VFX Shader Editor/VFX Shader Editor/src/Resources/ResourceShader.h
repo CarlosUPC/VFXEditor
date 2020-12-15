@@ -3,11 +3,13 @@
 
 #include "Globals.h"
 #include "GL/glew.h"
-class Shader
+#include "Resource.h"
+
+class ResourceShader : public Resource
 {
 public:
-	Shader(const char* vertexShaderPath, const char* fragmentShaderPath);
-	~Shader();
+	ResourceShader(const char* vertexShaderPath, const char* fragmentShaderPath);
+	~ResourceShader();
 
 	void Bind();
 	void Unbind();

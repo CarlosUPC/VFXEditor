@@ -56,24 +56,47 @@ update_state ModuleGUI::PreUpdate(float dt)
 	ImGui::NewFrame();
 
 	//Draw Central Docking Window
-	ImGui::SetNextWindowPos({ 0,0 });
-	ImGui::SetNextWindowSize({ (float)App->window->width, (float)App->window->height });
+	ImGuiViewport* viewport = ImGui::GetMainViewport();
+	ImGui::SetNextWindowPos(viewport->Pos);
+	ImGui::SetNextWindowSize(viewport->Size);
+	ImGui::SetNextWindowViewport(viewport->ID);
+	
+	//ImGui::SetNextWindowPos({ 0,0 });
+	//ImGui::SetNextWindowSize({ (float)App->window->width, (float)App->window->height });
 	//ImGui::SetNextWindowBgAlpha(0.0f);
 
-	ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoDocking;
-	window_flags |= ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
+	//ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoDocking;
+	//window_flags |= ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
+	//window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
+
+	ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoDocking;
+	window_flags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove;
 	window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
 
+	//ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0.0f, 10.0f));
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
 	ImGui::Begin("DockSpace", 0, window_flags);
 	ImGui::PopStyleVar(3);
 
+	ImGui::BeginMainMenuBar();
+	if (ImGui::BeginMenu("File")) {
+
+		ImGui::MenuItem("New Scene", "CTRL+N");
+		ImGui::MenuItem("Open Scene");
+		ImGui::MenuItem("Recents");
+		
+		ImGui::EndMenu();
+	}
+	ImGui::EndMainMenuBar();
+	
+
 	ImGuiID dockspace_id = ImGui::GetID("MyDockspace");
-	ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f));
-
-
+	ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_PassthruCentralNode;
+	ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
+	
+	ImGui::End();
 
 	return UPDATE_CONTINUE;
 }
@@ -94,7 +117,7 @@ update_state ModuleGUI::Update(float dt)
 
 update_state ModuleGUI::PostUpdate(float dt)
 {
-	ImGui::End();
+	
 	return UPDATE_CONTINUE;
 }
 

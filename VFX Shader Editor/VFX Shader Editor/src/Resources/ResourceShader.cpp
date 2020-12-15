@@ -1,11 +1,11 @@
 #include "Application.h"
-#include "Shader.h"
+#include "ResourceShader.h"
 
 #include <string>
 #include <fstream> 
 #include <sstream> 
 
-Shader::Shader(const char* vertexShaderPath, const char* fragmentShaderPath)
+ResourceShader::ResourceShader(const char* vertexShaderPath, const char* fragmentShaderPath)
 {
 	//Read vertex and fragment shaders files
 	std::string vertexString = ReadShaderFromFile(vertexShaderPath);
@@ -25,7 +25,7 @@ Shader::Shader(const char* vertexShaderPath, const char* fragmentShaderPath)
 }
 
 
-std::string Shader::ReadShaderFromFile(const char* filename)
+std::string ResourceShader::ReadShaderFromFile(const char* filename)
 {
 	std::ifstream file(filename, std::ios::in);
 	std::string content;
@@ -38,22 +38,22 @@ std::string Shader::ReadShaderFromFile(const char* filename)
 	return content;
 }
 
-Shader::~Shader()
+ResourceShader::~ResourceShader()
 {
 	glDeleteProgram(programID);
 }
 
-void Shader::Bind()
+void ResourceShader::Bind()
 {
 	glUseProgram(programID);
 }
 
-void Shader::Unbind()
+void ResourceShader::Unbind()
 {
 	glUseProgram(0);
 }
 
-void Shader::SetUniformMat4f(const char* name, float* value) const
+void ResourceShader::SetUniformMat4f(const char* name, float* value) const
 {
 	int location = glGetUniformLocation(programID, name);
 	if(location == -1)
@@ -63,7 +63,7 @@ void Shader::SetUniformMat4f(const char* name, float* value) const
 }
 
 
-uint Shader::CompileShader(const char* shaderSource, GLenum shaderType)
+uint ResourceShader::CompileShader(const char* shaderSource, GLenum shaderType)
 {
 	uint shader = 0;
 
@@ -84,7 +84,7 @@ uint Shader::CompileShader(const char* shaderSource, GLenum shaderType)
 	return shader;
 }
 
-uint Shader::CreateShader(const char* vertexSource, const char* fragmentSource)
+uint ResourceShader::CreateShader(const char* vertexSource, const char* fragmentSource)
 {
 	//Compile both shaders
 	uint vertexShader = CompileShader(vertexSource, GL_VERTEX_SHADER);

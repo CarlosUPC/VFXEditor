@@ -6,7 +6,7 @@
 
 #define MAX_LIGHTS 8
 
-class Shader;
+class ResourceShader;
 
 class ModuleRenderer : public Module
 {
@@ -31,7 +31,7 @@ public:
 
 	SDL_GLContext context;
 
-	Shader* defaultShader = nullptr;
+	ResourceShader* defaultShader = nullptr;
 
 	uint VAO = 0;
 
