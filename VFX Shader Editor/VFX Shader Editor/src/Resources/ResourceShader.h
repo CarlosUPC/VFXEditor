@@ -8,12 +8,17 @@
 class ResourceShader : public Resource
 {
 public:
+	ResourceShader();
 	ResourceShader(const char* vertexShaderPath, const char* fragmentShaderPath);
 	~ResourceShader();
 
 	void Bind();
 	void Unbind();
 
+	bool LoadMemory() override;
+	bool FreeMemory() override;
+
+	void LoadShaderResource(const char* vertexSource, const char* fragmentSource);
 	//Uniforms
 	void SetUniformMat4f(const char* name, float* value) const;
 
@@ -27,5 +32,7 @@ private:
 public:
 
 	uint programID;
+	const char* vertex_path;
+	const char* fragment_path;
 };
 #endif // !__SHADER_H__

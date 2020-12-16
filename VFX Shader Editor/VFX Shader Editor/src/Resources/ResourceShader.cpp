@@ -1,12 +1,20 @@
 #include "Application.h"
 #include "ResourceShader.h"
 
+#include "ModuleResources.h"
 #include <string>
 #include <fstream> 
 #include <sstream> 
 
+
+ResourceShader::ResourceShader()
+{
+	type = Type::RESOURCE_SHADER;
+}
 ResourceShader::ResourceShader(const char* vertexShaderPath, const char* fragmentShaderPath)
 {
+	type = Type::RESOURCE_SHADER;
+
 	//Read vertex and fragment shaders files
 	std::string vertexString = ReadShaderFromFile(vertexShaderPath);
 	const char* vertexSource = vertexString.c_str();
@@ -51,6 +59,41 @@ void ResourceShader::Bind()
 void ResourceShader::Unbind()
 {
 	glUseProgram(0);
+}
+
+bool ResourceShader::LoadMemory()
+{
+	//Read vertex and fragment shaders files
+	std::string vertexString = ReadShaderFromFile(vertex_path);
+	const char* vertexSource = vertexString.c_str();
+
+	std::string fragString = ReadShaderFromFile(fragment_path);
+	const char* fragmentSource = fragString.c_str();
+
+
+	//const char* vShaderCode2 = getShaderCode(vertexShaderPath).c_str(); error junk chars
+
+	std::cout << "\nVERTEX SHADER: \n\n" << vertexSource << std::endl;
+
+	std::cout << "\nFRAGMENT SHADER: \n\n" << fragmentSource << std::endl;
+
+	//Compile Shader
+	programID = CreateShader(vertexSource, fragmentSource);
+	return true;
+}
+
+bool ResourceShader::FreeMemory()
+{
+	 glDeleteProgram(programID);
+	 return true;
+}
+
+void ResourceShader::LoadShaderResource(const char* vertexSource, const char* fragmentSource)
+{
+	this->vertex_path = vertexSource;
+	this->fragment_path = fragmentSource;
+
+	App->resources->AddResource(this);
 }
 
 void ResourceShader::SetUniformMat4f(const char* name, float* value) const

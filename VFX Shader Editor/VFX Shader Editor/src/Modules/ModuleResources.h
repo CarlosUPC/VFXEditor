@@ -1,9 +1,11 @@
 #pragma once
 
 #include "Module.h"
-#include <unordered_map>
-#include "Resource.h"
-#include <vector>
+//#include <unordered_map>
+
+class Resource;
+class ResourceShader;
+
 class ModuleResources : public Module
 {
 public:
@@ -19,6 +21,8 @@ public:
 	bool CleanUp();
 
 	void AddResource(Resource* res);
+
+	ResourceShader* CreateShader();
 
 private:
 	std::vector<Resource*> resources;

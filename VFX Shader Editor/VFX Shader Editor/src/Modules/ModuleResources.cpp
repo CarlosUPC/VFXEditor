@@ -1,5 +1,7 @@
 #include "ModuleResources.h"
-
+#include "Resource.h"
+#include "ResourceShader.h"
+#include "Random.h"
 ModuleResources::ModuleResources(bool start_enabled)
 	:Module(start_enabled)
 {
@@ -50,4 +52,16 @@ void ModuleResources::AddResource(Resource* res)
 		}
 			
 	}
+}
+
+ResourceShader* ModuleResources::CreateShader()
+{
+	ResourceShader* new_shader = new ResourceShader();
+	new_shader->name = "Shader Graph";
+	new_shader->id = Random::GenerateUUID();
+
+	AddResource(new_shader);
+
+	return new_shader;
+	//new_shader->LoadShaderResource(vert,frag);
 }

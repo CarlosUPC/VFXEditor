@@ -21,9 +21,13 @@ public:
 	const u64& GetResourceID() const;
 	const Type& GetResourceType() const;
 
-private:
+	virtual bool LoadMemory() { return true; }
+	virtual bool FreeMemory() { return true; }
+
+public: //TODO: make private!!
 
 	uint64 id;
 	Type type;
+	std::string name;
 
 };

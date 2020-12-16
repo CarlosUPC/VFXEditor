@@ -16,3 +16,5 @@ const Type& Resource::GetResourceType() const
 {
 	return type;
 }
+
+

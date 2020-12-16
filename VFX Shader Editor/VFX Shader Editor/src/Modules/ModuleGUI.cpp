@@ -10,7 +10,7 @@
 #include "ModuleRenderer.h"
 
 #include "PanelPreview.h"
-#include "PanelNodeGraph.h"
+#include "PanelShaderEditor.h"
 
 ModuleGUI::ModuleGUI(bool start_enabled)
 	: Module(start_enabled)
@@ -45,7 +45,7 @@ bool ModuleGUI::Start()
 
 	//Load panels
 	panels.push_back(new PanelPreview("Preview"));
-	panels.push_back(new PanelNodeGraph("Node Graph"));
+	panels.push_back(new PanelShaderEditor("Shader Graph Editor"));
 	return true;
 }
 

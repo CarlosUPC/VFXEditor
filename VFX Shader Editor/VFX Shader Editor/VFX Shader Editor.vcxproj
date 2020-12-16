@@ -206,7 +206,7 @@
     <ClCompile Include="src\Modules\ModuleRenderer.cpp" />
     <ClCompile Include="src\Modules\ModuleResources.cpp" />
     <ClCompile Include="src\Modules\ModuleWindow.cpp" />
-    <ClCompile Include="src\Panels\PanelNodeGraph.cpp" />
+    <ClCompile Include="src\Panels\PanelShaderEditor.cpp" />
     <ClCompile Include="src\Panels\PanelPreview.cpp" />
     <ClCompile Include="src\Resources\Resource.cpp" />
     <ClCompile Include="src\Tools\Random.cpp" />
@@ -296,7 +296,7 @@
     <ClInclude Include="src\Modules\ModuleResources.h" />
     <ClInclude Include="src\Modules\ModuleWindow.h" />
     <ClInclude Include="src\Panels\Panel.h" />
-    <ClInclude Include="src\Panels\PanelNodeGraph.h" />
+    <ClInclude Include="src\Panels\PanelShaderEditor.h" />
     <ClInclude Include="src\Panels\PanelPreview.h" />
     <ClInclude Include="src\Resources\Resource.h" />
     <ClInclude Include="src\Tools\Random.h" />
