@@ -13,6 +13,8 @@ public:
 
 	void Draw();
 	void OnShaderAction(std::string& action);
+	void CreateNewShaderPopUp();
+	void LoadShaderPopUp();
 
 private:
 	bool grid = true;
@@ -20,4 +22,6 @@ private:
 
 
 	ResourceShader* current_shader = nullptr;
+	bool creating_shader = false;
+	bool selecting_shader = false;
 };

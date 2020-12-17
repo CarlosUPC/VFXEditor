@@ -24,13 +24,11 @@ void PanelShaderEditor::Draw()
 	ImGui::BeginMenuBar();
 	if (ImGui::BeginMenu("Asset")) {
 
-		if (ImGui::MenuItem("New Shader")) menu_action = "New";
+		if (ImGui::MenuItem("New Shader"))
+			creating_shader = true;
 		if (ImGui::MenuItem("Load Shader"))
-		{
-			menu_action = "Load";
-			
-		}
-		if (ImGui::MenuItem("Save Shader")) menu_action = "Save";
+			selecting_shader = true;
+		if (ImGui::MenuItem("Save Shader")) {}
 
 		
 		ImGui::EndMenu();
@@ -38,12 +36,14 @@ void PanelShaderEditor::Draw()
 	ImGui::EndMenuBar();
 	
 	
-	OnShaderAction(menu_action);
-	if (p_open)
-	{
+	
+	
 
-		
-	}
+	if (creating_shader)
+		CreateNewShaderPopUp();
+	if(selecting_shader)
+		LoadShaderPopUp();
+
 		
 	
 	/*if(active)
@@ -161,5 +161,86 @@ void PanelShaderEditor::OnShaderAction(std::string& action)
 			
 		}
 		
+	}
+}
+
+void PanelShaderEditor::CreateNewShaderPopUp()
+{
+
+	static char _name[MAX_PATH] = "Data Name";
+	
+
+	ImGui::OpenPopup("Create New Shader");
+	ImGui::SetNextWindowSize({ 320,155 });
+	if (ImGui::BeginPopupModal("Create New Shader", &creating_shader, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove)) {
+		ImGui::PushItemWidth(235);
+		
+		
+		ImGui::Spacing();
+		ImGui::SetCursorPosX(30);
+		ImGui::InputText("Name", _name, MAX_PATH, ImGuiInputTextFlags_AutoSelectAll | ImGuiInputTextFlags_EnterReturnsTrue);
+		
+		ImGui::Spacing();
+		ImGui::SetCursorPosX(42);
+		ImGui::Text("Shader will be generated,");
+		ImGui::SetCursorPosX(33);
+		ImGui::Text("just select it to open graph.");
+		ImGui::Spacing();
+		ImGui::Spacing();
+		ImGui::Spacing();
+		ImGui::SetCursorPosX(90);
+
+		if (ImGui::Button("Create Shader", { 130,25 })) {
+			if (std::string(_name).find(" ") == std::string::npos) {
+		
+				strcpy_s(_name, "Data Name");
+				creating_shader = false;
+				//TODO: Create resource and storage it in the list
+				//TODO: set it as current shader resource to display the graph
+			}
+		}
+
+		ImGui::EndPopup();
+	}
+	else
+	{
+		strcpy_s(_name, "Data Name");
+		creating_shader = false;
+	}
+}
+
+void PanelShaderEditor::LoadShaderPopUp()
+{
+	ImGui::OpenPopup("Load Shader");
+	ImGui::SetNextWindowSize({ 320,155 });
+	if (ImGui::BeginPopupModal("Load Shader", &selecting_shader, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove)) {
+		ImGui::PushItemWidth(235);
+
+
+		ImGui::Text("Select a shader");
+		ImGui::Spacing();
+		ImGui::BeginChild("#BuildChildSceneSelector", { 0,0 }, true);
+		bool exists = false;
+		ImGui::Selectable(std::string("Shader1").data(), exists, ImGuiSelectableFlags_AllowItemOverlap);
+		ImGui::Selectable(std::string("Shader2").data(), exists, ImGuiSelectableFlags_AllowItemOverlap);
+		ImGui::Selectable(std::string("Shader3").data(), exists, ImGuiSelectableFlags_AllowItemOverlap);
+		
+
+		if (ImGui::Selectable(std::string("None").data()))
+		{
+			selecting_shader = false;
+			//TODO: set it as current shader resource to display the graph
+		}
+
+		
+		ImGui::EndChild();
+		
+
+		ImGui::EndPopup();
+	}
+	else
+	{
+		
+		selecting_shader = false;
 	}
 }

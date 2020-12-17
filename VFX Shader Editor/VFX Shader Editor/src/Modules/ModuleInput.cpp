@@ -4,6 +4,8 @@
 #include "ModuleCamera.h"
 #include "ModuleRenderer.h"
 
+#include "ImGui/imgui_impl_sdl.h"
+
 ModuleInput::ModuleInput(bool start_enabled)
 {
 	keyboard = new KEY_STATE[MAX_KEYS];
@@ -83,6 +85,8 @@ update_state ModuleInput::PreUpdate(float dt)
 	SDL_Event event;
 	while (SDL_PollEvent(&event))
 	{
+		ImGui_ImplSDL2_ProcessEvent(&event);
+
 		switch (event.type)
 		{
 		case SDL_MOUSEWHEEL:
