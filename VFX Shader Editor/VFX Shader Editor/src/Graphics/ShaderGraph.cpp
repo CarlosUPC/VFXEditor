@@ -1,4 +1,7 @@
 #include "ShaderGraph.h"
+#include "ResourceShader.h"
+#include <fstream>
+#include <sstream> 
 
 ShaderGraph::ShaderGraph()
 {
@@ -17,6 +20,105 @@ ShaderCompiler::ShaderCompiler( ShaderGraph& g)
 void ShaderCompiler::Compile()
 {
 	//Compile and modify the shadergraph reference
+
+	//Vertex Shader Output
+	code += OutputVertexHeader();
+	code += BeginVertex();
+	code += OutputVertex();
+	code += EndVertex();
+
+	//Fragment Shader Output
+	code += OutputFragmentHeader();
+	code += BeginFragment();
+	code += OutputFragment();
+	code += EndFragment();
+
+	//Serialize shader to file
+	WriteShaderToFile();
+
+	//Create resource shader
+	//ResourceShader* shader = new ResourceShader(SplitShaderSource(ShaderType::VERTEX).c_str(), SplitShaderSource(ShaderType::VERTEX).c_str());
+
+
+}
+
+void ShaderCompiler::WriteShaderToFile()
+{
+	std::string shader_path = "/Shaders";
+
+	std::string vertName = graph.m_Name + ".Vertex.glsl";
+	std::string fragName = graph.m_Name + ".Fragment.glsl";
+
+	std::ofstream file;
+	file.open((shader_path + "/" + vertName).c_str());
+	if (file)
+	{
+		std::string code = SplitShaderSource(ShaderType::VERTEX);
+		file.write(code.c_str(), code.length());
+	}
+	file.close();
+
+	file.open((shader_path + "/" + fragName).c_str());
+	if (file)
+	{
+		std::string code = SplitShaderSource(ShaderType::FRAGMENT);
+		file.write(code.c_str(), code.length());
+	}
+	file.close();
+}
+
+std::string ShaderCompiler::SplitShaderSource(ShaderType type)
+{
+	
+	switch (type)
+	{
+		case ShaderType::VERTEX:
+		{
+			std::string vertex_code = "";
+			vertex_code = ParseFromTo(BeginVertexHeader(), EndVertexHeader(), code);
+			return vertex_code;
+			
+
+		}break;
+
+		case ShaderType::FRAGMENT:
+		{
+			std::string frag_code = "";
+			frag_code = ParseFromTo(BeginFragmentHeader(), EndFragmentHeader(), code);
+			return frag_code;
+			
+
+		}break;
+
+		default:
+		{
+			std::string unknown_code = "";
+			return unknown_code;
+
+		}break;
+	}
+}
+
+std::string ShaderCompiler::ParseFromTo(const std::string& begin, const std::string& end, const std::string& source)
+{
+	std::string returnStr = "";
+
+	// Search for line to match
+	std::size_t foundBegin = source.find(begin);
+	std::size_t foundEnd = source.find(end);
+
+	// Found
+	if (foundBegin != std::string::npos && foundEnd != std::string::npos)
+	{
+		// Substring length
+		std::size_t length = foundEnd - foundBegin;
+
+		// Return that substring
+		return source.substr(foundBegin, length);
+	}
+
+	// Didn't find anything, so return empty string
+	return returnStr;
 }
 
 std::string ShaderCompiler::OutputLine(const std::string& line)
