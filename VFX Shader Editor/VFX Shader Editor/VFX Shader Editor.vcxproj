@@ -93,7 +93,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)VFX Shader Editor\src\Resources;$(SolutionDir)VFX Shader Editor\src\Utilities;$(SolutionDir)VFX Shader Editor\src\Tools;$(SolutionDir)VFX Shader Editor\src\Panels;$(SolutionDir)VFX Shader Editor\src\Modules;$(SolutionDir)VFX Shader Editor\src\Core;$(SolutionDir)VFX Shader Editor\Dependencies\MathGeoLib\include;$(SolutionDir)VFX Shader Editor\Dependencies\GLEW\include;$(SolutionDir)VFX Shader Editor\Dependencies</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)VFX Shader Editor\src\Graphics;$(SolutionDir)VFX Shader Editor\src\Resources;$(SolutionDir)VFX Shader Editor\src\Utilities;$(SolutionDir)VFX Shader Editor\src\Tools;$(SolutionDir)VFX Shader Editor\src\Panels;$(SolutionDir)VFX Shader Editor\src\Modules;$(SolutionDir)VFX Shader Editor\src\Core;$(SolutionDir)VFX Shader Editor\Dependencies\MathGeoLib\include;$(SolutionDir)VFX Shader Editor\Dependencies\GLEW\include;$(SolutionDir)VFX Shader Editor\Dependencies</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>GLEW_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <LanguageStandard>Default</LanguageStandard>
@@ -127,7 +127,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)VFX Shader Editor\src\Utilities;$(SolutionDir)VFX Shader Editor\src\Tools;$(SolutionDir)VFX Shader Editor\src\Panels;$(SolutionDir)VFX Shader Editor\src\Modules;$(SolutionDir)VFX Shader Editor\src\Core;$(SolutionDir)VFX Shader Editor\Dependencies\MathGeoLib\include;$(SolutionDir)VFX Shader Editor\Dependencies\GLEW\include;$(SolutionDir)VFX Shader Editor\Dependencies</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)VFX Shader Editor\src\Resources;$(SolutionDir)VFX Shader Editor\src\Graphics;$(SolutionDir)VFX Shader Editor\src\Utilities;$(SolutionDir)VFX Shader Editor\src\Tools;$(SolutionDir)VFX Shader Editor\src\Panels;$(SolutionDir)VFX Shader Editor\src\Modules;$(SolutionDir)VFX Shader Editor\src\Core;$(SolutionDir)VFX Shader Editor\Dependencies\MathGeoLib\include;$(SolutionDir)VFX Shader Editor\Dependencies\GLEW\include;$(SolutionDir)VFX Shader Editor\Dependencies</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>GLEW_STATIC;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
@@ -200,6 +200,7 @@
     <ClCompile Include="Dependencies\pcg\extras\entropy.c" />
     <ClCompile Include="src\Core\Application.cpp" />
     <ClCompile Include="src\Core\Main.cpp" />
+    <ClCompile Include="src\Graphics\ShaderGraph.cpp" />
     <ClCompile Include="src\Modules\ModuleCamera.cpp" />
     <ClCompile Include="src\Modules\ModuleGUI.cpp" />
     <ClCompile Include="src\Modules\ModuleInput.cpp" />
@@ -288,6 +289,7 @@
     <ClInclude Include="Dependencies\pcg\include\pcg_variants.h" />
     <ClInclude Include="src\Core\Application.h" />
     <ClInclude Include="src\Core\Globals.h" />
+    <ClInclude Include="src\Graphics\ShaderGraph.h" />
     <ClInclude Include="src\Modules\Module.h" />
     <ClInclude Include="src\Modules\ModuleCamera.h" />
     <ClInclude Include="src\Modules\ModuleGUI.h" />

@@ -31,7 +31,7 @@ public:
 
 	SDL_GLContext context;
 
-	ResourceShader* defaultShader = nullptr;
+	ResourceShader* current_shader = nullptr;
 
 	uint VAO = 0;
 

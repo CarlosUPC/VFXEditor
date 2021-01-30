@@ -2,6 +2,7 @@
 #include "PanelShaderEditor.h"
 #include "ResourceShader.h"
 #include "ModuleWindow.h"
+#include "ModuleRenderer.h"
 
 PanelShaderEditor::PanelShaderEditor(const char* name)
 	:Panel(name)
@@ -62,10 +63,18 @@ void PanelShaderEditor::Draw()
 		ImGui::Text("Select or create a shader");
 		//if (ImGui::Button("Create")) ImGui::OpenPopup("CreateShader"); 
 
-	
+		//TEMPORAL
+		ResourceShader* shader = new ResourceShader("Shaders/default.vs", "Shaders/default.fs");
+		current_shader = shader;
+		App->renderer->current_shader = shader;
+
 		ImGui::End();
 		return;
 	}
+
+	//SELECT CURRENT_SHADER -> RESOURCE_SHADER -> GRAPH
+	//GRAPH POINTER
+	//RENDER GRAPH
 	
 	ImGui::Text("Hold middle mouse button to scroll (%.2f,%.2f)", scrollCoords.x, scrollCoords.y);
 	ImVec2 win_pos2 = ImGui::GetCursorPos();
@@ -198,6 +207,7 @@ void PanelShaderEditor::CreateNewShaderPopUp()
 				//TODO: Create resource and storage it in the list
 				//TODO: set it as current shader resource to display the graph
 			}
+			
 		}
 
 		ImGui::EndPopup();

@@ -112,7 +112,7 @@ bool ModuleRenderer::Init()
 		}
 
 		//Create Shader program
-		defaultShader = new ResourceShader("Shaders/default.vs", "Shaders/default.fs");
+		//current_shader = new ResourceShader("Shaders/default.vs", "Shaders/default.fs");
 	}
 
 	GenerateFrameBuffer(App->window->width, App->window->height);
@@ -145,19 +145,24 @@ update_state ModuleRenderer::PostUpdate(float dt)
 	DrawGrid();
 	
 
-	////Bind shader
-	defaultShader->Bind();
+	if (current_shader != nullptr)
+	{
+		////Bind shader
+		current_shader->Bind();
 
-	////Send data to shader
-	defaultShader->SetUniformMat4f("u_Projection", App->camera->getProjectionMatrix());
-	defaultShader->SetUniformMat4f("u_View", App->camera->getViewMatrix());
+		////Send data to shader
+		current_shader->SetUniformMat4f("u_Projection", App->camera->getProjectionMatrix());
+		current_shader->SetUniformMat4f("u_View", App->camera->getViewMatrix());
+	}
 
 	//Draw data
 	glBindVertexArray(VAO);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 	glBindVertexArray(0);
-	defaultShader->Unbind();
+
+	if (current_shader != nullptr)
+		current_shader->Unbind();
 
 	
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
