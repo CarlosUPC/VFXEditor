@@ -207,7 +207,7 @@ void PanelShaderEditor::CreateNewShaderPopUp()
 				ResourceShader* shader = App->resources->CreateShader(_name);
 				//TODO: set it as current shader resource to display the graph
 				current_shader = shader;
-
+				App->renderer->current_shader = current_shader;
 				strcpy_s(_name, "Data Name");
 				creating_shader = false;
 			}
