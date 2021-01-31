@@ -22,7 +22,7 @@ public:
 
 	void AddResource(Resource* res);
 
-	ResourceShader* CreateShader();
+	ResourceShader* CreateShader(const std::string& m_Name);
 
 private:
 	std::vector<Resource*> resources;

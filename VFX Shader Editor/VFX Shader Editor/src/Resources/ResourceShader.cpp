@@ -1,6 +1,6 @@
 #include "Application.h"
 #include "ResourceShader.h"
-
+#include "ShaderGraph.h"
 #include "ModuleResources.h"
 #include <string>
 #include <fstream> 
@@ -10,6 +10,11 @@
 ResourceShader::ResourceShader()
 {
 	type = Type::RESOURCE_SHADER;
+
+	/*graph = new ShaderGraph(name);
+	graph->CompileShader(this);*/
+	//Compile ??
+
 }
 ResourceShader::ResourceShader(const char* vertexShaderPath, const char* fragmentShaderPath)
 {
@@ -156,4 +161,47 @@ uint ResourceShader::CreateShader(const char* vertexSource, const char* fragment
 	glDeleteShader(fragmentShader);
 
 	return program;
+}
+
+uint ResourceShader::Compile()
+{
+	std::string vertPath = "/Shaders/" + graph->GetName() + ".Vertex.glsl";
+	std::string fragPath = "/Shaders/" + graph->GetName() + ".Fragment.glsl";
+
+	std::string vertexSource = ReadShaderFromFile(vertPath.c_str());
+	std::string fragmentSource = ReadShaderFromFile(fragPath.c_str());
+
+	////Read vertex and fragment shaders files
+	//std::string vertexString = ReadShaderFromFile(vertexSource);
+	//const char* vertSource = vertexString.c_str();
+
+	//std::string fragString = ReadShaderFromFile(fragmentSource);
+	//const char* fragSource = fragString.c_str();
+
+
+	//const char* vShaderCode2 = getShaderCode(vertexShaderPath).c_str(); error junk chars
+
+	std::cout << "\nVERTEX SHADER: \n\n" << vertexSource << std::endl;
+
+	std::cout << "\nFRAGMENT SHADER: \n\n" << fragmentSource << std::endl;
+
+	programID = CreateShader(vertexSource.c_str(), fragmentSource.c_str());
+
+	return programID;
+}
+
+uint ResourceShader::Recompile()
+{
+	DestroyProgram();
+
+	return Compile();
+}
+
+void ResourceShader::DestroyProgram()
+{
+	// Delete the program id
+	if (programID)
+	{
+		glDeleteProgram(programID);
+	}
 }

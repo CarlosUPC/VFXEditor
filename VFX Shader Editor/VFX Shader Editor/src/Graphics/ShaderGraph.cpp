@@ -1,14 +1,31 @@
 #include "ShaderGraph.h"
 #include "ResourceShader.h"
 #include <fstream>
-#include <sstream> 
-
-ShaderGraph::ShaderGraph()
+//#include <sstream> 
+#include <iostream>
+ShaderGraph::ShaderGraph(std::string m_Name)
+	:m_Name(m_Name)
 {
 }
 
 ShaderGraph::~ShaderGraph()
 {
+}
+
+void ShaderGraph::CompileShader(ResourceShader* shader)
+{
+	static std::string last_output;
+
+	ShaderCompiler compiler(*(shader->graph));
+	compiler.Generate();
+
+	if (last_output == compiler.code)
+		return;
+
+	//Recompile new shader
+	shader->Recompile();
+
+	last_output = std::string(compiler.code);
 }
 
 ShaderCompiler::ShaderCompiler( ShaderGraph& g)
@@ -17,7 +34,7 @@ ShaderCompiler::ShaderCompiler( ShaderGraph& g)
 	code = "";
 }
 
-void ShaderCompiler::Compile()
+void ShaderCompiler::Generate()
 {
 	//Compile and modify the shadergraph reference
 
@@ -44,27 +61,35 @@ void ShaderCompiler::Compile()
 
 void ShaderCompiler::WriteShaderToFile()
 {
-	std::string shader_path = "/Shaders";
 
+	
+	std::string shader_path = "/Shaders";
 	std::string vertName = graph.m_Name + ".Vertex.glsl";
 	std::string fragName = graph.m_Name + ".Fragment.glsl";
 
 	std::ofstream file;
 	file.open((shader_path + "/" + vertName).c_str());
+	
 	if (file)
 	{
 		std::string code = SplitShaderSource(ShaderType::VERTEX);
 		file.write(code.c_str(), code.length());
+
 	}
+	
 	file.close();
 
 	file.open((shader_path + "/" + fragName).c_str());
+	
 	if (file)
 	{
-		std::string code = SplitShaderSource(ShaderType::FRAGMENT);
-		file.write(code.c_str(), code.length());
+		std::string code2 = SplitShaderSource(ShaderType::FRAGMENT);
+		file.write(code2.c_str(), code2.length());
 	}
+	
 	file.close();
+
+
 }
 
 std::string ShaderCompiler::SplitShaderSource(ShaderType type)

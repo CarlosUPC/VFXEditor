@@ -3,6 +3,7 @@
 #include "ResourceShader.h"
 #include "ModuleWindow.h"
 #include "ModuleRenderer.h"
+#include "ModuleResources.h"
 
 PanelShaderEditor::PanelShaderEditor(const char* name)
 	:Panel(name)
@@ -63,10 +64,10 @@ void PanelShaderEditor::Draw()
 		ImGui::Text("Select or create a shader");
 		//if (ImGui::Button("Create")) ImGui::OpenPopup("CreateShader"); 
 
-		//TEMPORAL
-		ResourceShader* shader = new ResourceShader("Shaders/default.vs", "Shaders/default.fs");
-		current_shader = shader;
-		App->renderer->current_shader = shader;
+		////TEMPORAL
+		//ResourceShader* shader = new ResourceShader("Shaders/default.vs", "Shaders/default.fs");
+		//current_shader = shader;
+		//App->renderer->current_shader = shader;
 
 		ImGui::End();
 		return;
@@ -202,10 +203,13 @@ void PanelShaderEditor::CreateNewShaderPopUp()
 		if (ImGui::Button("Create Shader", { 130,25 })) {
 			if (std::string(_name).find(" ") == std::string::npos) {
 		
+				//TODO: Create resource and storage it in the list
+				ResourceShader* shader = App->resources->CreateShader(_name);
+				//TODO: set it as current shader resource to display the graph
+				current_shader = shader;
+
 				strcpy_s(_name, "Data Name");
 				creating_shader = false;
-				//TODO: Create resource and storage it in the list
-				//TODO: set it as current shader resource to display the graph
 			}
 			
 		}
@@ -254,3 +258,5 @@ void PanelShaderEditor::LoadShaderPopUp()
 		selecting_shader = false;
 	}
 }
+
+

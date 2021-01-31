@@ -5,8 +5,10 @@
 #include "GL/glew.h"
 #include "Resource.h"
 
+class ShaderGraph;
 class ResourceShader : public Resource
 {
+	friend class ShaderGraph;
 public:
 	ResourceShader();
 	ResourceShader(const char* vertexShaderPath, const char* fragmentShaderPath);
@@ -29,10 +31,17 @@ private:
 	uint CompileShader(const char* shaderCode, GLenum shaderType);
 	uint CreateShader(const char* vertexSource, const char* fragmentSource);
 
+
+	uint Compile();
+	uint Recompile();
+	
+	void DestroyProgram();
+
 public:
 
 	uint programID;
 	const char* vertex_path;
 	const char* fragment_path;
+	ShaderGraph* graph;
 };
 #endif // !__SHADER_H__

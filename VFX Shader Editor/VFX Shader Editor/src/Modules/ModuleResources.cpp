@@ -1,6 +1,7 @@
 #include "ModuleResources.h"
 #include "Resource.h"
 #include "ResourceShader.h"
+#include "ShaderGraph.h"
 #include "Random.h"
 ModuleResources::ModuleResources(bool start_enabled)
 	:Module(start_enabled)
@@ -54,11 +55,13 @@ void ModuleResources::AddResource(Resource* res)
 	}
 }
 
-ResourceShader* ModuleResources::CreateShader()
+ResourceShader* ModuleResources::CreateShader(const std::string& m_Name)
 {
 	ResourceShader* new_shader = new ResourceShader();
-	new_shader->name = "Shader Graph";
+	new_shader->name = m_Name;
 	new_shader->id = Random::GenerateUUID();
+	new_shader->graph = new ShaderGraph(new_shader->name);
+	new_shader->graph->CompileShader(new_shader);
 
 	AddResource(new_shader);
 

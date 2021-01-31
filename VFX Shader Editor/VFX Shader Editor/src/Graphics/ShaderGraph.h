@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Globals.h"
+#include "ResourceShader.h"
 
 class ShaderGraph;
 
@@ -18,7 +19,7 @@ public:
 	ShaderCompiler(ShaderGraph& g);
 		
 
-	void Compile();
+	void Generate();
 	void WriteShaderToFile();
 	std::string SplitShaderSource(ShaderType type);
 	std::string ParseFromTo(const std::string& begin, const std::string& end, const std::string& source);
@@ -47,10 +48,11 @@ public:
 
 private:
 
-	std::string code;
 	ShaderGraph& graph;
-
-
+public:
+	std::string code;
+	std::string vertexCode;
+	std::string fragmentCode;
 
 };
 
@@ -60,9 +62,11 @@ class ShaderGraph
 {
 	friend struct ShaderCompiler;
 public:
-	ShaderGraph();
+	ShaderGraph(std::string m_Name);
 	~ShaderGraph();
 
+	void CompileShader(ResourceShader* shader);
+	std::string GetName() const { return m_Name; }
 private:
 	std::string m_Name;
 
