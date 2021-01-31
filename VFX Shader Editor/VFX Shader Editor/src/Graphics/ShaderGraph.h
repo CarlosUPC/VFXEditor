@@ -50,7 +50,7 @@ private:
 
 	ShaderGraph& graph;
 public:
-	std::string code;
+	std::string source;
 	std::string vertexCode;
 	std::string fragmentCode;
 

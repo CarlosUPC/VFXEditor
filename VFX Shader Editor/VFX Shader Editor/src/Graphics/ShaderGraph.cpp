@@ -19,19 +19,19 @@ void ShaderGraph::CompileShader(ResourceShader* shader)
 	ShaderCompiler compiler(*(shader->graph));
 	compiler.Generate();
 
-	if (last_output == compiler.code)
+	if (last_output == compiler.source)
 		return;
 
 	//Recompile new shader
 	shader->Recompile();
 
-	last_output = std::string(compiler.code);
+	last_output = std::string(compiler.source);
 }
 
 ShaderCompiler::ShaderCompiler( ShaderGraph& g)
 	: graph(g)
 {
-	code = "";
+	source = "";
 }
 
 void ShaderCompiler::Generate()
@@ -39,16 +39,16 @@ void ShaderCompiler::Generate()
 	//Compile and modify the shadergraph reference
 
 	//Vertex Shader Output
-	code += OutputVertexHeader();
-	code += BeginVertex();
-	code += OutputVertex();
-	code += EndVertex();
+	source += OutputVertexHeader();
+	source += BeginVertex();
+	source += OutputVertex();
+	source += EndVertex();
 
 	//Fragment Shader Output
-	code += OutputFragmentHeader();
-	code += BeginFragment();
-	code += OutputFragment();
-	code += EndFragment();
+	source += OutputFragmentHeader();
+	source += BeginFragment();
+	source += OutputFragment();
+	source += EndFragment();
 
 	//Serialize shader to file
 	WriteShaderToFile();
@@ -63,10 +63,11 @@ void ShaderCompiler::WriteShaderToFile()
 {
 
 	
-	std::string shader_path = "/Shaders";
-	std::string vertName = graph.m_Name + ".Vertex.glsl";
-	std::string fragName = graph.m_Name + ".Fragment.glsl";
+	std::string shader_path = std::string("Shaders");
+	std::string vertName = graph.m_Name + std::string(".Vertex.glsl");
+	std::string fragName = graph.m_Name + std::string(".Fragment.glsl");
 
+	
 	std::ofstream file;
 	file.open((shader_path + "/" + vertName).c_str());
 	
@@ -100,7 +101,7 @@ std::string ShaderCompiler::SplitShaderSource(ShaderType type)
 		case ShaderType::VERTEX:
 		{
 			std::string vertex_code = "";
-			vertex_code = ParseFromTo(BeginVertexHeader(), EndVertexHeader(), code);
+			vertex_code = ParseFromTo(BeginVertexHeader(), EndVertexHeader(), source);
 			return vertex_code;
 			
 
@@ -109,7 +110,7 @@ std::string ShaderCompiler::SplitShaderSource(ShaderType type)
 		case ShaderType::FRAGMENT:
 		{
 			std::string frag_code = "";
-			frag_code = ParseFromTo(BeginFragmentHeader(), EndFragmentHeader(), code);
+			frag_code = ParseFromTo(BeginFragmentHeader(), EndFragmentHeader(), source);
 			return frag_code;
 			
 
@@ -158,12 +159,15 @@ std::string ShaderCompiler::OutputTabbedLine(const std::string& line)
 
 std::string ShaderCompiler::BeginVertexHeader()
 {
+	std::string code = "";
 	code += OutputLine("//////// VERTEX_SHADER_BEGIN ////////");
 	return code;
 }
 
 std::string ShaderCompiler::OutputVertexHeader()
 {
+	std::string code = "";
+
 	//Vertex Header
 	code += BeginVertexHeader();
 
@@ -182,12 +186,14 @@ std::string ShaderCompiler::OutputVertexHeader()
 
 std::string ShaderCompiler::EndVertexHeader()
 {
+	std::string code = "";
 	code += OutputLine("//////// VERTEX_SHADER_END ////////");
 	return code;
 }
 
 std::string ShaderCompiler::BeginVertex()
 {
+	std::string code = "";
 	code += "\n// Vertex Main\n";
 	code += "void main()\n";
 	code += "{\n";
@@ -197,7 +203,7 @@ std::string ShaderCompiler::BeginVertex()
 std::string ShaderCompiler::OutputVertex()
 {
 	//more stuff ...
-
+	std::string code = "";
 
 	// Final position output 
 	code += OutputTabbedLine("gl_Position = u_Projection*u_View*vec4(position, 1.0);\n");
@@ -206,6 +212,7 @@ std::string ShaderCompiler::OutputVertex()
 
 std::string ShaderCompiler::EndVertex()
 {
+	std::string code = "";
 	code += "}\n";
 	code += EndVertexHeader();
 	return code;
@@ -213,12 +220,15 @@ std::string ShaderCompiler::EndVertex()
 
 std::string ShaderCompiler::BeginFragmentHeader()
 {
+	std::string code = "";
 	code += OutputLine("//////// FRAGMENT_SHADER_BEGIN ////////");
 	return code;
 }
 
 std::string ShaderCompiler::OutputFragmentHeader()
 {
+	std::string code = "";
+
 	// Fragment Header 
 	code += BeginFragmentHeader();
 
@@ -233,12 +243,14 @@ std::string ShaderCompiler::OutputFragmentHeader()
 
 std::string ShaderCompiler::EndFragmentHeader()
 {
+	std::string code = "";
 	code += OutputLine("//////// FRAGMENT_SHADER_END ////////");
 	return code;
 }
 
 std::string ShaderCompiler::BeginFragment()
 {
+	std::string code = "";
 	code += OutputLine("\n// Fragment Main");
 	code += OutputLine("void main()");
 	code += OutputLine("{");
@@ -248,7 +260,7 @@ std::string ShaderCompiler::BeginFragment()
 std::string ShaderCompiler::OutputFragment()
 {
 	//more stuff ...
-
+	std::string code = "";
 	std::string tmp_color = "vec4(1.0f, 0.0f, 0.0f, 1.0f)"; // it should be take it from shadergraph reference
 
 	// Final position output 
@@ -258,6 +270,7 @@ std::string ShaderCompiler::OutputFragment()
 
 std::string ShaderCompiler::EndFragment()
 {
+	std::string code = "";
 	code += "}\n";
 	code += EndFragmentHeader();
 	return code;

@@ -165,8 +165,8 @@ uint ResourceShader::CreateShader(const char* vertexSource, const char* fragment
 
 uint ResourceShader::Compile()
 {
-	std::string vertPath = "/Shaders/" + graph->GetName() + ".Vertex.glsl";
-	std::string fragPath = "/Shaders/" + graph->GetName() + ".Fragment.glsl";
+	std::string vertPath = "Shaders/" + graph->GetName() + ".Vertex.glsl";
+	std::string fragPath = "Shaders/" + graph->GetName() + ".Fragment.glsl";
 
 	std::string vertexSource = ReadShaderFromFile(vertPath.c_str());
 	std::string fragmentSource = ReadShaderFromFile(fragPath.c_str());
