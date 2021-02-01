@@ -2,9 +2,10 @@
 
 #include "Globals.h"
 #include "ResourceShader.h"
+#include <list>
 
 class ShaderGraph;
-
+class ShaderNode;
 enum class ShaderType
 {
 	VERTEX,
@@ -65,9 +66,12 @@ public:
 	ShaderGraph(std::string m_Name);
 	~ShaderGraph();
 
+	void Draw();
+
 	void CompileShader(ResourceShader* shader);
 	std::string GetName() const { return m_Name; }
 private:
 	std::string m_Name;
-
+public:
+	std::list<ShaderNode*> nodes;
 };

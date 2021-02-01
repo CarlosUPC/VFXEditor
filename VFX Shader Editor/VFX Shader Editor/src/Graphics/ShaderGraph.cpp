@@ -3,6 +3,7 @@
 #include <fstream>
 //#include <sstream> 
 #include <iostream>
+#include "ShaderNode.h"
 ShaderGraph::ShaderGraph(std::string m_Name)
 	:m_Name(m_Name)
 {
@@ -10,6 +11,15 @@ ShaderGraph::ShaderGraph(std::string m_Name)
 
 ShaderGraph::~ShaderGraph()
 {
+}
+
+void ShaderGraph::Draw()
+{
+
+	for (std::list<ShaderNode*>::iterator it = nodes.begin(); it != nodes.end(); ++it)
+	{
+		(*it)->Draw();
+	}
 }
 
 void ShaderGraph::CompileShader(ResourceShader* shader)

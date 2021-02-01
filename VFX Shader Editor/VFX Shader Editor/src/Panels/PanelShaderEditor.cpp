@@ -4,6 +4,7 @@
 #include "ModuleWindow.h"
 #include "ModuleRenderer.h"
 #include "ModuleResources.h"
+#include "ShaderGraph.h"
 
 PanelShaderEditor::PanelShaderEditor(const char* name)
 	:Panel(name)
@@ -109,6 +110,8 @@ void PanelShaderEditor::Draw()
 		scrollCoords = { scrollCoords.x + ImGui::GetIO().MouseDelta.x, scrollCoords.y + ImGui::GetIO().MouseDelta.y };
 
 	ImGui::MenuItem("hello");
+
+	current_shader->graph->Draw();
 	//ImGui::PopItemWidth();
 	ImGui::EndChild();
 	ImGui::PopStyleColor();
