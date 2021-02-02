@@ -1,5 +1,13 @@
 #pragma once
 
+
+enum NodeType
+{
+	PBR,
+	UNKNOWN
+};
+
+
 class ShaderNode
 {
 public:
@@ -9,6 +17,6 @@ public:
 
 	void Draw();
 
-private:
-
+public:
+	NodeType type;
 };

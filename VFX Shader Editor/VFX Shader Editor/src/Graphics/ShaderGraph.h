@@ -6,6 +6,8 @@
 
 class ShaderGraph;
 class ShaderNode;
+enum NodeType;
+
 enum class ShaderType
 {
 	VERTEX,
@@ -67,6 +69,7 @@ public:
 	~ShaderGraph();
 
 	void Draw();
+	ShaderNode* CreateNode(const char* name, int type);
 
 	void CompileShader(ResourceShader* shader);
 	std::string GetName() const { return m_Name; }

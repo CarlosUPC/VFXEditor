@@ -5,6 +5,7 @@
 #include "ModuleRenderer.h"
 #include "ModuleResources.h"
 #include "ShaderGraph.h"
+#include "ShaderNode.h"
 
 PanelShaderEditor::PanelShaderEditor(const char* name)
 	:Panel(name)
@@ -117,6 +118,14 @@ void PanelShaderEditor::Draw()
 	ImGui::PopStyleColor();
 	ImGui::PopStyleVar(2);
 
+
+	//Add new node
+	if (ImGui::IsMouseClicked(1))
+	{
+		ImGui::OpenPopup("NewNode");
+	}
+
+	AddNewNodePopUp();
 
 	ImGui::End();
 	
@@ -259,6 +268,63 @@ void PanelShaderEditor::LoadShaderPopUp()
 	{
 		
 		selecting_shader = false;
+	}
+}
+
+void PanelShaderEditor::AddNewNodePopUp()
+{
+	if (ImGui::BeginPopup("NewNode"))
+	{
+		//ShaderNode* new_node = nullptr;
+		//current_shader->graph->nodes.push_back(new_node);
+		//CreateNodeFn p = &ShaderGraph::CreateNode;
+		NodeOption("PBR", NodeType::PBR, current_shader, current_shader->graph, &ShaderGraph::CreateNode);
+		NodeOption("UV", NodeType::PBR, current_shader, current_shader->graph, &ShaderGraph::CreateNode);
+		NodeOption("ColorRGB", NodeType::PBR, current_shader, current_shader->graph, &ShaderGraph::CreateNode);
+
+		NodeOption("ColorRGBA", NodeType::PBR, current_shader, current_shader->graph);
+
+		ImGui::EndPopup();
+	}
+
+}
+
+void PanelShaderEditor::NodeOption(const char* name, NodeType type, ResourceShader* shader, ShaderGraph* graph, ShaderNode* (ShaderGraph::* p)(const char* n, int t))
+{
+	std::string node_name = name;
+	std::string format = "New " + node_name + " Node";
+	bool click_to_create_node = ImGui::Button(format.c_str());
+
+	if (click_to_create_node)
+	{
+		//AddNode(*shader->graph, (graph->*p)(name, (int)type));
+		AddNode(*shader->graph, std::invoke(p, graph, name, type));
+		ImGui::CloseCurrentPopup();
+	}
+}
+
+void PanelShaderEditor::AddNode(ShaderGraph& graph, ShaderNode* node)
+{
+	graph.nodes.push_back(node);
+}
+
+ShaderNode PanelShaderEditor::CreateNode()
+{
+	ShaderNode node;
+	return node;
+}
+
+void PanelShaderEditor::NodeOption(const char* name, NodeType type, ResourceShader* shader, ShaderGraph* graph)
+{
+	std::string node_name = name;
+	std::string format = "New " + node_name + " Node";
+	bool click_to_create_node = ImGui::Button(format.c_str());
+
+	if (click_to_create_node)
+	{
+		std::function<ShaderNode * (const char*, int)> create_node = std::bind(&ShaderGraph::CreateNode, current_shader->graph, name, type);
+		AddNode(*shader->graph, create_node(name, type));
+		ImGui::CloseCurrentPopup();
 	}
 }
 

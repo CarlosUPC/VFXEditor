@@ -4,6 +4,7 @@
 //#include <sstream> 
 #include <iostream>
 #include "ShaderNode.h"
+#include "Nodes/PBRNode.h"
 ShaderGraph::ShaderGraph(std::string m_Name)
 	:m_Name(m_Name)
 {
@@ -20,6 +21,23 @@ void ShaderGraph::Draw()
 	{
 		(*it)->Draw();
 	}
+}
+
+ShaderNode* ShaderGraph::CreateNode(const char* name, int type)
+{
+	ShaderNode* node = nullptr;
+
+	switch (type)
+	{
+	case NodeType::PBR:
+		node = new PBRNode("PBR");
+		break;
+	case NodeType::UNKNOWN:
+		break;
+
+	}
+
+	return node;
 }
 
 void ShaderGraph::CompileShader(ResourceShader* shader)

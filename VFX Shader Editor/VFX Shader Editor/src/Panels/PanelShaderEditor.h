@@ -1,8 +1,16 @@
 #pragma once
 
 #include "Panel.h"
+#include <functional>
 
 class ResourceShader;
+class ShaderNode;
+class ShaderGraph;
+enum NodeType;
+
+
+typedef ShaderNode* (ShaderGraph::* CreateNodeFn)(const char* n, int t);
+typedef std::function<ShaderNode * (const char*, int)> create_node;
 
 class PanelShaderEditor : public Panel
 {
@@ -15,8 +23,14 @@ public:
 	void OnShaderAction(std::string& action);
 	void CreateNewShaderPopUp();
 	void LoadShaderPopUp();
+	void AddNewNodePopUp();
 
-	
+	void AddNode(ShaderGraph& graph, ShaderNode* node);
+
+	ShaderNode CreateNode();
+	void NodeOption(const char* name, NodeType type, ResourceShader* shader, ShaderGraph* graph, ShaderNode* (ShaderGraph::*p)(const char* n, int t));
+	void NodeOption(const char* name, NodeType type, ResourceShader* shader, ShaderGraph* graph);
+
 
 private:
 	bool grid = true;
