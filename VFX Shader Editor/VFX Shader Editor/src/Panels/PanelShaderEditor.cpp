@@ -278,11 +278,23 @@ void PanelShaderEditor::AddNewNodePopUp()
 		//ShaderNode* new_node = nullptr;
 		//current_shader->graph->nodes.push_back(new_node);
 		//CreateNodeFn p = &ShaderGraph::CreateNode;
+
+		ImGui::PushItemWidth(100.0f);
+		ImGui::InputText("##filter", node_filter,64);
+		ImGui::PopItemWidth();
+		ImGui::SameLine();
+		
+		if (ImGui::Selectable("X", false, ImGuiSelectableFlags_DontClosePopups, { 8,13 }))
+		{
+			memcpy(&node_filter, "\0", 1);
+		}
+
+		
 		NodeOption("PBR", NodeType::PBR, current_shader, current_shader->graph, &ShaderGraph::CreateNode);
 		NodeOption("UV", NodeType::PBR, current_shader, current_shader->graph, &ShaderGraph::CreateNode);
 		NodeOption("ColorRGB", NodeType::PBR, current_shader, current_shader->graph, &ShaderGraph::CreateNode);
 
-		NodeOption("ColorRGBA", NodeType::PBR, current_shader, current_shader->graph);
+		
 
 		ImGui::EndPopup();
 	}
@@ -291,27 +303,21 @@ void PanelShaderEditor::AddNewNodePopUp()
 
 void PanelShaderEditor::NodeOption(const char* name, NodeType type, ResourceShader* shader, ShaderGraph* graph, ShaderNode* (ShaderGraph::* p)(const char* n, int t))
 {
-	std::string node_name = name;
-	std::string format = "New " + node_name + " Node";
-	bool click_to_create_node = ImGui::Button(format.c_str());
+	std::string node_name = name + std::string(" Node");
 
+	if (node_name.find(node_filter) == std::string::npos)
+		return;
+	
+	
+	bool click_to_create_node = ImGui::Selectable(node_name.c_str());
+
+	
 	if (click_to_create_node)
 	{
 		//AddNode(*shader->graph, (graph->*p)(name, (int)type));
 		AddNode(*shader->graph, std::invoke(p, graph, name, type));
 		ImGui::CloseCurrentPopup();
 	}
-}
-
-void PanelShaderEditor::AddNode(ShaderGraph& graph, ShaderNode* node)
-{
-	graph.nodes.push_back(node);
-}
-
-ShaderNode PanelShaderEditor::CreateNode()
-{
-	ShaderNode node;
-	return node;
 }
 
 void PanelShaderEditor::NodeOption(const char* name, NodeType type, ResourceShader* shader, ShaderGraph* graph)
@@ -327,5 +333,18 @@ void PanelShaderEditor::NodeOption(const char* name, NodeType type, ResourceShad
 		ImGui::CloseCurrentPopup();
 	}
 }
+
+
+void PanelShaderEditor::AddNode(ShaderGraph& graph, ShaderNode* node)
+{
+	graph.nodes.push_back(node);
+}
+
+ShaderNode PanelShaderEditor::CreateNode()
+{
+	ShaderNode node;
+	return node;
+}
+
 
 

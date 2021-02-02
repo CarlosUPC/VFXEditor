@@ -35,7 +35,8 @@ public:
 private:
 	bool grid = true;
 	float2 scrollCoords = { 0.0f, 0.0f };
-
+	std::string filter_popup = "";
+	char node_filter[64];
 
 	ResourceShader* current_shader = nullptr;
 	bool creating_shader = false;
