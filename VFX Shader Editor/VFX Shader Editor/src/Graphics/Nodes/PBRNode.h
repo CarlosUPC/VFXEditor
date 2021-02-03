@@ -6,5 +6,7 @@ class PBRNode : public ShaderNode
 {
 public:
 	PBRNode();
-	PBRNode(const char* name);
+	PBRNode(const char* name, NodeType type, float2 position);
+
+	void InnerDraw() override;
 };

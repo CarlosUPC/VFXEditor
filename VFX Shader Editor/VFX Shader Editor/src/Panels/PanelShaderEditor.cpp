@@ -79,9 +79,13 @@ void PanelShaderEditor::Draw()
 	//GRAPH POINTER
 	//RENDER GRAPH
 	
+	ImVec2 win_pos4 = ImGui::GetWindowPos();
+	ImGui::Text("WindowPos (%.2f,%.2f)", win_pos4.x, win_pos4.y);
 	ImGui::Text("Hold middle mouse button to scroll (%.2f,%.2f)", scrollCoords.x, scrollCoords.y);
 	ImVec2 win_pos2 = ImGui::GetCursorPos();
+	ImVec2 win_pos3 = ImGui::GetCursorScreenPos();
 	ImGui::Text("CursorPos (%.2f,%.2f)", win_pos2.x, win_pos2.y);
+	ImGui::Text("CursorScreenPos (%.2f,%.2f)", win_pos3.x, win_pos3.y);
 	ImGui::SameLine(ImGui::GetWindowWidth() - 100);
 	ImGui::Checkbox("Show grid", &grid);
 
@@ -93,7 +97,7 @@ void PanelShaderEditor::Draw()
 	ImGui::BeginChild("scrolling_region", ImVec2(0, 0), true, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollWithMouse);
 	//ImGui::PushItemWidth(120.0f);
 
-	ImVec2 offset = { ImGui::GetCursorScreenPos().x + scrollCoords.x, ImGui::GetCursorScreenPos().y + scrollCoords.y };
+	ImVec2 offset = { ImGui::GetWindowPos().x + scrollCoords.x, ImGui::GetWindowPos().y + scrollCoords.y };
 	ImDrawList* draw_list = ImGui::GetWindowDrawList();
 
 	if (grid)
@@ -108,7 +112,11 @@ void PanelShaderEditor::Draw()
 			draw_list->AddLine(ImVec2(win_pos.x, y + win_pos.y), ImVec2(canvas_sz.x + win_pos.x, y + win_pos.y), GRID_COLOR);
 	}
 	if (ImGui::IsWindowHovered() && !ImGui::IsAnyItemActive() && ImGui::IsMouseDragging(2, 0.0f))
+	{
 		scrollCoords = { scrollCoords.x + ImGui::GetIO().MouseDelta.x, scrollCoords.y + ImGui::GetIO().MouseDelta.y };
+
+		current_shader->graph->scrolling += float2(ImGui::GetIO().MouseDelta.x, ImGui::GetIO().MouseDelta.y);
+	}
 
 	ImGui::MenuItem("hello");
 
@@ -273,6 +281,7 @@ void PanelShaderEditor::LoadShaderPopUp()
 
 void PanelShaderEditor::AddNewNodePopUp()
 {
+	ImVec2 win_pos = ImGui::GetWindowPos();
 	if (ImGui::BeginPopup("NewNode"))
 	{
 		//ShaderNode* new_node = nullptr;
@@ -289,10 +298,13 @@ void PanelShaderEditor::AddNewNodePopUp()
 			memcpy(&node_filter, "\0", 1);
 		}
 
+		ImVec2 pos = ImGui::GetWindowPos();
+		pos.x -= win_pos.x + current_shader->graph->scrolling.x;
+		pos.y -= win_pos.y + current_shader->graph->scrolling.y + 50.0f;
 		
-		NodeOption("PBR", NodeType::PBR, current_shader, current_shader->graph, &ShaderGraph::CreateNode);
-		NodeOption("UV", NodeType::PBR, current_shader, current_shader->graph, &ShaderGraph::CreateNode);
-		NodeOption("ColorRGB", NodeType::PBR, current_shader, current_shader->graph, &ShaderGraph::CreateNode);
+		NodeOption("PBR", NodeType::PBR, float2(pos.x,pos.y), current_shader, current_shader->graph, &ShaderGraph::CreateNode);
+		NodeOption("UV", NodeType::PBR, float2(pos.x, pos.y), current_shader, current_shader->graph, &ShaderGraph::CreateNode);
+		NodeOption("ColorRGB", NodeType::PBR, float2(pos.x, pos.y), current_shader, current_shader->graph, &ShaderGraph::CreateNode);
 
 		
 
@@ -301,7 +313,7 @@ void PanelShaderEditor::AddNewNodePopUp()
 
 }
 
-void PanelShaderEditor::NodeOption(const char* name, NodeType type, ResourceShader* shader, ShaderGraph* graph, ShaderNode* (ShaderGraph::* p)(const char* n, int t))
+void PanelShaderEditor::NodeOption(const char* name, NodeType type,float2 position, ResourceShader* shader, ShaderGraph* graph, ShaderNode* (ShaderGraph::* p)(const char* n, int t, float2 pos))
 {
 	std::string node_name = name + std::string(" Node");
 
@@ -315,7 +327,7 @@ void PanelShaderEditor::NodeOption(const char* name, NodeType type, ResourceShad
 	if (click_to_create_node)
 	{
 		//AddNode(*shader->graph, (graph->*p)(name, (int)type));
-		AddNode(*shader->graph, std::invoke(p, graph, name, type));
+		AddNode(*shader->graph, std::invoke(p, graph, name, type, position));
 		ImGui::CloseCurrentPopup();
 	}
 }
@@ -328,8 +340,8 @@ void PanelShaderEditor::NodeOption(const char* name, NodeType type, ResourceShad
 
 	if (click_to_create_node)
 	{
-		std::function<ShaderNode * (const char*, int)> create_node = std::bind(&ShaderGraph::CreateNode, current_shader->graph, name, type);
-		AddNode(*shader->graph, create_node(name, type));
+		//std::function<ShaderNode * (const char*, int)> create_node = std::bind(&ShaderGraph::CreateNode, current_shader->graph, name, type);
+		//AddNode(*shader->graph, create_node(name, type));
 		ImGui::CloseCurrentPopup();
 	}
 }

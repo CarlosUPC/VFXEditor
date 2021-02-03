@@ -69,7 +69,7 @@ public:
 	~ShaderGraph();
 
 	void Draw();
-	ShaderNode* CreateNode(const char* name, int type);
+	ShaderNode* CreateNode(const char* name, int type, float2 position);
 
 	void CompileShader(ResourceShader* shader);
 	std::string GetName() const { return m_Name; }
@@ -77,4 +77,5 @@ private:
 	std::string m_Name;
 public:
 	std::list<ShaderNode*> nodes;
+	float2 scrolling;
 };

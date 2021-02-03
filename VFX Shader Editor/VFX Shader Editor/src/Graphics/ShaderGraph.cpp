@@ -20,17 +20,18 @@ void ShaderGraph::Draw()
 	for (std::list<ShaderNode*>::iterator it = nodes.begin(); it != nodes.end(); ++it)
 	{
 		(*it)->Draw();
+		(*it)->InnerDraw();
 	}
 }
 
-ShaderNode* ShaderGraph::CreateNode(const char* name, int type)
+ShaderNode* ShaderGraph::CreateNode(const char* name, int type, float2 position)
 {
 	ShaderNode* node = nullptr;
 
 	switch (type)
 	{
 	case NodeType::PBR:
-		node = new PBRNode("PBR");
+		node = new PBRNode(name, (NodeType)type, position);
 		break;
 	case NodeType::UNKNOWN:
 		break;
