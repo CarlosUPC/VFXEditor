@@ -6,6 +6,8 @@
 
 #include "Globals.h"
 
+class ShaderGraph;
+
 enum NodeType
 {
 	PBR,
@@ -20,9 +22,10 @@ public:
 	ShaderNode(const char* name, NodeType type, float2 position);
 	~ShaderNode();
 
-	void Draw();
+	void Draw(ShaderGraph& graph);
 	virtual void InnerDraw();
 
+	float2 CalcNodePosition(ShaderGraph& graph, float2 pos = {});
 public:
 	NodeType type;
 	float2 position;

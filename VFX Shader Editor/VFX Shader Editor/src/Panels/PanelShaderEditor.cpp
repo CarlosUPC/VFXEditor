@@ -300,7 +300,7 @@ void PanelShaderEditor::AddNewNodePopUp()
 
 		ImVec2 pos = ImGui::GetWindowPos();
 		pos.x -= win_pos.x + current_shader->graph->scrolling.x;
-		pos.y -= win_pos.y + current_shader->graph->scrolling.y + 50.0f;
+		pos.y -= win_pos.y + current_shader->graph->scrolling.y;
 		
 		NodeOption("PBR", NodeType::PBR, float2(pos.x,pos.y), current_shader, current_shader->graph, &ShaderGraph::CreateNode);
 		NodeOption("UV", NodeType::PBR, float2(pos.x, pos.y), current_shader, current_shader->graph, &ShaderGraph::CreateNode);

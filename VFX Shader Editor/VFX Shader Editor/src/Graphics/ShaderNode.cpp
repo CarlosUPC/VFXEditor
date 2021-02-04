@@ -1,5 +1,5 @@
 #include "ShaderNode.h"
-
+#include "ShaderGraph.h"
 ShaderNode::ShaderNode()
 {
 }
@@ -14,19 +14,32 @@ ShaderNode::~ShaderNode()
 {
 }
 
-void ShaderNode::Draw()
+void ShaderNode::Draw(ShaderGraph& graph)
 {
 	auto draw_list = ImGui::GetWindowDrawList();
 
 	//Calculate Pos
+	float2 m_Position = CalcNodePosition(graph, this->position);
+	float2 m_Size = float2(200.0f,120.0f);
+	/*m_Position.x += ImGui::GetWindowPos().x + graph.scrolling.x;
+	m_Position.y += ImGui::GetWindowPos().y + 50.0f + graph.scrolling.y;
+	position = m_Position;*/
 
 	//UI
-	draw_list->AddRectFilled(ImVec2(position.x, position.y), ImVec2(position.x +50.0f, position.y + 50.0f), ImColor(80, 80, 80), 5.0f);
-	draw_list->AddRectFilled(ImVec2(position.x, position.y), ImVec2(position.x + 50.0f, position.y + 35.0f * 1), ImColor(40, 40, 40), 5.0f);
-	draw_list->AddRectFilled(ImVec2(position.x, position.y + 30.0f *2), ImVec2(position.x + 50.0f, position.y + 40.0f * 2), ImColor(40, 40, 40));
+	draw_list->AddRectFilled(ImVec2(m_Position.x, m_Position.y), ImVec2(m_Position.x + m_Size.x, m_Position.y + m_Size.y), ImColor(20, 20, 20, 180), 5.0f);
+	draw_list->AddRectFilled(ImVec2(m_Position.x, m_Position.y), ImVec2(m_Position.x + m_Size.x, m_Position.y + 15.0f * 1), ImColor(255, 0, 0), 5.0f);
+	draw_list->AddRectFilled(ImVec2(m_Position.x, m_Position.y + 10.0f *1), ImVec2(m_Position.x + m_Size.x, m_Position.y + 20.0f * 1), ImColor(255, 0, 0));
 
+	ImGui::SetCursorScreenPos(ImVec2(m_Position.x, m_Position.y));
 }
 
 void ShaderNode::InnerDraw()
 {
+}
+
+float2 ShaderNode::CalcNodePosition(ShaderGraph& g, float2 pos)
+{
+	pos.x += ImGui::GetWindowPos().x + g.scrolling.x;
+	pos.y += ImGui::GetWindowPos().y + g.scrolling.y;
+	return pos;
 }
