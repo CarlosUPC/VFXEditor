@@ -1312,6 +1312,34 @@ void ImDrawList::AddBezierCurve(const ImVec2& p1, const ImVec2& p2, const ImVec2
     PathStroke(col, false, thickness);
 }
 
+void ImDrawList::AddRectFilledMultiColorEx(const ImVec2& p_min, const ImVec2& p_max, ImU32 col_upr_left, ImU32 col_upr_right, ImU32 col_bot_right, ImU32 col_bot_left, float rounding, ImDrawCornerFlags rounding_corners)
+{
+	if (((col_upr_left | col_upr_right | col_bot_right | col_bot_left) & IM_COL32_A_MASK) == 0)
+		return;
+
+	if (rounding > 0.0f)
+	{
+		PathRect(p_min, p_max, rounding, rounding_corners);
+		PathFillConvex(col_upr_left);
+	}
+	else
+	{
+		PrimReserve(6, 4);
+		const ImVec2 uv = _Data->TexUvWhitePixel;
+		PrimReserve(6, 4);
+		PrimWriteIdx((ImDrawIdx)(_VtxCurrentIdx)); PrimWriteIdx((ImDrawIdx)(_VtxCurrentIdx + 1)); PrimWriteIdx((ImDrawIdx)(_VtxCurrentIdx + 2));
+		PrimWriteIdx((ImDrawIdx)(_VtxCurrentIdx)); PrimWriteIdx((ImDrawIdx)(_VtxCurrentIdx + 2)); PrimWriteIdx((ImDrawIdx)(_VtxCurrentIdx + 3));
+		PrimWriteVtx(p_min, uv, col_upr_left);
+		PrimWriteVtx(ImVec2(p_max.x, p_min.y), uv, col_upr_right);
+		PrimWriteVtx(p_max, uv, col_bot_right);
+		PrimWriteVtx(ImVec2(p_min.x, p_max.y), uv, col_bot_left);
+		
+	}
+
+
+
+}
+
 void ImDrawList::AddText(const ImFont* font, float font_size, const ImVec2& pos, ImU32 col, const char* text_begin, const char* text_end, float wrap_width, const ImVec4* cpu_fine_clip_rect)
 {
     if ((col & IM_COL32_A_MASK) == 0)

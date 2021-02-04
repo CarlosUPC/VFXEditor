@@ -10,7 +10,7 @@
 PanelShaderEditor::PanelShaderEditor(const char* name)
 	:Panel(name)
 {
-	flags = ImGuiWindowFlags_::ImGuiWindowFlags_MenuBar;
+	flags = ImGuiWindowFlags_::ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollWithMouse;
 }
 
 PanelShaderEditor::~PanelShaderEditor()
@@ -19,6 +19,8 @@ PanelShaderEditor::~PanelShaderEditor()
 
 void PanelShaderEditor::Draw()
 {
+	
+	ImGui::PushStyleColor(ImGuiCol_ChildBg, IM_COL32(50, 50, 55, 200) );
 	ImGui::Begin(name.c_str(), 0, flags);
 	
 	static bool p_open = false;
@@ -72,6 +74,8 @@ void PanelShaderEditor::Draw()
 		//App->renderer->current_shader = shader;
 
 		ImGui::End();
+		ImGui::PopStyleColor();
+
 		return;
 	}
 
@@ -90,11 +94,10 @@ void PanelShaderEditor::Draw()
 	ImGui::Checkbox("Show grid", &grid);
 
 
-	ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(1, 1));
-	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-	ImGui::PushStyleColor(ImGuiCol_ChildBg, IM_COL32(50, 50, 55, 200));
+	//ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(1, 1));
+	//ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
 
-	ImGui::BeginChild("scrolling_region", ImVec2(0, 0), true, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollWithMouse);
+	//ImGui::BeginChild("scrolling_region", ImVec2(0, 0)/*, true*//*, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollWithMouse*/);
 	//ImGui::PushItemWidth(120.0f);
 
 	ImVec2 offset = { ImGui::GetWindowPos().x + scrollCoords.x, ImGui::GetWindowPos().y + scrollCoords.y };
@@ -102,14 +105,18 @@ void PanelShaderEditor::Draw()
 
 	if (grid)
 	{
+		ImGui::PushStyleColor(ImGuiCol_ChildBg, IM_COL32(80, 0, 55, 200));
+
 		ImU32 GRID_COLOR = IM_COL32(200, 200, 200, 40);
 		float GRID_SZ = 16.0f;
-		ImVec2 win_pos = ImGui::GetCursorScreenPos();
+		ImVec2 win_pos = ImGui::GetWindowPos();
 		ImVec2 canvas_sz = ImGui::GetWindowSize();
 		for (float x = fmodf(scrollCoords.x, GRID_SZ); x < canvas_sz.x; x += GRID_SZ)
 			draw_list->AddLine(ImVec2(x + win_pos.x, win_pos.y), ImVec2(x + win_pos.x, canvas_sz.y + win_pos.y), GRID_COLOR);
 		for (float y = fmodf(scrollCoords.y, GRID_SZ); y < canvas_sz.y; y += GRID_SZ)
 			draw_list->AddLine(ImVec2(win_pos.x, y + win_pos.y), ImVec2(canvas_sz.x + win_pos.x, y + win_pos.y), GRID_COLOR);
+
+		ImGui::PopStyleColor();
 	}
 	if (ImGui::IsWindowHovered() && !ImGui::IsAnyItemActive() && ImGui::IsMouseDragging(2, 0.0f))
 	{
@@ -118,15 +125,15 @@ void PanelShaderEditor::Draw()
 		current_shader->graph->scrolling += float2(ImGui::GetIO().MouseDelta.x, ImGui::GetIO().MouseDelta.y);
 	}
 
-	ImGui::MenuItem("hello");
+	//ImGui::MenuItem("hello");
 
-	current_shader->graph->Draw();
 	//ImGui::PopItemWidth();
-	ImGui::EndChild();
-	ImGui::PopStyleColor();
-	ImGui::PopStyleVar(2);
+	ImGui::PushClipRect(ImGui::GetCursorScreenPos(), ImVec2(ImGui::GetCursorScreenPos().x + ImGui::GetContentRegionMax().x, ImGui::GetCursorScreenPos().y + ImGui::GetContentRegionMax().y), true);
+	current_shader->graph->Draw();
+	ImGui::PopClipRect();
 
-
+	//ImGui::EndChild();
+	//ImGui::PopStyleVar(2);
 	//Add new node
 	if (ImGui::IsMouseClicked(1))
 	{
@@ -135,7 +142,12 @@ void PanelShaderEditor::Draw()
 
 	AddNewNodePopUp();
 
+
+
+
+
 	ImGui::End();
+	ImGui::PopStyleColor();
 	
 }
 
@@ -230,6 +242,7 @@ void PanelShaderEditor::CreateNewShaderPopUp()
 				App->renderer->current_shader = current_shader;
 				strcpy_s(_name, "Data Name");
 				creating_shader = false;
+				
 			}
 			
 		}
@@ -282,8 +295,10 @@ void PanelShaderEditor::LoadShaderPopUp()
 void PanelShaderEditor::AddNewNodePopUp()
 {
 	ImVec2 win_pos = ImGui::GetWindowPos();
+	
 	if (ImGui::BeginPopup("NewNode"))
 	{
+		ImVec2 pos3 = ImGui::GetWindowPos();
 		//ShaderNode* new_node = nullptr;
 		//current_shader->graph->nodes.push_back(new_node);
 		//CreateNodeFn p = &ShaderGraph::CreateNode;
