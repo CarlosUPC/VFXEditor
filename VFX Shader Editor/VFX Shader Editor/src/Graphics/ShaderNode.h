@@ -23,13 +23,15 @@ public:
 	~ShaderNode();
 
 	void Draw(ShaderGraph& graph);
-	virtual void InnerDraw();
+	virtual void InnerDraw(ShaderGraph& graph);
 
 	float2 CalcNodePosition(ShaderGraph& graph, float2 pos = {});
+	float2 CalcNodeSize(ShaderGraph& graph, ShaderNode* node);
 public:
 	NodeType type;
 	float2 position;
 	float2 size;
+	float2 title_size;
 	uint UID;
 	std::string name;
 };

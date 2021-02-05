@@ -16,16 +16,16 @@ ShaderGraph::~ShaderGraph()
 
 void ShaderGraph::Draw()
 {
-	ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(2.5 * 1, 2.5 * 1));
-	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(10, 0));
+	//ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(2.5 * 1, 2.5 * 1));
+	//ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(10, 0));
 
 	for (std::list<ShaderNode*>::iterator it = nodes.begin(); it != nodes.end(); ++it)
 	{
 		(*it)->Draw(*this);
-		(*it)->InnerDraw();
+		(*it)->InnerDraw(*this);
 	}
 
-	ImGui::PopStyleVar(2);
+	//ImGui::PopStyleVar(2);
 }
 
 ShaderNode* ShaderGraph::CreateNode(const char* name, int type, float2 position)

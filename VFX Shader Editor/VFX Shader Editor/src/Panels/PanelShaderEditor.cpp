@@ -93,12 +93,85 @@ void PanelShaderEditor::Draw()
 	ImGui::SameLine(ImGui::GetWindowWidth() - 100);
 	ImGui::Checkbox("Show grid", &grid);
 
+	ImGui::PushStyleVar(ImGuiStyleVar_Alpha, 0.25f);
+	ImGui::Text("Zoom x %.1f", current_shader->graph->scale);
+	ImGui::PopStyleVar();
 
 	//ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(1, 1));
 	//ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
 
 	//ImGui::BeginChild("scrolling_region", ImVec2(0, 0)/*, true*//*, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollWithMouse*/);
 	//ImGui::PushItemWidth(120.0f);
+
+	float wheel = ImGui::GetIO().MouseWheel;
+	
+	static float zoom = current_shader->graph->scale;
+	if (wheel > 0 && ImGui::IsWindowHovered())
+	{
+		zoom *= (1.0 + wheel * 0.2f);
+
+		float new_scale = zoom;
+		new_scale = Clamp(new_scale, 0.1f, 2.0f);
+		new_scale = ceilf(new_scale * 8) / 8;
+
+		float2 mousePos = { ImGui::GetMousePos().x , ImGui::GetMousePos().y  };
+
+		float2 relative_mouse = mousePos;
+		relative_mouse /= current_shader->graph->scale;
+
+		relative_mouse.x -= ImGui::GetWindowPos().x + current_shader->graph->scrolling.x;
+		relative_mouse.y -= ImGui::GetWindowPos().y + current_shader->graph->scrolling.y;
+
+		
+
+		if (new_scale != current_shader->graph->scale) {
+			current_shader->graph->scale = new_scale;
+
+
+			float2 relative_mouse2 = mousePos;
+			relative_mouse2 /= current_shader->graph->scale;
+
+			relative_mouse2.x -= ImGui::GetWindowPos().x + current_shader->graph->scrolling.x;
+			relative_mouse2.y -= ImGui::GetWindowPos().y + current_shader->graph->scrolling.y;
+
+			current_shader->graph->scrolling += relative_mouse2 - relative_mouse;
+
+		}
+	}
+	else if (wheel < 0 && ImGui::IsWindowHovered())
+	{
+		
+		zoom /= (1.0 - wheel * 0.2f);
+
+		float new_scale = zoom;
+
+		new_scale = Clamp(new_scale, 0.1f, 2.0f);
+		new_scale = ceilf(new_scale * 8) / 8;
+
+		float2 mousePos = { ImGui::GetMousePos().x , ImGui::GetMousePos().y };
+		
+		float2 relative_mouse = mousePos;
+
+		relative_mouse /= current_shader->graph->scale;
+		relative_mouse.x -= ImGui::GetWindowPos().x + current_shader->graph->scrolling.x;
+		relative_mouse.y -= ImGui::GetWindowPos().y + current_shader->graph->scrolling.y;
+
+
+
+		if (new_scale != current_shader->graph->scale) {
+			current_shader->graph->scale = new_scale;
+
+			float2 relative_mouse2 = mousePos;
+
+			relative_mouse2 /= current_shader->graph->scale;
+			relative_mouse2.x -= ImGui::GetWindowPos().x + current_shader->graph->scrolling.x;
+			relative_mouse2.y -= ImGui::GetWindowPos().y + current_shader->graph->scrolling.y;
+
+			current_shader->graph->scrolling += relative_mouse2 - relative_mouse;
+
+		}
+
+	}
 
 	ImVec2 offset = { ImGui::GetWindowPos().x + scrollCoords.x, ImGui::GetWindowPos().y + scrollCoords.y };
 	ImDrawList* draw_list = ImGui::GetWindowDrawList();
@@ -108,7 +181,7 @@ void PanelShaderEditor::Draw()
 		ImGui::PushStyleColor(ImGuiCol_ChildBg, IM_COL32(80, 0, 55, 200));
 
 		ImU32 GRID_COLOR = IM_COL32(200, 200, 200, 40);
-		float GRID_SZ = 16.0f;
+		float GRID_SZ = 16.0f * current_shader->graph->scale;
 		ImVec2 win_pos = ImGui::GetWindowPos();
 		ImVec2 canvas_sz = ImGui::GetWindowSize();
 		for (float x = fmodf(scrollCoords.x, GRID_SZ); x < canvas_sz.x; x += GRID_SZ)
@@ -314,8 +387,11 @@ void PanelShaderEditor::AddNewNodePopUp()
 		}
 
 		ImVec2 pos = ImGui::GetWindowPos();
+
 		pos.x -= win_pos.x + current_shader->graph->scrolling.x;
 		pos.y -= win_pos.y + current_shader->graph->scrolling.y;
+		pos.x /= current_shader->graph->scale;
+		pos.y /= current_shader->graph->scale;
 		
 		NodeOption("PBR", NodeType::PBR, float2(pos.x,pos.y), current_shader, current_shader->graph, &ShaderGraph::CreateNode);
 		NodeOption("UV", NodeType::PBR, float2(pos.x, pos.y), current_shader, current_shader->graph, &ShaderGraph::CreateNode);
