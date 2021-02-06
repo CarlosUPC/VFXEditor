@@ -79,4 +79,6 @@ public:
 	std::list<ShaderNode*> nodes;
 	float2 scrolling;
 	float scale = 1.0f;
+
+	ShaderNode* selected = nullptr;
 };

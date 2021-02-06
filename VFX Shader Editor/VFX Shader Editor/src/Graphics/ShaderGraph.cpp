@@ -21,6 +21,7 @@ void ShaderGraph::Draw()
 
 	for (std::list<ShaderNode*>::iterator it = nodes.begin(); it != nodes.end(); ++it)
 	{
+		(*it)->Input(*this);
 		(*it)->Draw(*this);
 		(*it)->InnerDraw(*this);
 	}
