@@ -81,4 +81,5 @@ public:
 	float scale = 1.0f;
 
 	ShaderNode* selected = nullptr;
+	ShaderNode* hovered = nullptr;
 };

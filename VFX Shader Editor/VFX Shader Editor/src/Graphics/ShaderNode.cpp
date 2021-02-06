@@ -20,6 +20,7 @@ void ShaderNode::Input(ShaderGraph& graph)
 	if (NodeHovering(graph, this->position, this->size))
 	{
 		isHovered = true;
+		graph.hovered = this;
 		if (ImGui::IsMouseClicked(0))
 		{
 			graph.selected = this;
@@ -28,6 +29,7 @@ void ShaderNode::Input(ShaderGraph& graph)
 	else
 	{
 		isHovered = false;
+		//graph.hovered = nullptr;
 	}
 
 
@@ -74,7 +76,7 @@ void ShaderNode::Draw(ShaderGraph& graph)
 
 	
 	//UI
-	if (isHovered)
+	if (graph.hovered == this)
 	{
 		float border = 1.0f;
 		draw_list->AddRect(ImVec2(m_Position.x - border, m_Position.y - border), ImVec2(m_Position.x + m_Size.x + border, m_Position.y + m_Size.y + border), ImColor(255, 150, 0), 5.0f);

@@ -16,12 +16,17 @@ ShaderGraph::~ShaderGraph()
 
 void ShaderGraph::Draw()
 {
+	hovered = nullptr;
 	//ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(2.5 * 1, 2.5 * 1));
 	//ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(10, 0));
-
 	for (std::list<ShaderNode*>::iterator it = nodes.begin(); it != nodes.end(); ++it)
 	{
 		(*it)->Input(*this);
+	}
+
+
+	for (std::list<ShaderNode*>::iterator it = nodes.begin(); it != nodes.end(); ++it)
+	{
 		(*it)->Draw(*this);
 		(*it)->InnerDraw(*this);
 	}
