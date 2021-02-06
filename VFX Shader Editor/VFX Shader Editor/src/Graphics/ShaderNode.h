@@ -58,6 +58,8 @@ struct InputNode
 	 {
 		 this->type = type;
 		 this->name = name;
+
+		 value1 = 5.f;
 	 }
 
 };
@@ -84,6 +86,10 @@ public:
 	float2 CalcNodeSize(ShaderGraph& graph, ShaderNode* node);
 
 	bool NodeHovering(ShaderGraph& graph, float2 position, float2 size);
+
+	void DrawTitle(ShaderGraph& g);
+	void DrawInputs(ShaderGraph& graph, unsigned int numInputs, unsigned int offset = 0);
+	void DrawOutputs(ShaderGraph& graph, unsigned int numOutputs, unsigned int offset = 0);
 public:
 	NodeType type;
 	float2 position;

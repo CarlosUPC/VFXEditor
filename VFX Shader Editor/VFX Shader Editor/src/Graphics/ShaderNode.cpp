@@ -1,5 +1,6 @@
 #include "ShaderNode.h"
 #include "ShaderGraph.h"
+#include "Random.h"
 ShaderNode::ShaderNode()
 {
 }
@@ -7,6 +8,7 @@ ShaderNode::ShaderNode()
 ShaderNode::ShaderNode(const char* name, NodeType type, float2 position)
 	: name(name), type(type), position(position)
 {
+	UID = Random::GenerateUUID();
 	ImVec2 textSize = ImGui::CalcTextSize(name);
 	title_size = { textSize.x, textSize.y };
 }
@@ -180,7 +182,7 @@ float2 ShaderNode::CalcNodeSize(ShaderGraph& graph, ShaderNode* node)
 {
 	float width = 200.0f;
 
-	return graph.scale * float2(width, 120.0f); // TODO: height should be based on input length
+	return graph.scale * float2(width, 80.0F + fmax(1.0f, inputs.size()*40.0f)); // TODO: height should be based on input length
 }
 
 bool ShaderNode::NodeHovering(ShaderGraph& graph, float2 position, float2 size)
@@ -198,4 +200,55 @@ bool ShaderNode::NodeHovering(ShaderGraph& graph, float2 position, float2 size)
 	ImGui::SetCursorScreenPos(prev);
 
 	return m_Hovered;
+}
+
+void ShaderNode::DrawTitle(ShaderGraph& g)
+{
+	//ImGui::Dummy(ImVec2(0, 3 * g.scale));
+	ImGui::Dummy(ImVec2(0, 40 * g.scale));
+	ImGui::SameLine();
+	ImGui::Text(name.c_str());
+	//ImGui::Dummy(ImVec2(0, 10 * g.scale));
+}
+
+void ShaderNode::DrawInputs(ShaderGraph& graph, unsigned int numInputs, unsigned int offset)
+{
+	for (unsigned int i = 0; i < numInputs; i++)
+	{
+		InputNode& input = this->inputs[i];
+
+		ImGui::PushID(this->UID);
+		//ImGui::SetNextItemWidth(100 * graph.scale);
+		//ImGui::Dummy(ImVec2(0, 10.0f * graph.scale));
+
+		//ImGui::SameLine();
+
+		if (input.type == ValueType::FLOAT1)
+		{
+			ImGui::SetNextItemWidth(100 * graph.scale);
+			float num = 2.0f;
+			ImGui::InputFloat(input.name.c_str(), &num);
+		}
+		else if (input.type == ValueType::FLOAT2)
+		{
+			ImGui::SetNextItemWidth(100 * graph.scale);
+			//ImGui::SameLine();
+			ImGui::InputFloat2(input.name.c_str(), &input.value2.x, "%.2f");
+		}
+		else if (input.type == ValueType::FLOAT3)
+		{
+			ImGui::SameLine();
+			ImGui::InputFloat(input.name.c_str(), &input.value1);
+		}
+		else if (input.type == ValueType::FLOAT4)
+		{
+			ImGui::InputFloat(input.name.c_str(), &input.value1);
+		}
+		else
+		{
+			ImGui::Text(name.c_str());
+		}
+
+		ImGui::PopID();
+	}
 }

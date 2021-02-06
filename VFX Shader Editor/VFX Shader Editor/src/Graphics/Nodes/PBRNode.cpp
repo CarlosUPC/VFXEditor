@@ -7,7 +7,7 @@ PBRNode::PBRNode()
 PBRNode::PBRNode(const char* name, NodeType type, float2 position)
 	: ShaderNode(name, type, position)
 {
-	inputs.push_back(InputNode("diffuse", ValueType::FLOAT3));
+	inputs.push_back(InputNode("diffuse", ValueType::FLOAT2));
 	inputs.push_back(InputNode("metallic", ValueType::FLOAT1));
 	inputs.push_back(InputNode("roughness", ValueType::FLOAT1));
 }
@@ -15,14 +15,10 @@ PBRNode::PBRNode(const char* name, NodeType type, float2 position)
 void PBRNode::InnerDraw(ShaderGraph& g)
 {
 
-	//ImGui::SetCursorScreenPos(ImVec2(position.x , position.y));
-
 	ImGui::BeginGroup();
-	//ImGui::Dummy(ImVec2(0, 3 * g.scale));
-	ImGui::Dummy(ImVec2(0, 40 * g.scale));
-	ImGui::SameLine();
-	ImGui::Text(name.c_str());
-	ImGui::Dummy(ImVec2(0, 10 * g.scale));
+	
+	DrawTitle(g);
+	DrawInputs(g, 3);
 
 	ImGui::EndGroup();
 }

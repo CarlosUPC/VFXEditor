@@ -96,7 +96,8 @@ void PanelShaderEditor::Draw()
 	ImGui::PushStyleVar(ImGuiStyleVar_Alpha, 0.25f);
 	ImGui::Text("Zoom x %.1f", current_shader->graph->scale);
 	ImGui::PopStyleVar();
-
+	float num = 1.0f;
+	ImGui::InputFloat("test", &num);
 	//ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(1, 1));
 	//ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
 
