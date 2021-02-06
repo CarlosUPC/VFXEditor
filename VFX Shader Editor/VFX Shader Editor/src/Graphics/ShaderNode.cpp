@@ -33,29 +33,34 @@ void ShaderNode::Input(ShaderGraph& graph)
 	}
 
 
-	if (isHovered)
-	{
-		//static bool dragging = false;
-		//float2 clickOffset;
-		//
-		////float2 mouseDelta = float2(ImGui::GetMouseDragDelta().x, ImGui::GetMouseDragDelta().y);
-		//clickOffset = { ImGui::GetMousePos().x - position.x * graph.scale, ImGui::GetMousePos().y +  - position.y * graph.scale };
-		//if (ImGui::IsMouseClicked(0))
-		//{
-		//	dragging = true;
-		//}
-		//if (dragging && ImGui::IsMouseReleased(0))
-		//{
-		//	dragging = false;
-		//}
-		//if (graph.selected == this && dragging && ImGui::IsMouseDragging(0))
-		//{
-		//	//this->position += mouseDelta;
-		//	
-		//	this->position += { ImGui::GetMousePos().x,  ImGui::GetMousePos().y };
-		//	this->position /= graph.scale;
-		//}
-	}
+	if (action.type == ActionNode::NONE && ImGui::IsMouseDragging(ImGuiMouseButton_Left) && NodeHovering(graph, this->position, this->size))
+		action.type = ActionNode::DRAG_NODE;
+
+
+
+	//if (isHovered)
+	//{
+	//	static bool dragging = false;
+	//	float2 clickOffset;
+	//	
+	//	//float2 mouseDelta = float2(ImGui::GetMouseDragDelta().x, ImGui::GetMouseDragDelta().y);
+	//	clickOffset = { ImGui::GetMousePos().x - position.x * graph.scale, ImGui::GetMousePos().y +  - position.y * graph.scale };
+	//	if (ImGui::IsMouseClicked(0))
+	//	{
+	//		dragging = true;
+	//	}
+	//	if (dragging && ImGui::IsMouseReleased(0))
+	//	{
+	//		dragging = false;
+	//	}
+	//	if (graph.selected == this && dragging && ImGui::IsMouseDragging(0))
+	//	{
+	//		//this->position += mouseDelta;
+	//		
+	//		this->position = { ImGui::GetWindowPos().x - ImGui::GetMousePos().x , ImGui::GetWindowPos().y - ImGui::GetMousePos().y  };
+	//		this->position /= graph.scale;
+	//	}
+	//}
 }
 
 void ShaderNode::Draw(ShaderGraph& graph)
@@ -109,7 +114,8 @@ float2 ShaderNode::CalcNodePosition(ShaderGraph& g, float2 pos)
 	pos.y += ImGui::GetWindowPos().y + g.scrolling.y;
 	pos *= g.scale;
 
-	if (g.selected == this && isHovered)
+
+	if (action.type == ActionNode::DRAG_NODE)
 	{
 		bool is_done = !ImGui::IsMouseDragging(ImGuiMouseButton_Left);
 		float2 delta = float2(ImGui::GetMouseDragDelta().x, ImGui::GetMouseDragDelta().y);
@@ -119,16 +125,54 @@ float2 ShaderNode::CalcNodePosition(ShaderGraph& g, float2 pos)
 		}
 		else
 		{
-			this->position += delta / g.scale;
-
-			/*pos = this->position;
-			pos.x += ImGui::GetWindowPos().x + g.scrolling.x;
-			pos.y += ImGui::GetWindowPos().y + g.scrolling.y;
-			pos *= g.scale;*/
-
-
+			action.mouse_pos = delta;
+			action.type = ActionNode::APPLY_DRAG;
 		}
 	}
+
+	if (action.type == ActionNode::APPLY_DRAG)
+	{
+		this->position += action.mouse_pos / g.scale;
+
+		pos = this->position;
+		pos.x += ImGui::GetWindowPos().x + g.scrolling.x;
+		pos.y += ImGui::GetWindowPos().y + g.scrolling.y;
+		pos *= g.scale;
+
+		action.type = ActionNode::NONE;
+	}
+
+
+	//if (g.selected == this && g.hovered)
+	//{
+	//	bool is_done = !ImGui::IsMouseDragging(ImGuiMouseButton_Left);
+	//	float2 delta = float2(ImGui::GetMouseDragDelta().x, ImGui::GetMouseDragDelta().y);
+	//	float2 mouse_pos;
+
+	//	if (!is_done) {
+	//		pos += delta;
+	//	}
+	//	else
+	//	{
+	//		 mouse_pos = delta;
+	//		//this->position += mouse_pos;
+	//		//this->position /= g.scale;
+
+	//		//pos = this->position;
+	//		//pos.x += /*ImGui::GetWindowPos().x +*/ g.scrolling.x;
+	//		//pos.y += /*ImGui::GetWindowPos().y +*/ g.scrolling.y;
+	//		//pos *= g.scale;
+
+
+	//	}
+	//	this->position += mouse_pos;
+	//	this->position /= g.scale;
+	//	pos = this->position;
+	//	pos.x += ImGui::GetWindowPos().x + g.scrolling.x;
+	//	pos.y += ImGui::GetWindowPos().y + g.scrolling.y;
+	//	pos *= g.scale;
+
+	//}
 	return pos;
 }
 

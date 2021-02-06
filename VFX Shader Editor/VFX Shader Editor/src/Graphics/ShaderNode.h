@@ -15,6 +15,20 @@ enum NodeType
 	UNKNOWN
 };
 
+struct ActionNode
+{
+	enum StateType
+	{
+		DRAG_NODE,
+		APPLY_DRAG,
+		NONE
+	};
+
+	StateType type = StateType::NONE;
+	float2 mouse_pos;
+
+
+};
 
 class ShaderNode
 {
@@ -40,4 +54,6 @@ public:
 	std::string name;
 
 	bool isHovered = false;
+
+	ActionNode action;
 };
