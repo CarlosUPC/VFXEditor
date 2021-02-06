@@ -15,6 +15,15 @@ enum NodeType
 	UNKNOWN
 };
 
+enum ValueType
+{
+	FLOAT1,
+	FLOAT2,
+	FLOAT3,
+	FLOAT4,
+	NONE
+};
+
 struct ActionNode
 {
 	enum StateType
@@ -29,6 +38,36 @@ struct ActionNode
 
 
 };
+
+struct InputNode
+{
+	ValueType type = ValueType::NONE;
+	float2 position;
+	std::string name;
+
+	union
+	{
+		float value1;
+		float2 value2;
+		float3 value3;
+		float4 value4;
+	};
+
+	 InputNode(){}
+	 InputNode(const char* name, ValueType type)
+	 {
+		 this->type = type;
+		 this->name = name;
+	 }
+
+};
+
+struct OutputNode
+{
+	ValueType type = ValueType::NONE;
+	float2 position;
+};
+
 
 class ShaderNode
 {
@@ -56,4 +95,7 @@ public:
 	bool isHovered = false;
 
 	ActionNode action;
+
+	std::vector<InputNode> inputs;
+	std::vector<OutputNode> outputs;
 };
