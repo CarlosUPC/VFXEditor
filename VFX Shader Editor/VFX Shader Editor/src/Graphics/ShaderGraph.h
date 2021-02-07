@@ -71,6 +71,7 @@ struct ActionGraph
 
 	ActionType type = ActionType::NONE;
 	Connector* link;
+
 };
 
 class ShaderGraph 

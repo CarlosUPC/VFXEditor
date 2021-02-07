@@ -44,6 +44,11 @@ struct Connector
 {
 	ShaderNode* to = nullptr;
 	ShaderNode* from = nullptr;
+	unsigned int index = 0;
+
+	void DrawConnector(ShaderGraph& g, bool isInput = false);
+
+	void AddBezierLine(ShaderGraph& g, float2 start, float2 end, bool isLinked = true);
 };
 
 struct InputNode
@@ -108,13 +113,14 @@ public:
 	float2 CalcNodeSize(ShaderGraph& graph, ShaderNode* node);
 
 	bool NodeHovering(ShaderGraph& graph, float2 position, float2 size);
+	bool ConnectorHovering(float2 position, float2 size);
 
 	void DrawTitle(ShaderGraph& g);
 	void DrawInputs(ShaderGraph& graph, unsigned int numInputs, unsigned int offset = 0);
 	void DrawOutputs(ShaderGraph& graph, unsigned int numOutputs, unsigned int offset = 0);
 
-	void DrawInputConnector(ShaderGraph& graph, InputNode input);
-	void DrawOutputConnector(ShaderGraph& graph, OutputNode output);
+	void DrawInputConnector(ShaderGraph& graph, InputNode& input, unsigned int index = 0);
+	void DrawOutputConnector(ShaderGraph& graph, OutputNode& output, unsigned int index = 0);
 public:
 	NodeType type;
 	float2 position;

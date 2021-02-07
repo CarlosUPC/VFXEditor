@@ -19,24 +19,24 @@ ShaderNode::~ShaderNode()
 
 void ShaderNode::Input(ShaderGraph& graph)
 {
-	if (NodeHovering(graph, this->position, this->size))
-	{
-		isHovered = true;
-		graph.hovered = this;
-		if (ImGui::IsMouseClicked(0))
-		{
-			graph.selected = this;
-		}
-	}
-	else
-	{
-		isHovered = false;
-		//graph.hovered = nullptr;
-	}
+	//if (NodeHovering(graph, this->position, this->size))
+	//{
+	//	isHovered = true;
+	//	graph.hovered = this;
+	//	if (ImGui::IsMouseClicked(0))
+	//	{
+	//		graph.selected = this;
+	//	}
+	//}
+	//else
+	//{
+	//	isHovered = false;
+	//	//graph.hovered = nullptr;
+	//}
 
 
-	if (action.type == ActionNode::NONE && ImGui::IsMouseDragging(ImGuiMouseButton_Left) && NodeHovering(graph, this->position, this->size))
-		action.type = ActionNode::DRAG_NODE;
+	//if (action.type == ActionNode::NONE && ImGui::IsMouseDragging(ImGuiMouseButton_Left) && NodeHovering(graph, this->position, this->size))
+	//	action.type = ActionNode::DRAG_NODE;
 
 
 
@@ -202,6 +202,20 @@ bool ShaderNode::NodeHovering(ShaderGraph& graph, float2 position, float2 size)
 	return m_Hovered;
 }
 
+bool ShaderNode::ConnectorHovering(float2 position, float2 size)
+{
+	ImVec2 previous = ImGui::GetCurrentWindow()->DC.CursorPos;
+
+	ImGui::SetCursorScreenPos(ImVec2(position.x, position.y));
+	ImGui::InvisibleButton("node", ImVec2(size.x, size.y));
+
+	bool hovered = ImGui::IsItemHovered();
+
+	ImGui::SetCursorScreenPos(previous);
+
+	return hovered;
+}
+
 void ShaderNode::DrawTitle(ShaderGraph& g)
 {
 	//ImGui::Dummy(ImVec2(0, 3 * g.scale));
@@ -218,7 +232,7 @@ void ShaderNode::DrawInputs(ShaderGraph& graph, unsigned int numInputs, unsigned
 		InputNode& input = this->inputs[i];
 
 		
-		DrawInputConnector(graph, input);
+		DrawInputConnector(graph, input, i);
 
 
 		ImGui::PushID(this->UID);
@@ -277,7 +291,7 @@ void ShaderNode::DrawOutputs(ShaderGraph& graph, unsigned int numOutputs, unsign
 	}
 }
 
-void ShaderNode::DrawInputConnector(ShaderGraph& graph, InputNode input)
+void ShaderNode::DrawInputConnector(ShaderGraph& graph, InputNode& input, unsigned int index )
 {
 
 	auto window = ImGui::GetCurrentWindow();
@@ -296,25 +310,27 @@ void ShaderNode::DrawInputConnector(ShaderGraph& graph, InputNode input)
 	draw_list->AddCircle(ImVec2(connector_pos.x, connector_pos.y), 10.0f * graph.scale, outlineColor, 16,  thickness);
 
 
-	float2 hitbox_pos = float2(connector_pos.x - graph.scale , connector_pos.y - graph.scale);
+	float2 hitbox_pos = float2(connector_pos.x - graph.scale * 20.0f , connector_pos.y - graph.scale * 20.0f);
 	float2 hitbox_size = float2(graph.scale * 40.0f);
 
 	if (graph.action.type == ActionGraph::ActionType::NONE)
 	{
-		if (ImGui::IsMouseDragging(ImGuiMouseButton_Left) && NodeHovering(graph, hitbox_pos, hitbox_size))
+		if (ImGui::IsMouseDragging(ImGuiMouseButton_Left) && ConnectorHovering(hitbox_pos, hitbox_size))
 		{
 			//start linking
 			input.connector.to = this;
 			input.connector.from = nullptr;
 
 			graph.action.link = &input.connector;
+			graph.action.link->index = index;
 
-			graph.action.type == ActionGraph::ActionType::DRAG_CONNECTOR;
+			graph.action.type = ActionGraph::ActionType::DRAG_CONNECTOR;
 		}
 	}
-	else if (graph.action.type == ActionGraph::ActionType::DRAG_CONNECTOR)
+
+	 if (graph.action.type == ActionGraph::ActionType::DRAG_CONNECTOR)
 	{
-		if (ImGui::IsMouseDragging(ImGuiMouseButton_Left) && NodeHovering(graph, hitbox_pos, hitbox_size))
+		if (ImGui::IsMouseDragging(ImGuiMouseButton_Left) && ConnectorHovering( hitbox_pos, hitbox_size))
 		{
 			//connect linking
 			Connector* link = graph.action.link;
@@ -323,30 +339,35 @@ void ShaderNode::DrawInputConnector(ShaderGraph& graph, InputNode input)
 			if (this == graph.action.link->from) return;
 
 			link->to = this;
+			link->index = index;
 
-			graph.action.type == ActionGraph::ActionType::RELEASE_CONNECTOR;
+			graph.action.type = ActionGraph::ActionType::RELEASE_CONNECTOR;
 		}
 	}
-	else if (graph.action.type == ActionGraph::ActionType::RELEASE_CONNECTOR)
+
+	 if (graph.action.type == ActionGraph::ActionType::RELEASE_CONNECTOR)
 	{
 		if (NodeHovering(graph, hitbox_pos, hitbox_size))
 		{
 			//finish linking
 			Connector* link = graph.action.link;
 
-			if(link->to == nullptr || link->from == nullptr) return;
+			if (link->to == nullptr || link->from == nullptr) return;
 
 			link->to = this;
+			link->index = index;
+
+
 			input.connector = *link;
 
-			graph.action.type == ActionGraph::ActionType::NONE;
+			graph.action.type = ActionGraph::ActionType::NONE;
 		}
 	}
 
 
 }
 
-void ShaderNode::DrawOutputConnector(ShaderGraph& graph, OutputNode output)
+void ShaderNode::DrawOutputConnector(ShaderGraph& graph, OutputNode& output, unsigned int index)
 {
 
 	auto window = ImGui::GetCurrentWindow();
@@ -366,25 +387,26 @@ void ShaderNode::DrawOutputConnector(ShaderGraph& graph, OutputNode output)
 	draw_list->AddCircle(ImVec2(connector_pos.x, connector_pos.y), 10.0f * graph.scale, outlineColor, 16, thickness);
 
 
-	float2 hitbox_pos = float2(connector_pos.x - graph.scale, connector_pos.y - graph.scale);
+	float2 hitbox_pos = float2(connector_pos.x - graph.scale * 20.0f, connector_pos.y - graph.scale * 20.0f);
 	float2 hitbox_size = float2(graph.scale * 40.0f);
 
 	if (graph.action.type == ActionGraph::ActionType::NONE)
 	{
-		if (ImGui::IsMouseDragging(ImGuiMouseButton_Left) && NodeHovering(graph, hitbox_pos, hitbox_size))
+		if (ImGui::IsMouseDragging(ImGuiMouseButton_Left) && ConnectorHovering( hitbox_pos, hitbox_size))
 		{
 			//start linking
 			output.connector.to = nullptr;
 			output.connector.from = this;
 
 			graph.action.link = &output.connector;
+			graph.action.link->index = index;
 
-			graph.action.type == ActionGraph::ActionType::DRAG_CONNECTOR;
+			graph.action.type = ActionGraph::ActionType::DRAG_CONNECTOR;
 		}
 	}
-	else if (graph.action.type == ActionGraph::ActionType::DRAG_CONNECTOR)
+	 if (graph.action.type == ActionGraph::ActionType::DRAG_CONNECTOR)
 	{
-		if (ImGui::IsMouseDragging(ImGuiMouseButton_Left) && NodeHovering(graph, hitbox_pos, hitbox_size))
+		if (ImGui::IsMouseDragging(ImGuiMouseButton_Left) && ConnectorHovering( hitbox_pos, hitbox_size))
 		{
 			//connect linking
 			Connector* link = graph.action.link;
@@ -393,20 +415,99 @@ void ShaderNode::DrawOutputConnector(ShaderGraph& graph, OutputNode output)
 			if (this == graph.action.link->to) return;
 
 			link->from = this;
+			link->index = index;
 
-			graph.action.type == ActionGraph::ActionType::RELEASE_CONNECTOR;
+			graph.action.type = ActionGraph::ActionType::RELEASE_CONNECTOR;
 		}
 	}
-	else if (graph.action.type == ActionGraph::ActionType::RELEASE_CONNECTOR)
+	 if (graph.action.type == ActionGraph::ActionType::RELEASE_CONNECTOR)
 	{
 		if (NodeHovering(graph, hitbox_pos, hitbox_size))
 		{
 			//finish linking
-			
+
 			//Nothing to do, an input connector can not be bound to a output connector
 
-			graph.action.type == ActionGraph::ActionType::NONE;
+			graph.action.type = ActionGraph::ActionType::NONE;
 		}
 	}
+
+}
+
+void Connector::DrawConnector(ShaderGraph& g, bool isInput)
+{
+
+	if (g.action.type == ActionGraph::ActionType::DRAG_CONNECTOR && g.action.link == this)
+	{
+		if(ImGui::IsMouseDragging(ImGuiMouseButton_Left))
+		{
+			ShaderNode* node_output = this->from;
+			ShaderNode* node_input = this->to;
+
+			if (node_input && node_output)
+			{
+				//render complete
+			}
+			else
+			{
+				//render incomplete
+				float2 start_pos;
+
+				if (node_output != nullptr) start_pos = float2(this->from->outputs[index].position);
+				else if (node_input != nullptr) start_pos = float2(this->to->inputs[index].position);
+
+				this->AddBezierLine(g, start_pos, float2(ImGui::GetMousePos().x, ImGui::GetMousePos().y), false);
+			}
+		}
+		else
+		{
+			g.action.type = ActionGraph::ActionType::RELEASE_CONNECTOR;
+		}
+	}
+	else if(g.action.type == ActionGraph::ActionType::RELEASE_CONNECTOR && g.action.link == this)
+	{
+		g.action.type = ActionGraph::ActionType::NONE;
+	}
+	else
+	{
+		//drawing connection between nodes
+	}
+
+
+}
+
+void Connector::AddBezierLine(ShaderGraph& g, float2 start, float2 end, bool isLinked)
+{
+
+	//float2 v_start(start.x, start.y);
+	//float2 v_end(end.x, end.y);
+
+	float bezier = 200.0f;
+
+	float length = start.x - end.x;
+	
+
+	length = math::Min(length * 0.5f, 50.0f * g.scale);
+
+	float2 cp0, cp1;
+
+	if (!isLinked && start.x > end.x) {
+		std::swap(start, end);
+		//std::swap(start, end);
+	}
+
+	if (start.x > end.x && false) {
+		cp0 = start - float2(length, 0);
+		cp1 = end + float2(length, 0);
+	}
+	else {
+		cp0 = start + float2(length, 0);
+		cp1 = end - float2(length, 0);
+	}
+
+	ImGui::GetCurrentWindow()->DrawList->AddLine(ImVec2(start.x, start.y), ImVec2(cp0.x, cp0.y), ImColor(120, 120, 120), g.scale * 5.f);
+	ImGui::GetCurrentWindow()->DrawList->AddLine(ImVec2(cp0.x, cp0.y), ImVec2(cp1.x, cp1.y), ImColor(120, 120, 120), g.scale * 5.f);
+	ImGui::GetCurrentWindow()->DrawList->AddLine(ImVec2(cp1.x, cp1.y), ImVec2(end.x, end.y), ImColor(120, 120, 120), g.scale * 5.f);
+
 
 }

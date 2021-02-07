@@ -31,6 +31,19 @@ void ShaderGraph::Draw()
 		(*it)->InnerDraw(*this);
 	}
 
+	for (std::list<ShaderNode*>::iterator it = nodes.begin(); it != nodes.end(); ++it)
+	{
+		for (auto& input : (*it)->inputs) {
+			input.connector.DrawConnector(*this, true);
+			
+		}
+
+		for (auto& output : (*it)->outputs) {
+			output.connector.DrawConnector(*this, true);
+			
+		}
+	}
+
 
 	//ImGui::PopStyleVar(2);
 }
