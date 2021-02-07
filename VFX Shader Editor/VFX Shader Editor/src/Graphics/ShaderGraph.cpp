@@ -20,6 +20,10 @@ void ShaderGraph::Draw()
 	//ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(2.5 * 1, 2.5 * 1));
 	//ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(10, 0));
 
+	for (std::list<ShaderNode*>::iterator it = nodes.begin(); it != nodes.end(); ++it)
+	{
+		(*it)->Input(*this);
+	}
 
 	for (std::list<ShaderNode*>::iterator it = nodes.begin(); it != nodes.end(); ++it)
 	{
@@ -27,10 +31,6 @@ void ShaderGraph::Draw()
 		(*it)->InnerDraw(*this);
 	}
 
-	for (std::list<ShaderNode*>::iterator it = nodes.begin(); it != nodes.end(); ++it)
-	{
-		(*it)->Input(*this);
-	}
 
 	//ImGui::PopStyleVar(2);
 }

@@ -217,38 +217,73 @@ void ShaderNode::DrawInputs(ShaderGraph& graph, unsigned int numInputs, unsigned
 	{
 		InputNode& input = this->inputs[i];
 
-		ImGui::PushID(this->UID);
-		//ImGui::SetNextItemWidth(100 * graph.scale);
-		//ImGui::Dummy(ImVec2(0, 10.0f * graph.scale));
+		
+		DrawInputConnector(graph, input);
 
-		//ImGui::SameLine();
+
+		ImGui::PushID(this->UID);
+		
+		//ImGui::SetNextItemWidth(2 * graph.scale);
+		ImGui::Dummy(ImVec2(0, 40.0f * graph.scale));
+
+		ImGui::SameLine(30.0f);
 
 		if (input.type == ValueType::FLOAT1)
 		{
-			ImGui::SetNextItemWidth(100 * graph.scale);
-			float num = 2.0f;
-			ImGui::InputFloat(input.name.c_str(), &num);
+			//ImGui::SetNextItemWidth(100 * graph.scale);
+			//float num = 2.0f;
+			//ImGui::InputFloat(input.name.c_str(), &num);
+			//ImGui::SetNextItemWidth(400 * graph.scale);
+			//ImGui::SameLine(50.0f);
+			ImGui::Text(input.name.c_str());
 		}
 		else if (input.type == ValueType::FLOAT2)
 		{
-			ImGui::SetNextItemWidth(100 * graph.scale);
-			//ImGui::SameLine();
-			ImGui::InputFloat2(input.name.c_str(), &input.value2.x, "%.2f");
+			//ImGui::SetNextItemWidth(100 * graph.scale);
+			////ImGui::SameLine();
+			//ImGui::InputFloat2(input.name.c_str(), &input.value2.x, "%.2f");
+			//ImGui::SetNextItemWidth(400 * graph.scale);
+			//ImGui::SameLine(50.0f);
+			ImGui::Text(input.name.c_str());
 		}
 		else if (input.type == ValueType::FLOAT3)
 		{
-			ImGui::SameLine();
-			ImGui::InputFloat(input.name.c_str(), &input.value1);
+			/*ImGui::SameLine();
+			ImGui::InputFloat(input.name.c_str(), &input.value1);*/
+			ImGui::Text(input.name.c_str());
 		}
 		else if (input.type == ValueType::FLOAT4)
 		{
-			ImGui::InputFloat(input.name.c_str(), &input.value1);
+			/*ImGui::InputFloat(input.name.c_str(), &input.value1);*/
+			ImGui::Text(input.name.c_str());
 		}
 		else
 		{
-			ImGui::Text(name.c_str());
+			ImGui::Text(input.name.c_str());
 		}
 
 		ImGui::PopID();
 	}
+}
+
+void ShaderNode::DrawInputConnector(ShaderGraph& graph, InputNode input)
+{
+
+	auto window = ImGui::GetCurrentWindow();
+	float2 connector_pos = float2(window->DC.CursorPos.x + (10.0f * graph.scale), window->DC.CursorPos.y + (7.5f * graph.scale));
+
+
+	auto draw_list = window->DrawList;
+
+	input.position = connector_pos;
+
+	float thickness = 1 * graph.scale;
+	ImU32 fillColor = IM_COL32(100, 100, 105, 255);
+	ImU32 outlineColor = IM_COL32(200, 0, 0, 255);
+
+	draw_list->AddCircleFilled(ImVec2(connector_pos.x, connector_pos.y), 10.0f * graph.scale, fillColor, 16);
+	draw_list->AddCircle(ImVec2(connector_pos.x, connector_pos.y), 10.0f * graph.scale, outlineColor, 16,  thickness);
+
+
+
 }

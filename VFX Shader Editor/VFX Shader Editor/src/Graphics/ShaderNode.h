@@ -8,6 +8,7 @@
 #include "Globals.h"
 
 class ShaderGraph;
+class ShaderNode;
 
 enum NodeType
 {
@@ -70,6 +71,11 @@ struct OutputNode
 	float2 position;
 };
 
+struct Connector
+{
+	ShaderNode* to = nullptr;
+	ShaderNode* from = nullptr;
+};
 
 class ShaderNode
 {
@@ -89,7 +95,10 @@ public:
 
 	void DrawTitle(ShaderGraph& g);
 	void DrawInputs(ShaderGraph& graph, unsigned int numInputs, unsigned int offset = 0);
-	void DrawOutputs(ShaderGraph& graph, unsigned int numOutputs, unsigned int offset = 0);
+	//void DrawOutputs(ShaderGraph& graph, unsigned int numOutputs, unsigned int offset = 0);
+
+	void DrawInputConnector(ShaderGraph& graph, InputNode input);
+	//void DrawOutputConnector(ShaderGraph& graph, float2 position, OutputNode output);
 public:
 	NodeType type;
 	float2 position;

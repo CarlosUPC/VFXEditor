@@ -7,6 +7,7 @@
 class ShaderGraph;
 class ShaderNode;
 enum NodeType;
+struct Connector;
 
 enum class ShaderType
 {
@@ -59,7 +60,18 @@ public:
 
 };
 
+struct ActionGraph
+{
+	enum ActionType
+	{
+		DRAG_CONNECTOR,
+		RELEASE_CONNECTOR,
+		NONE
+	};
 
+	ActionType type = ActionType::NONE;
+	Connector* link;
+};
 
 class ShaderGraph 
 {
@@ -82,4 +94,6 @@ public:
 
 	ShaderNode* selected = nullptr;
 	ShaderNode* hovered = nullptr;
+
+	ActionGraph action;
 };
