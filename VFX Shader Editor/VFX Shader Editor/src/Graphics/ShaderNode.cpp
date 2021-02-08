@@ -322,7 +322,7 @@ void ShaderNode::DrawInputConnector(ShaderGraph& graph, InputNode& input, unsign
 			input.connector.from = nullptr;
 
 			graph.action.link = &input.connector;
-			graph.action.link->index = index;
+			graph.action.link->index_in = index;
 
 			graph.action.type = ActionGraph::ActionType::DRAG_CONNECTOR;
 		}
@@ -339,7 +339,7 @@ void ShaderNode::DrawInputConnector(ShaderGraph& graph, InputNode& input, unsign
 			if (this == graph.action.link->from) return;
 
 			link->to = this;
-			link->index = index;
+			link->index_in = index;
 
 			graph.action.type = ActionGraph::ActionType::RELEASE_CONNECTOR;
 		}
@@ -355,7 +355,7 @@ void ShaderNode::DrawInputConnector(ShaderGraph& graph, InputNode& input, unsign
 			if (link->to == nullptr || link->from == nullptr) return;
 
 			link->to = this;
-			link->index = index;
+			link->index_in = index;
 
 
 			input.connector = *link;
@@ -399,7 +399,7 @@ void ShaderNode::DrawOutputConnector(ShaderGraph& graph, OutputNode& output, uns
 			output.connector.from = this;
 
 			graph.action.link = &output.connector;
-			graph.action.link->index = index;
+			graph.action.link->index_out = index;
 
 			graph.action.type = ActionGraph::ActionType::DRAG_CONNECTOR;
 		}
@@ -415,7 +415,7 @@ void ShaderNode::DrawOutputConnector(ShaderGraph& graph, OutputNode& output, uns
 			if (this == graph.action.link->to) return;
 
 			link->from = this;
-			link->index = index;
+			link->index_out = index;
 
 			graph.action.type = ActionGraph::ActionType::RELEASE_CONNECTOR;
 		}
@@ -453,8 +453,8 @@ void Connector::DrawConnector(ShaderGraph& g, bool isInput)
 				//render incomplete
 				float2 start_pos;
 
-				if (node_output != nullptr) start_pos = float2(this->from->outputs[index].position);
-				else if (node_input != nullptr) start_pos = float2(this->to->inputs[index].position);
+				if (node_output != nullptr) start_pos = float2(this->from->outputs[index_out].position);
+				else if (node_input != nullptr) start_pos = float2(this->to->inputs[index_in].position);
 
 				this->AddBezierLine(g, start_pos, float2(ImGui::GetMousePos().x, ImGui::GetMousePos().y), false);
 			}
@@ -471,6 +471,21 @@ void Connector::DrawConnector(ShaderGraph& g, bool isInput)
 	else
 	{
 		//drawing connection between nodes
+		ShaderNode* node_output = this->from;
+		ShaderNode* node_input = this->to;
+
+		if (node_input && node_output)
+		{
+			//render complete
+			float2 end = float2(this->to->inputs[index_in].position);
+			float2 start = float2(this->from->outputs[index_out].position);
+
+			this->AddBezierLine(g, start, end, true);
+
+			//if (node_output != nullptr) start_pos = float2(this->from->outputs[index].position);
+			//else if (node_input != nullptr) start_pos = float2(this->to->inputs[index].position);
+		}
+
 	}
 
 
@@ -478,36 +493,38 @@ void Connector::DrawConnector(ShaderGraph& g, bool isInput)
 
 void Connector::AddBezierLine(ShaderGraph& g, float2 start, float2 end, bool isLinked)
 {
-
+	float2 v_start = start;
+	float2 v_end = end;
 	//float2 v_start(start.x, start.y);
 	//float2 v_end(end.x, end.y);
 
 	float bezier = 200.0f;
 
-	float length = start.x - end.x;
-	
+	//float length = start.x - end.x;
+	float length = math::Length(float2(start.x, end.x));
 
 	length = math::Min(length * 0.5f, 50.0f * g.scale);
 
 	float2 cp0, cp1;
 
 	if (!isLinked && start.x > end.x) {
+		std::swap(v_start, v_end);
 		std::swap(start, end);
-		//std::swap(start, end);
 	}
 
-	if (start.x > end.x && false) {
-		cp0 = start - float2(length, 0);
-		cp1 = end + float2(length, 0);
+	if (v_start.x > v_end.x && false) {
+		cp0 = v_start - float2(length, 0);
+		cp1 = v_end + float2(length, 0);
 	}
 	else {
-		cp0 = start + float2(length, 0);
-		cp1 = end - float2(length, 0);
+		cp0 = v_start + float2(length, 0);
+		cp1 = v_end - float2(length, 0);
 	}
 
-	ImGui::GetCurrentWindow()->DrawList->AddLine(ImVec2(start.x, start.y), ImVec2(cp0.x, cp0.y), ImColor(120, 120, 120), g.scale * 5.f);
-	ImGui::GetCurrentWindow()->DrawList->AddLine(ImVec2(cp0.x, cp0.y), ImVec2(cp1.x, cp1.y), ImColor(120, 120, 120), g.scale * 5.f);
-	ImGui::GetCurrentWindow()->DrawList->AddLine(ImVec2(cp1.x, cp1.y), ImVec2(end.x, end.y), ImColor(120, 120, 120), g.scale * 5.f);
+	//ImGui::GetCurrentWindow()->DrawList->AddLine(ImVec2(start.x, start.y), ImVec2(cp0.x, cp0.y), ImColor(120, 120, 120), g.scale * 5.f);
+	//ImGui::GetCurrentWindow()->DrawList->AddLine(ImVec2(cp0.x, cp0.y), ImVec2(cp1.x, cp1.y), ImColor(120, 120, 120), g.scale * 5.f);
+	//ImGui::GetCurrentWindow()->DrawList->AddLine(ImVec2(cp1.x, cp1.y), ImVec2(end.x, end.y), ImColor(120, 120, 120), g.scale * 5.f);
 
+	ImGui::GetCurrentWindow()->DrawList->AddBezierCurve(ImVec2(start.x, start.y), ImVec2(cp0.x, cp0.y), ImVec2(cp1.x, cp1.y), ImVec2(end.x, end.y), ImColor(120, 120, 120), g.scale * 5.f);
 
 }

@@ -39,7 +39,7 @@ void ShaderGraph::Draw()
 		}
 
 		for (auto& output : (*it)->outputs) {
-			output.connector.DrawConnector(*this, true);
+			output.connector.DrawConnector(*this, false);
 			
 		}
 	}

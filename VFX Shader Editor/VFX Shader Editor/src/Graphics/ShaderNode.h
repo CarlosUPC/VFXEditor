@@ -44,7 +44,8 @@ struct Connector
 {
 	ShaderNode* to = nullptr;
 	ShaderNode* from = nullptr;
-	unsigned int index = 0;
+	unsigned int index_in = 0;
+	unsigned int index_out = 0;
 
 	void DrawConnector(ShaderGraph& g, bool isInput = false);
 
