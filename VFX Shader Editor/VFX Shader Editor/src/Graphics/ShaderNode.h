@@ -9,6 +9,8 @@
 
 class ShaderGraph;
 class ShaderNode;
+struct InputNode;
+struct OutputNode;
 
 enum NodeType
 {
@@ -42,6 +44,8 @@ struct ActionNode
 
 struct Connector
 {
+	
+
 	ShaderNode* to = nullptr;
 	ShaderNode* from = nullptr;
 	unsigned int index_in = 0;
@@ -49,8 +53,14 @@ struct Connector
 
 	void DrawConnector(ShaderGraph& g, bool isInput = false);
 
+	void DrawInputChannel(ShaderGraph& g, InputNode& input);
+	void DrawOutputChannel(ShaderGraph& g, OutputNode& output);
+
 	void AddBezierLine(ShaderGraph& g, float2 start, float2 end, bool isLinked = true);
+
+	bool ConnectorHovering(float2 position, float2 size);
 };
+
 
 struct InputNode
 {
@@ -99,8 +109,10 @@ struct OutputNode
 };
 
 
+
 class ShaderNode
 {
+	
 public:
 	ShaderNode();
 	ShaderNode(const char* name, NodeType type, float2 position);

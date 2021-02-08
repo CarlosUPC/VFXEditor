@@ -19,24 +19,25 @@ ShaderNode::~ShaderNode()
 
 void ShaderNode::Input(ShaderGraph& graph)
 {
-	//if (NodeHovering(graph, this->position, this->size))
-	//{
-	//	isHovered = true;
-	//	graph.hovered = this;
-	//	if (ImGui::IsMouseClicked(0))
-	//	{
-	//		graph.selected = this;
-	//	}
-	//}
-	//else
-	//{
-	//	isHovered = false;
-	//	//graph.hovered = nullptr;
-	//}
+	if (NodeHovering(graph, this->position, this->size))
+	{
+		isHovered = true;
+		graph.hovered = this;
+		if (ImGui::IsMouseClicked(0))
+		{
+			graph.selected = this;
+		}
+	}
+	else
+	{
+		isHovered = false;
+		//graph.hovered = nullptr;
+	}
 
 
-	//if (action.type == ActionNode::NONE && ImGui::IsMouseDragging(ImGuiMouseButton_Left) && NodeHovering(graph, this->position, this->size))
-	//	action.type = ActionNode::DRAG_NODE;
+	if (graph.action.type == ActionGraph::NONE && action.type == ActionNode::NONE && ImGui::IsMouseDragging(ImGuiMouseButton_Left) && NodeHovering(graph, this->position, this->size))
+		action.type = ActionNode::DRAG_NODE;
+	
 
 
 
@@ -298,32 +299,35 @@ void ShaderNode::DrawInputConnector(ShaderGraph& graph, InputNode& input, unsign
 	float2 connector_pos = float2(window->DC.CursorPos.x + (10.0f * graph.scale), window->DC.CursorPos.y + (7.5f * graph.scale));
 
 
-	auto draw_list = window->DrawList;
+	//auto draw_list = window->DrawList;
 
 	input.position = connector_pos;
 
-	float thickness = 1 * graph.scale;
+	/*float thickness = 1 * graph.scale;
 	ImU32 fillColor = IM_COL32(100, 100, 105, 255);
 	ImU32 outlineColor = IM_COL32(200, 0, 0, 255);
 
 	draw_list->AddCircleFilled(ImVec2(connector_pos.x, connector_pos.y), 10.0f * graph.scale, fillColor, 16);
-	draw_list->AddCircle(ImVec2(connector_pos.x, connector_pos.y), 10.0f * graph.scale, outlineColor, 16,  thickness);
+	draw_list->AddCircle(ImVec2(connector_pos.x, connector_pos.y), 10.0f * graph.scale, outlineColor, 16,  thickness);*/
 
 
 	float2 hitbox_pos = float2(connector_pos.x - graph.scale * 20.0f , connector_pos.y - graph.scale * 20.0f);
 	float2 hitbox_size = float2(graph.scale * 40.0f);
 
+	
+
 	if (graph.action.type == ActionGraph::ActionType::NONE )
 	{
 		if (ImGui::IsMouseDragging(ImGuiMouseButton_Left) && ConnectorHovering(hitbox_pos, hitbox_size))
 		{
+			
 			graph.action.type = ActionGraph::ActionType::DRAG_CONNECTOR;
 			//start linking
 			input.connector.to = this;
 			//input.connector.from = nullptr;
 
-			graph.action.link = &input.connector;
-			graph.action.link->index_in = index;
+			graph.action.connector = &input.connector;
+			graph.action.connector->index_in = index;
 
 		}
 	}
@@ -332,14 +336,15 @@ void ShaderNode::DrawInputConnector(ShaderGraph& graph, InputNode& input, unsign
 	{
 		if (ImGui::IsMouseDragging(ImGuiMouseButton_Left) && ConnectorHovering(hitbox_pos, hitbox_size))
 		{
+			
 			//connect linking
-			Connector* link = graph.action.link;
+			Connector* current_connector = graph.action.connector;
 
-			if (link->to != nullptr) return;
-			if (this == graph.action.link->from) return;
+			if (current_connector->to != nullptr) return;
+			if (this == graph.action.connector->from) return;
 
-			link->to = this;
-			link->index_in = index;
+			current_connector->to = this;
+			current_connector->index_in = index;
 
 			//graph.action.type = ActionGraph::ActionType::RELEASE_CONNECTOR;
 		}
@@ -349,23 +354,24 @@ void ShaderNode::DrawInputConnector(ShaderGraph& graph, InputNode& input, unsign
 	{
 		if (ConnectorHovering( hitbox_pos, hitbox_size))
 		{
+			
 			//finish linking
-			Connector* link = graph.action.link;
+			Connector* current_connector = graph.action.connector;
 
 			//if (link->to == nullptr || link->from == nullptr) return;
 
-			link->to = this;
-			link->index_in = index;
+			current_connector->to = this;
+			current_connector->index_in = index;
 
 
-			input.connector = *link;
+			input.connector = *current_connector;
 
-			for (uint i = 0; i < link->from->outputs.size(); i++)
+			for (uint i = 0; i < current_connector->from->outputs.size(); i++)
 			{
-				if (&link->from->outputs[i].connector == link)
+				if (&current_connector->from->outputs[i].connector == current_connector)
 				{
-					link->from->outputs[i].connector.to = nullptr;
-					link->from->outputs[i].connector.from = nullptr;
+					current_connector->from->outputs[i].connector.to = nullptr;
+					current_connector->from->outputs[i].connector.from = nullptr;
 					break;
 				}
 			}
@@ -386,31 +392,34 @@ void ShaderNode::DrawOutputConnector(ShaderGraph& graph, OutputNode& output, uns
 	float2 connector_pos = float2(window->DC.CursorPos.x + ((width - 30.0f) * graph.scale), window->DC.CursorPos.y + (7.5f * graph.scale));
 
 
-	auto draw_list = window->DrawList;
 
 	output.position = connector_pos;
+	//auto draw_list = window->DrawList;
 
-	float thickness = 1 * graph.scale;
+	/*float thickness = 1 * graph.scale;
 	ImU32 fillColor = IM_COL32(100, 100, 105, 255);
 	ImU32 outlineColor = IM_COL32(0, 200, 0, 255);
 
 	draw_list->AddCircleFilled(ImVec2(connector_pos.x, connector_pos.y), 10.0f * graph.scale, fillColor, 16);
-	draw_list->AddCircle(ImVec2(connector_pos.x, connector_pos.y), 10.0f * graph.scale, outlineColor, 16, thickness);
+	draw_list->AddCircle(ImVec2(connector_pos.x, connector_pos.y), 10.0f * graph.scale, outlineColor, 16, thickness);*/
 
 
 	float2 hitbox_pos = float2(connector_pos.x - graph.scale * 20.0f, connector_pos.y - graph.scale * 20.0f);
 	float2 hitbox_size = float2(graph.scale * 40.0f);
 
+	
+
 	if (graph.action.type == ActionGraph::ActionType::NONE )
 	{
 		if (ImGui::IsMouseDragging(ImGuiMouseButton_Left) && ConnectorHovering( hitbox_pos, hitbox_size))
 		{
+			
 			//start linking
 			//output.connector.to = nullptr;
 			output.connector.from = this;
 
-			graph.action.link = &output.connector;
-			graph.action.link->index_out = index;
+			graph.action.connector = &output.connector;
+			graph.action.connector->index_out = index;
 
 			graph.action.type = ActionGraph::ActionType::DRAG_CONNECTOR;
 		}
@@ -419,14 +428,15 @@ void ShaderNode::DrawOutputConnector(ShaderGraph& graph, OutputNode& output, uns
 	{
 		if (ImGui::IsMouseDragging(ImGuiMouseButton_Left) && ConnectorHovering( hitbox_pos, hitbox_size))
 		{
+			
 			//connect linking
-			Connector* link = graph.action.link;
+			Connector* current_connector = graph.action.connector;
 
-			if (link->from != nullptr) return;
-			if (this == graph.action.link->to) return;
+			if (current_connector->from != nullptr) return;
+			if (this == graph.action.connector->to) return;
 
-			link->from = this;
-			link->index_out = index;
+			current_connector->from = this;
+			current_connector->index_out = index;
 
 			//graph.action.type = ActionGraph::ActionType::RELEASE_CONNECTOR;
 		}
@@ -435,6 +445,7 @@ void ShaderNode::DrawOutputConnector(ShaderGraph& graph, OutputNode& output, uns
 	{
 		if (ConnectorHovering( hitbox_pos, hitbox_size))
 		{
+			
 			//finish linking
 
 			//Nothing to do, an input connector can not be bound to a output connector
@@ -447,8 +458,9 @@ void ShaderNode::DrawOutputConnector(ShaderGraph& graph, OutputNode& output, uns
 
 void Connector::DrawConnector(ShaderGraph& g, bool isInput)
 {
+	
 
-	if (g.action.type == ActionGraph::ActionType::DRAG_CONNECTOR && g.action.link == this)
+	if (g.action.type == ActionGraph::ActionType::DRAG_CONNECTOR && g.action.connector == this)
 	{
 		if(ImGui::IsMouseDragging(ImGuiMouseButton_Left))
 		{
@@ -482,7 +494,7 @@ void Connector::DrawConnector(ShaderGraph& g, bool isInput)
 			g.action.type = ActionGraph::ActionType::RELEASE_CONNECTOR;
 		}
 	}
-	else if(g.action.type == ActionGraph::ActionType::RELEASE_CONNECTOR && g.action.link == this)
+	else if(g.action.type == ActionGraph::ActionType::RELEASE_CONNECTOR && g.action.connector == this)
 	{
 		g.action.type = ActionGraph::ActionType::NONE;
 	}
@@ -507,6 +519,47 @@ void Connector::DrawConnector(ShaderGraph& g, bool isInput)
 	}
 
 
+}
+
+void Connector::DrawInputChannel(ShaderGraph& g, InputNode& input)
+{
+	auto draw_list = ImGui::GetCurrentWindow()->DrawList;
+
+	float thickness = 1 * g.scale;
+	ImU32 fillColor = IM_COL32(100, 100, 105, 255);
+	ImU32 outlineColor = IM_COL32(0, 200, 0, 255);
+
+	draw_list->AddCircleFilled(ImVec2(input.position.x, input.position.y), 10.0f * g.scale, fillColor, 16);
+	draw_list->AddCircle(ImVec2(input.position.x, input.position.y), 10.0f * g.scale, outlineColor, 16, thickness);
+
+
+	float2 hitbox_pos = float2(input.position.x - g.scale * 20.0f, input.position.y - g.scale * 20.0f);
+	float2 hitbox_size = float2(g.scale * 40.0f);
+
+	if (ConnectorHovering(hitbox_pos, hitbox_size))
+	{
+		g.hovered = nullptr;
+	}
+}
+
+void Connector::DrawOutputChannel(ShaderGraph& g, OutputNode& output)
+{
+	auto draw_list = ImGui::GetCurrentWindow()->DrawList;
+
+	float thickness = 1 * g.scale;
+	ImU32 fillColor = IM_COL32(100, 100, 105, 255);
+	ImU32 outlineColor = IM_COL32(0, 200, 0, 255);
+
+	draw_list->AddCircleFilled(ImVec2(output.position.x, output.position.y), 10.0f * g.scale, fillColor, 16);
+	draw_list->AddCircle(ImVec2(output.position.x, output.position.y), 10.0f * g.scale, outlineColor, 16, thickness);
+
+	float2 hitbox_pos = float2(output.position.x - g.scale * 20.0f, output.position.y - g.scale * 20.0f);
+	float2 hitbox_size = float2(g.scale * 40.0f);
+
+	if (ConnectorHovering(hitbox_pos, hitbox_size))
+	{
+		g.hovered = nullptr;
+	}
 }
 
 void Connector::AddBezierLine(ShaderGraph& g, float2 start, float2 end, bool isLinked)
@@ -545,4 +598,18 @@ void Connector::AddBezierLine(ShaderGraph& g, float2 start, float2 end, bool isL
 
 	ImGui::GetCurrentWindow()->DrawList->AddBezierCurve(ImVec2(start.x, start.y), ImVec2(cp0.x, cp0.y), ImVec2(cp1.x, cp1.y), ImVec2(end.x, end.y), ImColor(120, 120, 120), g.scale * 5.f);
 
+}
+
+bool Connector::ConnectorHovering(float2 position, float2 size)
+{
+	ImVec2 previous = ImGui::GetCurrentWindow()->DC.CursorPos;
+
+	ImGui::SetCursorScreenPos(ImVec2(position.x, position.y));
+	ImGui::InvisibleButton("node", ImVec2(size.x, size.y));
+
+	bool hovered = ImGui::IsItemHovered();
+
+	ImGui::SetCursorScreenPos(previous);
+
+	return hovered;
 }

@@ -70,7 +70,7 @@ struct ActionGraph
 	};
 
 	ActionType type = ActionType::NONE;
-	Connector* link;
+	Connector* connector;
 
 };
 

@@ -16,14 +16,9 @@ ShaderGraph::~ShaderGraph()
 
 void ShaderGraph::Draw()
 {
-	hovered = nullptr;
 	//ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(2.5 * 1, 2.5 * 1));
 	//ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(10, 0));
 
-	for (std::list<ShaderNode*>::iterator it = nodes.begin(); it != nodes.end(); ++it)
-	{
-		(*it)->Input(*this);
-	}
 
 	for (std::list<ShaderNode*>::iterator it = nodes.begin(); it != nodes.end(); ++it)
 	{
@@ -31,19 +26,28 @@ void ShaderGraph::Draw()
 		(*it)->InnerDraw(*this);
 	}
 
+
+	hovered = nullptr;
+	for (std::list<ShaderNode*>::iterator it = nodes.begin(); it != nodes.end(); ++it)
+	{
+		(*it)->Input(*this);
+	}
+
+
 	for (std::list<ShaderNode*>::iterator it = nodes.begin(); it != nodes.end(); ++it)
 	{
 		for (auto& input : (*it)->inputs) {
+			input.connector.DrawInputChannel(*this, input);
 			input.connector.DrawConnector(*this, true);
 			
 		}
 
 		for (auto& output : (*it)->outputs) {
+			output.connector.DrawOutputChannel(*this, output);
 			output.connector.DrawConnector(*this, false);
 			
 		}
 	}
-
 
 	//ImGui::PopStyleVar(2);
 }
