@@ -313,24 +313,24 @@ void ShaderNode::DrawInputConnector(ShaderGraph& graph, InputNode& input, unsign
 	float2 hitbox_pos = float2(connector_pos.x - graph.scale * 20.0f , connector_pos.y - graph.scale * 20.0f);
 	float2 hitbox_size = float2(graph.scale * 40.0f);
 
-	if (graph.action.type == ActionGraph::ActionType::NONE)
+	if (graph.action.type == ActionGraph::ActionType::NONE )
 	{
 		if (ImGui::IsMouseDragging(ImGuiMouseButton_Left) && ConnectorHovering(hitbox_pos, hitbox_size))
 		{
+			graph.action.type = ActionGraph::ActionType::DRAG_CONNECTOR;
 			//start linking
 			input.connector.to = this;
-			input.connector.from = nullptr;
+			//input.connector.from = nullptr;
 
 			graph.action.link = &input.connector;
 			graph.action.link->index_in = index;
 
-			graph.action.type = ActionGraph::ActionType::DRAG_CONNECTOR;
 		}
 	}
 
-	 if (graph.action.type == ActionGraph::ActionType::DRAG_CONNECTOR)
+	 if (graph.action.type == ActionGraph::ActionType::DRAG_CONNECTOR )
 	{
-		if (ImGui::IsMouseDragging(ImGuiMouseButton_Left) && ConnectorHovering( hitbox_pos, hitbox_size))
+		if (ImGui::IsMouseDragging(ImGuiMouseButton_Left) && ConnectorHovering(hitbox_pos, hitbox_size))
 		{
 			//connect linking
 			Connector* link = graph.action.link;
@@ -341,24 +341,35 @@ void ShaderNode::DrawInputConnector(ShaderGraph& graph, InputNode& input, unsign
 			link->to = this;
 			link->index_in = index;
 
-			graph.action.type = ActionGraph::ActionType::RELEASE_CONNECTOR;
+			//graph.action.type = ActionGraph::ActionType::RELEASE_CONNECTOR;
 		}
 	}
 
-	 if (graph.action.type == ActionGraph::ActionType::RELEASE_CONNECTOR)
+	 if (graph.action.type == ActionGraph::ActionType::RELEASE_CONNECTOR )
 	{
-		if (NodeHovering(graph, hitbox_pos, hitbox_size))
+		if (ConnectorHovering( hitbox_pos, hitbox_size))
 		{
 			//finish linking
 			Connector* link = graph.action.link;
 
-			if (link->to == nullptr || link->from == nullptr) return;
+			//if (link->to == nullptr || link->from == nullptr) return;
 
 			link->to = this;
 			link->index_in = index;
 
 
 			input.connector = *link;
+
+			for (uint i = 0; i < link->from->outputs.size(); i++)
+			{
+				if (&link->from->outputs[i].connector == link)
+				{
+					link->from->outputs[i].connector.to = nullptr;
+					link->from->outputs[i].connector.from = nullptr;
+					break;
+				}
+			}
+			
 
 			graph.action.type = ActionGraph::ActionType::NONE;
 		}
@@ -390,12 +401,12 @@ void ShaderNode::DrawOutputConnector(ShaderGraph& graph, OutputNode& output, uns
 	float2 hitbox_pos = float2(connector_pos.x - graph.scale * 20.0f, connector_pos.y - graph.scale * 20.0f);
 	float2 hitbox_size = float2(graph.scale * 40.0f);
 
-	if (graph.action.type == ActionGraph::ActionType::NONE)
+	if (graph.action.type == ActionGraph::ActionType::NONE )
 	{
 		if (ImGui::IsMouseDragging(ImGuiMouseButton_Left) && ConnectorHovering( hitbox_pos, hitbox_size))
 		{
 			//start linking
-			output.connector.to = nullptr;
+			//output.connector.to = nullptr;
 			output.connector.from = this;
 
 			graph.action.link = &output.connector;
@@ -417,12 +428,12 @@ void ShaderNode::DrawOutputConnector(ShaderGraph& graph, OutputNode& output, uns
 			link->from = this;
 			link->index_out = index;
 
-			graph.action.type = ActionGraph::ActionType::RELEASE_CONNECTOR;
+			//graph.action.type = ActionGraph::ActionType::RELEASE_CONNECTOR;
 		}
 	}
-	 if (graph.action.type == ActionGraph::ActionType::RELEASE_CONNECTOR)
+	 if (graph.action.type == ActionGraph::ActionType::RELEASE_CONNECTOR )
 	{
-		if (NodeHovering(graph, hitbox_pos, hitbox_size))
+		if (ConnectorHovering( hitbox_pos, hitbox_size))
 		{
 			//finish linking
 
@@ -447,6 +458,13 @@ void Connector::DrawConnector(ShaderGraph& g, bool isInput)
 			if (node_input && node_output)
 			{
 				//render complete
+				float2 end = float2(this->to->inputs[index_in].position);
+				float2 start = float2(this->from->outputs[index_out].position);
+
+				this->AddBezierLine(g, start, end, true);
+
+				if (isInput) this->from = nullptr;
+				else this->to = nullptr;
 			}
 			else
 			{
