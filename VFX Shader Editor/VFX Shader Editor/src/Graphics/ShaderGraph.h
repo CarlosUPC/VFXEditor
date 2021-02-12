@@ -66,11 +66,16 @@ struct ActionGraph
 	{
 		DRAG_CONNECTOR,
 		RELEASE_CONNECTOR,
+		DRAG_SELECTION,
+		RELEASE_SELECTION,
 		NONE
 	};
 
 	ActionType type = ActionType::NONE;
 	Connector* connector;
+
+	float2 mousePos;
+	float2 mouseDeltaPos;
 
 };
 

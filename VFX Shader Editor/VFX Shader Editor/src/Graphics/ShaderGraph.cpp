@@ -49,6 +49,23 @@ void ShaderGraph::Draw()
 		}
 	}
 
+
+	if (this->action.type == ActionGraph::RELEASE_SELECTION)
+	{
+		this->action.type = ActionGraph::NONE;
+	}
+
+	if (this->action.type == ActionGraph::NONE && ImGui::IsMouseDragging(ImGuiMouseButton_Left) && ImGui::IsWindowHovered())
+	{
+		this->action.type = ActionGraph::DRAG_SELECTION;
+		this->action.mousePos = float2(ImGui::GetMousePos().x, ImGui::GetMousePos().y);
+	}
+
+	if (this->action.type == ActionGraph::DRAG_SELECTION && !ImGui::IsMouseDragging(ImGuiMouseButton_Left))
+	{
+		this->action.type = ActionGraph::RELEASE_SELECTION;
+		this->action.mouseDeltaPos = float2(ImGui::GetMouseDragDelta().x, ImGui::GetMouseDragDelta().y);
+	}
 	//ImGui::PopStyleVar(2);
 }
 
