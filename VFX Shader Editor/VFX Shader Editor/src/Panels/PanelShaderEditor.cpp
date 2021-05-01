@@ -179,6 +179,7 @@ void PanelShaderEditor::Draw()
 
 
 	Scrolling();
+	NodeContext();
 
 
 
@@ -192,13 +193,7 @@ void PanelShaderEditor::Draw()
 
 	//ImGui::EndChild();
 	//ImGui::PopStyleVar(2);
-	//Add new node
-	if (ImGui::IsMouseClicked(1))
-	{
-		ImGui::OpenPopup("NewNode");
-	}
-
-	AddNewNodePopUp();
+	
 
 
 
@@ -353,10 +348,12 @@ void PanelShaderEditor::LoadShaderPopUp()
 void PanelShaderEditor::AddNewNodePopUp()
 {
 	ImVec2 win_pos = ImGui::GetWindowPos();
+
+	ImVec2 hit_pos = ImGui::GetIO().MousePos;
 	
 	if (ImGui::BeginPopup("NewNode"))
 	{
-		ImVec2 pos3 = ImGui::GetWindowPos();
+		//ImVec2 pos3 = ImGui::GetWindowPos();
 		//ShaderNode* new_node = nullptr;
 		//current_shader->graph->nodes.push_back(new_node);
 		//CreateNodeFn p = &ShaderGraph::CreateNode;
@@ -371,16 +368,22 @@ void PanelShaderEditor::AddNewNodePopUp()
 			memcpy(&node_filter, "\0", 1);
 		}
 
-		ImVec2 pos = ImGui::GetWindowPos();
+		//ImVec2 pos = ImGui::GetWindowPos();
 
-		pos.x /= current_shader->graph->scale;
-		pos.y /= current_shader->graph->scale;
-		pos.x -= win_pos.x + current_shader->graph->scrolling.x;
-		pos.y -= win_pos.y + current_shader->graph->scrolling.y;
-		
-		NodeOption("PBR", NodeType::PBR, float2(pos.x,pos.y), current_shader, current_shader->graph, &ShaderGraph::CreateNode);
-		NodeOption("UV", NodeType::PBR, float2(pos.x, pos.y), current_shader, current_shader->graph, &ShaderGraph::CreateNode);
-		NodeOption("ColorRGB", NodeType::PBR, float2(pos.x, pos.y), current_shader, current_shader->graph, &ShaderGraph::CreateNode);
+		//pos.x /= current_shader->graph->scale;
+		//pos.y /= current_shader->graph->scale;
+		//pos.x -= win_pos.x + current_shader->graph->scrolling.x;
+		//pos.y -= win_pos.y + current_shader->graph->scrolling.y;
+
+
+		ImVec2 node_pos;
+		node_pos.x = hit_pos.x - canvas.m_Scroll.x;
+		node_pos.y = hit_pos.y - canvas.m_Scroll.y;
+
+
+		NodeOption("PBR", NodeType::PBR, float2(node_pos.x, node_pos.y), current_shader, current_shader->graph, &ShaderGraph::CreateNode);
+		NodeOption("UV", NodeType::PBR, float2(node_pos.x, node_pos.y), current_shader, current_shader->graph, &ShaderGraph::CreateNode);
+		NodeOption("ColorRGB", NodeType::PBR, float2(node_pos.x, node_pos.y), current_shader, current_shader->graph, &ShaderGraph::CreateNode);
 
 		
 
@@ -442,6 +445,19 @@ void PanelShaderEditor::Scrolling()
 		current_shader->graph->SetScrollOffset(canvas.m_Scroll);
 
 	}
+}
+
+void PanelShaderEditor::NodeContext()
+{
+	if (ImGui::IsMouseClicked(1) &&
+		!ImGui::IsMouseClicked(0) &&
+		ImGui::IsWindowHovered())
+	{
+		if(!ImGui::IsAnyItemHovered())
+			ImGui::OpenPopup("NewNode");
+	}
+
+	AddNewNodePopUp();
 }
 
 

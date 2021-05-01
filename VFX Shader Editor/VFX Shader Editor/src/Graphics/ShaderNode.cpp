@@ -113,8 +113,8 @@ void ShaderNode::InnerDraw(ShaderGraph& graph)
 
 float2 ShaderNode::CalcNodePosition(ShaderGraph& g, float2 pos)
 {
-	pos.x += ImGui::GetWindowPos().x + g.scrolling.x;
-	pos.y += ImGui::GetWindowPos().y + g.scrolling.y;
+	pos.x +=  g.scrolling.x;
+	pos.y +=  g.scrolling.y;
 	pos *= g.scale;
 
 

@@ -58,6 +58,7 @@ public:
 
 
 	void Scrolling();
+	void NodeContext();
 
 private:
 	bool grid = true;
