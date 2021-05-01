@@ -102,6 +102,11 @@ void ShaderGraph::CompileShader(ResourceShader* shader)
 	last_output = std::string(compiler.source);
 }
 
+void ShaderGraph::SetScrollOffset(float2& offset)
+{
+	this->scrolling = offset;
+}
+
 ShaderCompiler::ShaderCompiler( ShaderGraph& g)
 	: graph(g)
 {

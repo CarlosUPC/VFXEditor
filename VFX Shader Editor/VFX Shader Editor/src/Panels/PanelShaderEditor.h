@@ -12,8 +12,33 @@ enum NodeType;
 typedef ShaderNode* (ShaderGraph::* CreateNodeFn)(const char* n, int t);
 typedef std::function<ShaderNode * (const char*, int)> create_node;
 
+struct Canvas
+{
+	friend class PanelShaderEditor;
+public:
+	//Canvas();
+	//~Canvas();
+
+	void Init(ImVec2 m_Pos, ImVec2 m_Size, ImColor m_Color);
+	void Draw(ImDrawList* draw_list, ImVec2 m_Pos, ImVec2 m_Size);
+private:
+	ImVec2 m_Pos;
+	ImVec2 m_Size;
+	ImColor m_Color;
+
+	float grid_size = 16.0f;
+	bool show_grid = true;
+
+protected:
+	float2 m_Scroll;
+
+
+};
+
+
 class PanelShaderEditor : public Panel
 {
+	//friend class Canvas;
 public:
 
 	PanelShaderEditor(const char* name);
@@ -32,6 +57,8 @@ public:
 	void NodeOption(const char* name, NodeType type, ResourceShader* shader, ShaderGraph* graph);
 
 
+	void Scrolling();
+
 private:
 	bool grid = true;
 	float2 scrollCoords = { 0.0f, 0.0f };
@@ -41,4 +68,7 @@ private:
 	ResourceShader* current_shader = nullptr;
 	bool creating_shader = false;
 	bool selecting_shader = false;
+
+	Canvas canvas;
+
 };

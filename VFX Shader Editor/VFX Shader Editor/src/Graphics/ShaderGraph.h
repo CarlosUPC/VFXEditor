@@ -91,6 +91,8 @@ public:
 
 	void CompileShader(ResourceShader* shader);
 	std::string GetName() const { return m_Name; }
+
+	void SetScrollOffset(float2& offset);
 private:
 	std::string m_Name;
 public:
