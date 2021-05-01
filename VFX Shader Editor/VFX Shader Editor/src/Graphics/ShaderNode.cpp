@@ -66,39 +66,22 @@ void ShaderNode::Input(ShaderGraph& graph)
 	//}
 }
 
-void ShaderNode::Draw(ShaderGraph& graph)
+void ShaderNode::DrawNode(ShaderGraph& graph)
 {
 	auto draw_list = ImGui::GetWindowDrawList();
 
-	//Calculate Pos
+	//Update Position & Size
 	float2 m_Position = CalcNodePosition(graph, this->position);
 	float2 m_Size = CalcNodeSize(graph, this);
 
-	float2 m_TitleSize = title_size * graph.scale;
-	//float2 m_Position = this->position;
-	/*m_Position.x += ImGui::GetWindowPos().x + graph.scrolling.x;
-	m_Position.y += ImGui::GetWindowPos().y + 50.0f + graph.scrolling.y;
-	position = m_Position;*/
-	auto color_red = ImGui::GetColorU32(ImVec4(0.85, 0.0, 0.0, 1.0));
-	auto color_black = ImGui::GetColorU32(ImVec4(0.1, 0.1, 0.1, 0.45));
-
-	
-	//UI
-	if (graph.hovered == this)
-	{
-		float border = 1.0f;
-		draw_list->AddRect(ImVec2(m_Position.x - border, m_Position.y - border), ImVec2(m_Position.x + m_Size.x + border, m_Position.y + m_Size.y + border), ImColor(255, 150, 0), 5.0f);
-	}
+	DrawBody(draw_list, m_Position, m_Size);
+	DrawTitle(draw_list, m_Position, m_Size);
 
 
-	draw_list->AddRectFilled(ImVec2(m_Position.x, m_Position.y), ImVec2(m_Position.x + m_Size.x, m_Position.y + m_Size.y), ImColor(20, 20, 20, 180), 5.0f);
-	draw_list->AddRectFilled(ImVec2(m_Position.x, m_Position.y), ImVec2(m_Position.x + m_Size.x, m_Position.y + 15.0f * graph.scale), ImColor(255, 0, 0), 5.0f);
-	draw_list->AddRectFilled(ImVec2(m_Position.x, m_Position.y + 10.0f * graph.scale), ImVec2(m_Position.x + m_Size.x, m_Position.y + 20.0f * graph.scale), ImColor(255, 0, 0));
+	//float2 m_TitleSize = title_size * graph.scale;
+	//float padding = 10.0f * graph.scale;
 
-
-	float padding = 10.0f * graph.scale;
-
-	ImGui::SetCursorScreenPos(ImVec2(m_Position.x + padding , m_Position.y + ((m_TitleSize.y)*0.5f) ));
+	//ImGui::SetCursorScreenPos(ImVec2(m_Position.x + padding , m_Position.y + ((m_TitleSize.y)*0.5f) ));
 
 	
 
@@ -138,8 +121,8 @@ float2 ShaderNode::CalcNodePosition(ShaderGraph& g, float2 pos)
 		this->position += action.mouse_pos / g.scale;
 
 		pos = this->position;
-		pos.x += ImGui::GetWindowPos().x + g.scrolling.x;
-		pos.y += ImGui::GetWindowPos().y + g.scrolling.y;
+		pos.x += /*ImGui::GetWindowPos().x +*/ g.scrolling.x;
+		pos.y += /*ImGui::GetWindowPos().y +*/ g.scrolling.y;
 		pos *= g.scale;
 
 		action.type = ActionNode::NONE;
@@ -219,11 +202,41 @@ bool ShaderNode::ConnectorHovering(float2 position, float2 size)
 
 void ShaderNode::DrawTitle(ShaderGraph& g)
 {
+
+
+
+
+
 	//ImGui::Dummy(ImVec2(0, 3 * g.scale));
-	ImGui::Dummy(ImVec2(0, 40 * g.scale));
-	ImGui::SameLine();
-	ImGui::Text(name.c_str());
+	//ImGui::Dummy(ImVec2(0, 40 * g.scale));
+	//ImGui::SameLine();
+	//ImGui::Text(name.c_str());
 	//ImGui::Dummy(ImVec2(0, 10 * g.scale));
+}
+
+void ShaderNode::DrawTitle(ImDrawList* draw_list, float2 pos, float2 size)
+{
+	draw_list->AddRectFilled(ImVec2(pos.x, pos.y), ImVec2(pos.x + size.x, pos.y + 15.0f /** graph.scale*/), ImColor(255, 0, 0), 5.0f);
+	draw_list->AddRectFilled(ImVec2(pos.x, pos.y + 10.0f /** graph.scale*/), ImVec2(pos.x + size.x, pos.y + 20.0f /** graph.scale*/), ImColor(255, 0, 0));
+	ImGui::SetCursorScreenPos(ImVec2(pos.x + 10.0f, pos.y + 5.0f));
+	ImGui::TextColored(ImVec4(255,255,255,255), "%s", name.c_str());
+}
+
+void ShaderNode::DrawBody(ImDrawList* draw_list, float2 pos, float2 size)
+{
+
+	auto color_red = ImGui::GetColorU32(ImVec4(0.85, 0.0, 0.0, 1.0));
+	auto color_black = ImGui::GetColorU32(ImVec4(0.1, 0.1, 0.1, 0.45));
+
+	//if (graph.hovered == this)
+	//{
+	//	float border = 1.0f;
+	//	draw_list->AddRect(ImVec2(pos.x - border, pos.y - border), ImVec2(pos.x + size.x + border, pos.y + size.y + border), ImColor(255, 150, 0), 5.0f);
+	//}
+
+
+	draw_list->AddRectFilled(ImVec2(pos.x, pos.y), ImVec2(pos.x + size.x, pos.y + size.y), ImColor(20, 20, 20, 180), 5.0f);
+	
 }
 
 void ShaderNode::DrawInputs(ShaderGraph& graph, unsigned int numInputs, unsigned int offset)

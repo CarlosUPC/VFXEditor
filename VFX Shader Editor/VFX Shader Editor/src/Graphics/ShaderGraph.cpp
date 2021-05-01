@@ -22,7 +22,7 @@ void ShaderGraph::Draw()
 
 	for (std::list<ShaderNode*>::iterator it = nodes.begin(); it != nodes.end(); ++it)
 	{
-		(*it)->Draw(*this);
+		(*it)->DrawNode(*this);
 		(*it)->InnerDraw(*this);
 	}
 

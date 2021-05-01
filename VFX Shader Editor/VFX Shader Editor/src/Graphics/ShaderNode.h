@@ -119,7 +119,7 @@ public:
 	~ShaderNode();
 
 	void Input(ShaderGraph& graph);
-	void Draw(ShaderGraph& graph);
+	void DrawNode(ShaderGraph& graph);
 	virtual void InnerDraw(ShaderGraph& graph);
 
 	float2 CalcNodePosition(ShaderGraph& graph, float2 pos = {});
@@ -129,6 +129,8 @@ public:
 	bool ConnectorHovering(float2 position, float2 size);
 
 	void DrawTitle(ShaderGraph& g);
+	void DrawTitle(ImDrawList* draw_list, float2 pos, float2 size);
+	void DrawBody(ImDrawList* draw_list, float2 pos, float2 size);
 	void DrawInputs(ShaderGraph& graph, unsigned int numInputs, unsigned int offset = 0);
 	void DrawOutputs(ShaderGraph& graph, unsigned int numOutputs, unsigned int offset = 0);
 

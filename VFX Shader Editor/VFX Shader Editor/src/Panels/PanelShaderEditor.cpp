@@ -101,7 +101,7 @@ void PanelShaderEditor::Draw()
 	//ImGui::BeginChild("scrolling_region", ImVec2(0, 0)/*, true*//*, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollWithMouse*/);
 	//ImGui::PushItemWidth(120.0f);
 
-	float wheel = ImGui::GetIO().MouseWheel;
+	/*float wheel = ImGui::GetIO().MouseWheel;
 	
 	static float zoom = current_shader->graph->scale;
 	if (wheel > 0 && ImGui::IsWindowHovered())
@@ -169,36 +169,26 @@ void PanelShaderEditor::Draw()
 
 		}
 
-	}
+	}*/
 
 	//float2 offset = {  canvas.m_Scroll.x,  canvas.m_Scroll.y };
+	
+	//Canvas Stuff
 	ImDrawList* draw_list = ImGui::GetWindowDrawList();
-
-
 	canvas.Draw(draw_list, ImGui::GetCursorScreenPos(), ImGui::GetWindowSize());
 
 
+	//Mouse Stuff
 	Scrolling();
 	NodeContext();
 
 
-
-
-	//ImGui::MenuItem("hello");
-
-	//ImGui::PopItemWidth();
+	//Graph Stuff
 	ImGui::PushClipRect(ImGui::GetCursorScreenPos(), ImVec2(ImGui::GetCursorScreenPos().x + ImGui::GetContentRegionMax().x, ImGui::GetCursorScreenPos().y + ImGui::GetContentRegionMax().y), true);
 	current_shader->graph->Draw();
 	ImGui::PopClipRect();
 
-	//ImGui::EndChild();
-	//ImGui::PopStyleVar(2);
 	
-
-
-
-
-
 	ImGui::End();
 	ImGui::PopStyleColor();
 	
@@ -347,7 +337,7 @@ void PanelShaderEditor::LoadShaderPopUp()
 
 void PanelShaderEditor::AddNewNodePopUp()
 {
-	ImVec2 win_pos = ImGui::GetWindowPos();
+	//ImVec2 win_pos = ImGui::GetWindowPos();
 
 	ImVec2 hit_pos = ImGui::GetIO().MousePos;
 	

@@ -19,9 +19,9 @@ void PBRNode::InnerDraw(ShaderGraph& g)
 
 	ImGui::BeginGroup();
 	
-	DrawTitle(g);
-	DrawOutputs(g, 1);
-	DrawInputs(g, 3);
+	//DrawTitle(g);
+	//DrawOutputs(g, 1);
+	//DrawInputs(g, 3);
 
 	ImGui::EndGroup();
 }
