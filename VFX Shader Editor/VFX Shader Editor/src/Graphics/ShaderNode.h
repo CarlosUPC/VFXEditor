@@ -9,8 +9,8 @@
 
 class ShaderGraph;
 class ShaderNode;
-struct InputNode;
-struct OutputNode;
+struct InputSocket;
+struct OutputSocket;
 
 enum NodeType
 {
@@ -27,20 +27,7 @@ enum ValueType
 	NONE
 };
 
-struct ActionNode
-{
-	enum StateType
-	{
-		DRAG_NODE,
-		APPLY_DRAG,
-		NONE
-	};
 
-	StateType type = StateType::NONE;
-	float2 mouse_pos;
-
-
-};
 
 struct Connector
 {
@@ -53,8 +40,8 @@ struct Connector
 
 	void DrawConnector(ShaderGraph& g, bool isInput = false);
 
-	void DrawInputChannel(ShaderGraph& g, InputNode& input);
-	void DrawOutputChannel(ShaderGraph& g, OutputNode& output);
+	void DrawInputChannel(ShaderGraph& g, InputSocket& input);
+	void DrawOutputChannel(ShaderGraph& g, OutputSocket& output);
 
 	void AddBezierLine(ShaderGraph& g, float2 start, float2 end, bool isLinked = true);
 
@@ -62,7 +49,7 @@ struct Connector
 };
 
 
-struct InputNode
+struct InputSocket
 {
 	ValueType type = ValueType::NONE;
 	float2 position;
@@ -77,8 +64,8 @@ struct InputNode
 		float4 value4;
 	};
 
-	 InputNode(){}
-	 InputNode(const char* name, ValueType type)
+	 InputSocket(){}
+	 InputSocket(const char* name, ValueType type)
 	 {
 		 this->type = type;
 		 this->name = name;
@@ -88,20 +75,20 @@ struct InputNode
 
 };
 
-struct OutputNode
+struct OutputSocket
 {
 	ValueType type = ValueType::NONE;
 	float2 position;
 	Connector connector;
 	std::string name;
 
-	OutputNode(){}
-	OutputNode(ValueType type)
+	OutputSocket(){}
+	OutputSocket(ValueType type)
 	{
 		this->type = type;
 	}
 
-	OutputNode(const char* name, ValueType type)
+	OutputSocket(const char* name, ValueType type)
 	{
 		this->type = type;
 		this->name = name;
@@ -118,7 +105,7 @@ public:
 	ShaderNode(const char* name, NodeType type, float2 position);
 	~ShaderNode();
 
-	void Input(ShaderGraph& graph);
+	void InputNode(ShaderGraph& graph);
 	void DrawNode(ShaderGraph& graph);
 	virtual void Update(ShaderGraph& graph);
 
@@ -134,8 +121,8 @@ public:
 	void DrawInputs(ShaderGraph& graph, unsigned int numInputs, unsigned int offset = 0);
 	void DrawOutputs(ShaderGraph& graph, unsigned int numOutputs, unsigned int offset = 0);
 
-	void DrawInputConnector(ShaderGraph& graph, InputNode& input, unsigned int index = 0);
-	void DrawOutputConnector(ShaderGraph& graph, OutputNode& output, unsigned int index = 0);
+	void DrawInputConnector(ShaderGraph& graph, InputSocket& input, unsigned int index = 0);
+	void DrawOutputConnector(ShaderGraph& graph, OutputSocket& output, unsigned int index = 0);
 public:
 	NodeType type;
 	float2 position;
@@ -144,13 +131,20 @@ public:
 	uint UID;
 	std::string name;
 
-	bool isHovered = false;
 
-	ActionNode action;
+	//ActionNode action;
 
-	std::vector<InputNode> inputs;
-	std::vector<OutputNode> outputs;
+	std::vector<InputSocket> inputs;
+	std::vector<OutputSocket> outputs;
 
 	int inputs_count = 0;
 	int outputs_count = 0;
+
+	//node states
+	bool isHovered = false;
+	bool isSelected = false;
+	bool isItemActive = false;
+
+	bool	m_is_node_widgets_active;
+	bool	m_is_old_any_active;
 };

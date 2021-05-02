@@ -184,9 +184,8 @@ void PanelShaderEditor::Draw()
 
 
 	//Graph Stuff
-	ImGui::PushClipRect(ImGui::GetCursorScreenPos(), ImVec2(ImGui::GetCursorScreenPos().x + ImGui::GetContentRegionMax().x, ImGui::GetCursorScreenPos().y + ImGui::GetContentRegionMax().y), true);
 	current_shader->graph->Draw();
-	ImGui::PopClipRect();
+	
 
 	
 	ImGui::End();

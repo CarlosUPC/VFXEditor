@@ -17,26 +17,48 @@ ShaderNode::~ShaderNode()
 {
 }
 
-void ShaderNode::Input(ShaderGraph& graph)
+void ShaderNode::InputNode(ShaderGraph& graph)
 {
+	//m_is_old_any_active = ImGui::IsAnyItemActive();
+	//m_is_node_widgets_active = (!m_is_old_any_active && ImGui::IsAnyItemActive());
+
 	if (NodeHovering(graph, this->position, this->size))
 	{
-		isHovered = true;
-		graph.hovered = this;
-		if (ImGui::IsMouseClicked(0))
+
+		this->isHovered = true;
+		//isHovered = true;
+		//graph.hovered = this;
+
+
+		/*if (ImGui::IsMouseClicked(0))
 		{
 			graph.selected = this;
-		}
+		}*/
 	}
 	else
 	{
-		isHovered = false;
+		this->isHovered = false;
+		//isHovered = false;
 		//graph.hovered = nullptr;
 	}
 
+	 isItemActive = ImGui::IsItemActive();
 
-	if (graph.action.type == ActionGraph::NONE && action.type == ActionNode::NONE && ImGui::IsMouseDragging(ImGuiMouseButton_Left) && NodeHovering(graph, this->position, this->size))
-		action.type = ActionNode::DRAG_NODE;
+	 
+	if (ImGui::IsMouseDoubleClicked(0) &&
+		isItemActive)
+	{
+		this->isSelected = true;
+		this->isHovered = false;
+	}
+
+	if (isItemActive && ImGui::IsMouseDragging(0))
+	{
+		this->position = this->position + float2(ImGui::GetIO().MouseDelta.x, ImGui::GetIO().MouseDelta.y);
+	}
+
+
+	
 	
 
 
@@ -102,32 +124,7 @@ float2 ShaderNode::CalcNodePosition(ShaderGraph& g, float2 pos)
 	pos *= g.scale;
 
 
-	if (action.type == ActionNode::DRAG_NODE)
-	{
-		bool is_done = !ImGui::IsMouseDragging(ImGuiMouseButton_Left);
-		float2 delta = float2(ImGui::GetMouseDragDelta().x, ImGui::GetMouseDragDelta().y);
-
-		if (!is_done) {
-			pos += delta;
-		}
-		else
-		{
-			action.mouse_pos = delta;
-			action.type = ActionNode::APPLY_DRAG;
-		}
-	}
-
-	if (action.type == ActionNode::APPLY_DRAG)
-	{
-		this->position += action.mouse_pos / g.scale;
-
-		pos = this->position;
-		pos.x += /*ImGui::GetWindowPos().x +*/ g.scrolling.x;
-		pos.y += /*ImGui::GetWindowPos().y +*/ g.scrolling.y;
-		pos *= g.scale;
-
-		action.type = ActionNode::NONE;
-	}
+	
 
 
 	//if (g.selected == this && g.hovered)
@@ -174,7 +171,7 @@ float2 ShaderNode::CalcNodeSize(ShaderGraph& graph, ShaderNode* node)
 
 bool ShaderNode::NodeHovering(ShaderGraph& graph, float2 position, float2 size)
 {
-	ImVec2 prev = ImGui::GetCurrentWindow()->DC.CursorPos;
+	//ImVec2 prev = ImGui::GetCurrentWindow()->DC.CursorPos;
 
 	float2 m_Pos = CalcNodePosition(graph, position);
 	float2 m_Size = CalcNodeSize(graph, this);
@@ -184,7 +181,7 @@ bool ShaderNode::NodeHovering(ShaderGraph& graph, float2 position, float2 size)
 
 	bool m_Hovered = ImGui::IsItemHovered();
 
-	ImGui::SetCursorScreenPos(prev);
+	//ImGui::SetCursorScreenPos(prev);
 
 	return m_Hovered;
 }
@@ -218,7 +215,7 @@ void ShaderNode::DrawTitle(ImDrawList* draw_list, float2 pos, float2 size)
 	draw_list->AddRectFilled(ImVec2(pos.x, pos.y), ImVec2(pos.x + size.x, pos.y + 15.0f /** graph.scale*/), ImColor(255, 0, 0), 5.0f);
 	draw_list->AddRectFilled(ImVec2(pos.x, pos.y + 10.0f /** graph.scale*/), ImVec2(pos.x + size.x, pos.y + 20.0f /** graph.scale*/), ImColor(255, 0, 0));
 	ImGui::SetCursorScreenPos(ImVec2(pos.x + 10.0f, pos.y + 5.0f));
-	ImGui::BeginGroup();
+	//ImGui::BeginGroup();
 	ImGui::TextColored(ImVec4(255,255,255,255), "%s", name.c_str());
 }
 
@@ -228,11 +225,16 @@ void ShaderNode::DrawBody(ImDrawList* draw_list, float2 pos, float2 size)
 	auto color_red = ImGui::GetColorU32(ImVec4(0.85, 0.0, 0.0, 1.0));
 	auto color_black = ImGui::GetColorU32(ImVec4(0.1, 0.1, 0.1, 0.45));
 
-	//if (graph.hovered == this)
-	//{
-	//	float border = 1.0f;
-	//	draw_list->AddRect(ImVec2(pos.x - border, pos.y - border), ImVec2(pos.x + size.x + border, pos.y + size.y + border), ImColor(255, 150, 0), 5.0f);
-	//}
+	if (this->isHovered && !this->isSelected)
+	{
+		float border = 1.0f;
+		draw_list->AddRect(ImVec2(pos.x - border, pos.y - border), ImVec2(pos.x + size.x + border, pos.y + size.y + border), ImColor(255, 150, 0), 5.0f);
+	}
+	else if (this->isSelected)
+	{
+		float border = 1.0f;
+		draw_list->AddRect(ImVec2(pos.x - border, pos.y - border), ImVec2(pos.x + size.x + border, pos.y + size.y + border), ImColor(255, 0, 0), 5.0f);
+	}
 
 
 	draw_list->AddRectFilled(ImVec2(pos.x, pos.y), ImVec2(pos.x + size.x, pos.y + size.y), ImColor(20, 20, 20, 180), 5.0f);
@@ -243,7 +245,7 @@ void ShaderNode::DrawInputs(ShaderGraph& graph, unsigned int numInputs, unsigned
 {
 	for (unsigned int i = 0; i < numInputs; i++)
 	{
-		InputNode& input = this->inputs[i];
+		InputSocket& input = this->inputs[i];
 
 		
 		DrawInputConnector(graph, input, i);
@@ -298,14 +300,14 @@ void ShaderNode::DrawOutputs(ShaderGraph& graph, unsigned int numOutputs, unsign
 {
 	for (unsigned int i = 0; i < numOutputs; i++)
 	{
-		OutputNode& output = this->outputs[i];
+		OutputSocket& output = this->outputs[i];
 
 		//if(output.type != ValueType::NONE)
 		DrawOutputConnector(graph, output);
 	}
 }
 
-void ShaderNode::DrawInputConnector(ShaderGraph& graph, InputNode& input, unsigned int index )
+void ShaderNode::DrawInputConnector(ShaderGraph& graph, InputSocket& input, unsigned int index )
 {
 
 	
@@ -420,7 +422,7 @@ void ShaderNode::DrawInputConnector(ShaderGraph& graph, InputNode& input, unsign
 
 }
 
-void ShaderNode::DrawOutputConnector(ShaderGraph& graph, OutputNode& output, unsigned int index)
+void ShaderNode::DrawOutputConnector(ShaderGraph& graph, OutputSocket& output, unsigned int index)
 {
 
 	
@@ -572,7 +574,7 @@ void Connector::DrawConnector(ShaderGraph& g, bool isInput)
 
 }
 
-void Connector::DrawInputChannel(ShaderGraph& g, InputNode& input)
+void Connector::DrawInputChannel(ShaderGraph& g, InputSocket& input)
 {
 	auto draw_list = ImGui::GetCurrentWindow()->DrawList;
 
@@ -593,7 +595,7 @@ void Connector::DrawInputChannel(ShaderGraph& g, InputNode& input)
 	}
 }
 
-void Connector::DrawOutputChannel(ShaderGraph& g, OutputNode& output)
+void Connector::DrawOutputChannel(ShaderGraph& g, OutputSocket& output)
 {
 	auto draw_list = ImGui::GetCurrentWindow()->DrawList;
 
