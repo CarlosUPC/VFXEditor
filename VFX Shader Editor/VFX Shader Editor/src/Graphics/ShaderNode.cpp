@@ -73,6 +73,7 @@ void ShaderNode::DrawNode(ShaderGraph& graph)
 	//Update Position & Size
 	float2 m_Position = CalcNodePosition(graph, this->position);
 	float2 m_Size = CalcNodeSize(graph, this);
+	size = m_Size; //temp
 
 	DrawBody(draw_list, m_Position, m_Size);
 	DrawTitle(draw_list, m_Position, m_Size);
@@ -90,7 +91,7 @@ void ShaderNode::DrawNode(ShaderGraph& graph)
 	//ImGui::SetCursorScreenPos(ImVec2(m_Position.x, m_Position.y));
 }
 
-void ShaderNode::InnerDraw(ShaderGraph& graph)
+void ShaderNode::Update(ShaderGraph& graph)
 {
 }
 
@@ -166,7 +167,9 @@ float2 ShaderNode::CalcNodeSize(ShaderGraph& graph, ShaderNode* node)
 {
 	float width = 200.0f;
 
-	return graph.scale * float2(width, 80.0F + fmax(1.0f, inputs.size()*40.0f)); // TODO: height should be based on input length
+	return float2(55.0f * node->inputs_count, 55.0f * node->inputs_count);
+
+	//return graph.scale * float2(width, 80.0F + fmax(1.0f, inputs.size()*40.0f)); // TODO: height should be based on input length
 }
 
 bool ShaderNode::NodeHovering(ShaderGraph& graph, float2 position, float2 size)
@@ -203,10 +206,6 @@ bool ShaderNode::ConnectorHovering(float2 position, float2 size)
 void ShaderNode::DrawTitle(ShaderGraph& g)
 {
 
-
-
-
-
 	//ImGui::Dummy(ImVec2(0, 3 * g.scale));
 	//ImGui::Dummy(ImVec2(0, 40 * g.scale));
 	//ImGui::SameLine();
@@ -219,6 +218,7 @@ void ShaderNode::DrawTitle(ImDrawList* draw_list, float2 pos, float2 size)
 	draw_list->AddRectFilled(ImVec2(pos.x, pos.y), ImVec2(pos.x + size.x, pos.y + 15.0f /** graph.scale*/), ImColor(255, 0, 0), 5.0f);
 	draw_list->AddRectFilled(ImVec2(pos.x, pos.y + 10.0f /** graph.scale*/), ImVec2(pos.x + size.x, pos.y + 20.0f /** graph.scale*/), ImColor(255, 0, 0));
 	ImGui::SetCursorScreenPos(ImVec2(pos.x + 10.0f, pos.y + 5.0f));
+	ImGui::BeginGroup();
 	ImGui::TextColored(ImVec4(255,255,255,255), "%s", name.c_str());
 }
 
@@ -249,12 +249,12 @@ void ShaderNode::DrawInputs(ShaderGraph& graph, unsigned int numInputs, unsigned
 		DrawInputConnector(graph, input, i);
 
 
-		ImGui::PushID(this->UID);
+		//ImGui::PushID(this->UID);
 		
 		//ImGui::SetNextItemWidth(2 * graph.scale);
-		ImGui::Dummy(ImVec2(0, 40.0f * graph.scale));
+		//ImGui::Dummy(ImVec2(0, 40.0f * graph.scale));
 
-		ImGui::SameLine(30.0f);
+		//ImGui::SameLine(30.0f);
 
 		if (input.type == ValueType::FLOAT1)
 		{
@@ -263,7 +263,7 @@ void ShaderNode::DrawInputs(ShaderGraph& graph, unsigned int numInputs, unsigned
 			//ImGui::InputFloat(input.name.c_str(), &num);
 			//ImGui::SetNextItemWidth(400 * graph.scale);
 			//ImGui::SameLine(50.0f);
-			ImGui::Text(input.name.c_str());
+			//ImGui::Text(input.name.c_str());
 		}
 		else if (input.type == ValueType::FLOAT2)
 		{
@@ -272,25 +272,25 @@ void ShaderNode::DrawInputs(ShaderGraph& graph, unsigned int numInputs, unsigned
 			//ImGui::InputFloat2(input.name.c_str(), &input.value2.x, "%.2f");
 			//ImGui::SetNextItemWidth(400 * graph.scale);
 			//ImGui::SameLine(50.0f);
-			ImGui::Text(input.name.c_str());
+			//ImGui::Text(input.name.c_str());
 		}
 		else if (input.type == ValueType::FLOAT3)
 		{
 			/*ImGui::SameLine();
 			ImGui::InputFloat(input.name.c_str(), &input.value1);*/
-			ImGui::Text(input.name.c_str());
+			//ImGui::Text(input.name.c_str());
 		}
 		else if (input.type == ValueType::FLOAT4)
 		{
 			/*ImGui::InputFloat(input.name.c_str(), &input.value1);*/
-			ImGui::Text(input.name.c_str());
+			//ImGui::Text(input.name.c_str());
 		}
 		else
 		{
-			ImGui::Text(input.name.c_str());
+			//ImGui::Text(input.name.c_str());
 		}
 
-		ImGui::PopID();
+		//ImGui::PopID();
 	}
 }
 
@@ -300,99 +300,122 @@ void ShaderNode::DrawOutputs(ShaderGraph& graph, unsigned int numOutputs, unsign
 	{
 		OutputNode& output = this->outputs[i];
 
-		if(output.type != ValueType::NONE)
-			DrawOutputConnector(graph, output);
+		//if(output.type != ValueType::NONE)
+		DrawOutputConnector(graph, output);
 	}
 }
 
 void ShaderNode::DrawInputConnector(ShaderGraph& graph, InputNode& input, unsigned int index )
 {
 
-	auto window = ImGui::GetCurrentWindow();
-	float2 connector_pos = float2(window->DC.CursorPos.x + (10.0f * graph.scale), window->DC.CursorPos.y + (7.5f * graph.scale));
+	
+	input.position = graph.scrolling + float2(this->position.x +  10.0f,
+		this->position.y + this->size.y * (static_cast<float>(index) + 1) / (static_cast<float>(inputs_count) + 1));
+
+	input.position.y += 10.0f;
 
 
-	//auto draw_list = window->DrawList;
+	ImGui::SetCursorScreenPos(ImVec2(input.position.x + 15.0f, input.position.y - 8.0f));
+	ImGui::TextColored(ImVec4(255, 255, 255, 255), "%s", input.name.c_str());
 
-	input.position = connector_pos;
 
-	/*float thickness = 1 * graph.scale;
+	auto draw_list = ImGui::GetCurrentWindow()->DrawList;
 	ImU32 fillColor = IM_COL32(100, 100, 105, 255);
-	ImU32 outlineColor = IM_COL32(200, 0, 0, 255);
+	ImU32 outlineColor = IM_COL32(0, 200, 0, 255);
+	draw_list->AddCircleFilled(ImVec2(input.position.x, input.position.y), 10.0f, fillColor, 16);
+	draw_list->AddCircle(ImVec2(input.position.x, input.position.y), 10.0f, outlineColor);
 
-	draw_list->AddCircleFilled(ImVec2(connector_pos.x, connector_pos.y), 10.0f * graph.scale, fillColor, 16);
-	draw_list->AddCircle(ImVec2(connector_pos.x, connector_pos.y), 10.0f * graph.scale, outlineColor, 16,  thickness);*/
 
 
-	float2 hitbox_pos = float2(connector_pos.x - graph.scale * 20.0f , connector_pos.y - graph.scale * 20.0f);
-	float2 hitbox_size = float2(graph.scale * 40.0f);
+	if (ConnectorHovering(input.position - float2(5.0f), float2(10.0f, 10.0f)))
+	{
+		draw_list->AddCircleFilled(ImVec2(input.position.x, input.position.y), 5.0f - 2.0f, outlineColor);
+
+	}
 
 	
-
-	if (graph.action.type == ActionGraph::ActionType::NONE )
-	{
-		if (ImGui::IsMouseDragging(ImGuiMouseButton_Left) && ConnectorHovering(hitbox_pos, hitbox_size))
-		{
-			
-			graph.action.type = ActionGraph::ActionType::DRAG_CONNECTOR;
-			//start linking
-			input.connector.to = this;
-			//input.connector.from = nullptr;
-
-			graph.action.connector = &input.connector;
-			graph.action.connector->index_in = index;
-
-		}
-	}
-
-	 if (graph.action.type == ActionGraph::ActionType::DRAG_CONNECTOR )
-	{
-		if (ImGui::IsMouseDragging(ImGuiMouseButton_Left) && ConnectorHovering(hitbox_pos, hitbox_size))
-		{
-			
-			//connect linking
-			Connector* current_connector = graph.action.connector;
-
-			if (current_connector->to != nullptr) return;
-			if (this == graph.action.connector->from) return;
-
-			current_connector->to = this;
-			current_connector->index_in = index;
-
-			//graph.action.type = ActionGraph::ActionType::RELEASE_CONNECTOR;
-		}
-	}
-
-	 if (graph.action.type == ActionGraph::ActionType::RELEASE_CONNECTOR )
-	{
-		if (ConnectorHovering( hitbox_pos, hitbox_size))
-		{
-			
-			//finish linking
-			Connector* current_connector = graph.action.connector;
-
-			//if (link->to == nullptr || link->from == nullptr) return;
-
-			current_connector->to = this;
-			current_connector->index_in = index;
+	
+	
+	//
+	//auto window = ImGui::GetCurrentWindow();
+	//float2 connector_pos = float2(window->DC.CursorPos.x + (10.0f * graph.scale), window->DC.CursorPos.y + (7.5f * graph.scale));
 
 
-			input.connector = *current_connector;
+	//
+	//input.position = connector_pos;
 
-			for (uint i = 0; i < current_connector->from->outputs.size(); i++)
-			{
-				if (&current_connector->from->outputs[i].connector == current_connector)
-				{
-					current_connector->from->outputs[i].connector.to = nullptr;
-					current_connector->from->outputs[i].connector.from = nullptr;
-					break;
-				}
-			}
-			
+	//
 
-			graph.action.type = ActionGraph::ActionType::NONE;
-		}
-	}
+
+	//float2 hitbox_pos = float2(connector_pos.x - graph.scale * 20.0f , connector_pos.y - graph.scale * 20.0f);
+	//float2 hitbox_size = float2(graph.scale * 40.0f);
+
+	//
+
+	//if (graph.action.type == ActionGraph::ActionType::NONE )
+	//{
+	//	if (ImGui::IsMouseDragging(ImGuiMouseButton_Left) && ConnectorHovering(hitbox_pos, hitbox_size))
+	//	{
+	//		
+	//		graph.action.type = ActionGraph::ActionType::DRAG_CONNECTOR;
+	//		//start linking
+	//		input.connector.to = this;
+	//		//input.connector.from = nullptr;
+
+	//		graph.action.connector = &input.connector;
+	//		graph.action.connector->index_in = index;
+
+	//	}
+	//}
+
+	// if (graph.action.type == ActionGraph::ActionType::DRAG_CONNECTOR )
+	//{
+	//	if (ImGui::IsMouseDragging(ImGuiMouseButton_Left) && ConnectorHovering(hitbox_pos, hitbox_size))
+	//	{
+	//		
+	//		//connect linking
+	//		Connector* current_connector = graph.action.connector;
+
+	//		if (current_connector->to != nullptr) return;
+	//		if (this == graph.action.connector->from) return;
+
+	//		current_connector->to = this;
+	//		current_connector->index_in = index;
+
+	//		//graph.action.type = ActionGraph::ActionType::RELEASE_CONNECTOR;
+	//	}
+	//}
+
+	// if (graph.action.type == ActionGraph::ActionType::RELEASE_CONNECTOR )
+	//{
+	//	if (ConnectorHovering( hitbox_pos, hitbox_size))
+	//	{
+	//		
+	//		//finish linking
+	//		Connector* current_connector = graph.action.connector;
+
+	//		//if (link->to == nullptr || link->from == nullptr) return;
+
+	//		current_connector->to = this;
+	//		current_connector->index_in = index;
+
+
+	//		input.connector = *current_connector;
+
+	//		for (uint i = 0; i < current_connector->from->outputs.size(); i++)
+	//		{
+	//			if (&current_connector->from->outputs[i].connector == current_connector)
+	//			{
+	//				current_connector->from->outputs[i].connector.to = nullptr;
+	//				current_connector->from->outputs[i].connector.from = nullptr;
+	//				break;
+	//			}
+	//		}
+	//		
+
+	//		graph.action.type = ActionGraph::ActionType::NONE;
+	//	}
+	//}
 
 
 }
@@ -400,72 +423,87 @@ void ShaderNode::DrawInputConnector(ShaderGraph& graph, InputNode& input, unsign
 void ShaderNode::DrawOutputConnector(ShaderGraph& graph, OutputNode& output, unsigned int index)
 {
 
-	auto window = ImGui::GetCurrentWindow();
-	float width = 200.0f;
-	float2 connector_pos = float2(window->DC.CursorPos.x + ((width - 30.0f) * graph.scale), window->DC.CursorPos.y + (7.5f * graph.scale));
+	
+	output.position = graph.scrolling + float2(this->position.x + this->size.x - 10.0f,
+								               this->position.y + this->size.y * (static_cast<float>(index) + 1) / (static_cast<float>(outputs_count) + 1));
+
+	output.position.y += 10.0f;
 
 
-
-	output.position = connector_pos;
-	//auto draw_list = window->DrawList;
-
-	/*float thickness = 1 * graph.scale;
+	ImGui::SetCursorScreenPos(ImVec2(output.position.x - 60.0f, output.position.y - 8.0f));
+	ImGui::TextColored(ImVec4(255,255,255,255), "%s", output.name.c_str());
+	
+	
+	auto draw_list = ImGui::GetCurrentWindow()->DrawList;
 	ImU32 fillColor = IM_COL32(100, 100, 105, 255);
 	ImU32 outlineColor = IM_COL32(0, 200, 0, 255);
+	draw_list->AddCircleFilled(ImVec2(output.position.x, output.position.y), 10.0f, fillColor, 16);
+	draw_list->AddCircle(ImVec2(output.position.x, output.position.y), 10.0f, outlineColor);
 
-	draw_list->AddCircleFilled(ImVec2(connector_pos.x, connector_pos.y), 10.0f * graph.scale, fillColor, 16);
-	draw_list->AddCircle(ImVec2(connector_pos.x, connector_pos.y), 10.0f * graph.scale, outlineColor, 16, thickness);*/
 
 
-	float2 hitbox_pos = float2(connector_pos.x - graph.scale * 20.0f, connector_pos.y - graph.scale * 20.0f);
-	float2 hitbox_size = float2(graph.scale * 40.0f);
-
-	
-
-	if (graph.action.type == ActionGraph::ActionType::NONE )
+	if (ConnectorHovering(output.position - float2(5.0f), float2(10.0f, 10.0f)))
 	{
-		if (ImGui::IsMouseDragging(ImGuiMouseButton_Left) && ConnectorHovering( hitbox_pos, hitbox_size))
-		{
-			
-			//start linking
-			//output.connector.to = nullptr;
-			output.connector.from = this;
+		draw_list->AddCircleFilled(ImVec2(output.position.x, output.position.y), 5.0f - 2.0f, outlineColor);
 
-			graph.action.connector = &output.connector;
-			graph.action.connector->index_out = index;
-
-			graph.action.type = ActionGraph::ActionType::DRAG_CONNECTOR;
-		}
 	}
-	 if (graph.action.type == ActionGraph::ActionType::DRAG_CONNECTOR)
-	{
-		if (ImGui::IsMouseDragging(ImGuiMouseButton_Left) && ConnectorHovering( hitbox_pos, hitbox_size))
-		{
-			
-			//connect linking
-			Connector* current_connector = graph.action.connector;
 
-			if (current_connector->from != nullptr) return;
-			if (this == graph.action.connector->to) return;
 
-			current_connector->from = this;
-			current_connector->index_out = index;
 
-			//graph.action.type = ActionGraph::ActionType::RELEASE_CONNECTOR;
-		}
-	}
-	 if (graph.action.type == ActionGraph::ActionType::RELEASE_CONNECTOR )
-	{
-		if (ConnectorHovering( hitbox_pos, hitbox_size))
-		{
-			
-			//finish linking
 
-			//Nothing to do, an input connector can not be bound to a output connector
 
-			graph.action.type = ActionGraph::ActionType::NONE;
-		}
-	}
+	//float2 hitbox_pos = float2(connector_pos.x - graph.scale * 20.0f, connector_pos.y - graph.scale * 20.0f);
+	//float2 hitbox_size = float2(graph.scale * 40.0f);
+
+
+
+
+	//
+
+	//if (graph.action.type == ActionGraph::ActionType::NONE )
+	//{
+	//	if (ImGui::IsMouseDragging(ImGuiMouseButton_Left) && ConnectorHovering( hitbox_pos, hitbox_size))
+	//	{
+	//		
+	//		//start linking
+	//		//output.connector.to = nullptr;
+	//		output.connector.from = this;
+
+	//		graph.action.connector = &output.connector;
+	//		graph.action.connector->index_out = index;
+
+	//		graph.action.type = ActionGraph::ActionType::DRAG_CONNECTOR;
+	//	}
+	//}
+	// if (graph.action.type == ActionGraph::ActionType::DRAG_CONNECTOR)
+	//{
+	//	if (ImGui::IsMouseDragging(ImGuiMouseButton_Left) && ConnectorHovering( hitbox_pos, hitbox_size))
+	//	{
+	//		
+	//		//connect linking
+	//		Connector* current_connector = graph.action.connector;
+
+	//		if (current_connector->from != nullptr) return;
+	//		if (this == graph.action.connector->to) return;
+
+	//		current_connector->from = this;
+	//		current_connector->index_out = index;
+
+	//		//graph.action.type = ActionGraph::ActionType::RELEASE_CONNECTOR;
+	//	}
+	//}
+	// if (graph.action.type == ActionGraph::ActionType::RELEASE_CONNECTOR )
+	//{
+	//	if (ConnectorHovering( hitbox_pos, hitbox_size))
+	//	{
+	//		
+	//		//finish linking
+
+	//		//Nothing to do, an input connector can not be bound to a output connector
+
+	//		graph.action.type = ActionGraph::ActionType::NONE;
+	//	}
+	//}
 
 }
 

@@ -8,5 +8,5 @@ public:
 	PBRNode();
 	PBRNode(const char* name, NodeType type, float2 position);
 
-	void InnerDraw(ShaderGraph& graph) override;
+	void Update(ShaderGraph& graph) override;
 };

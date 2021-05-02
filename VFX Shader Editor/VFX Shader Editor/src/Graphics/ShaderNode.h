@@ -120,7 +120,7 @@ public:
 
 	void Input(ShaderGraph& graph);
 	void DrawNode(ShaderGraph& graph);
-	virtual void InnerDraw(ShaderGraph& graph);
+	virtual void Update(ShaderGraph& graph);
 
 	float2 CalcNodePosition(ShaderGraph& graph, float2 pos = {});
 	float2 CalcNodeSize(ShaderGraph& graph, ShaderNode* node);
@@ -150,4 +150,7 @@ public:
 
 	std::vector<InputNode> inputs;
 	std::vector<OutputNode> outputs;
+
+	int inputs_count = 0;
+	int outputs_count = 0;
 };

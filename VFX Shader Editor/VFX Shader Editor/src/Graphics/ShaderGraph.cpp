@@ -22,8 +22,14 @@ void ShaderGraph::Draw()
 
 	for (std::list<ShaderNode*>::iterator it = nodes.begin(); it != nodes.end(); ++it)
 	{
+		//Draw stuff -------
 		(*it)->DrawNode(*this);
-		(*it)->InnerDraw(*this);
+		(*it)->DrawInputs(*this, (*it)->inputs_count);
+		(*it)->DrawOutputs(*this, (*it)->outputs_count);
+
+
+		//Update stuff -------
+		(*it)->Update(*this);
 	}
 
 
@@ -34,7 +40,7 @@ void ShaderGraph::Draw()
 	}
 
 
-	for (std::list<ShaderNode*>::iterator it = nodes.begin(); it != nodes.end(); ++it)
+	/*for (std::list<ShaderNode*>::iterator it = nodes.begin(); it != nodes.end(); ++it)
 	{
 		for (auto& input : (*it)->inputs) {
 			input.connector.DrawInputChannel(*this, input);
@@ -47,7 +53,7 @@ void ShaderGraph::Draw()
 			output.connector.DrawConnector(*this, false);
 			
 		}
-	}
+	}*/
 
 
 	if (this->action.type == ActionGraph::RELEASE_SELECTION)

@@ -12,16 +12,20 @@ PBRNode::PBRNode(const char* name, NodeType type, float2 position)
 	inputs.push_back(InputNode("roughness", ValueType::FLOAT1));
 	
 	outputs.push_back(OutputNode(ValueType::FLOAT1));
+
+	//temp hardcoded
+	inputs_count = 3;
+	outputs_count = 1;
 }
 
-void PBRNode::InnerDraw(ShaderGraph& g)
+void PBRNode::Update(ShaderGraph& g)
 {
 
-	ImGui::BeginGroup();
+	//ImGui::BeginGroup();
 	
 	//DrawTitle(g);
-	//DrawOutputs(g, 1);
-	//DrawInputs(g, 3);
+	//DrawOutputs(g, outputs_count);
+	//DrawInputs(g, inputs_count);
 
 	ImGui::EndGroup();
 }
