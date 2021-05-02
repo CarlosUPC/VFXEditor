@@ -145,6 +145,4 @@ public:
 	bool isSelected = false;
 	bool isItemActive = false;
 
-	bool	m_is_node_widgets_active;
-	bool	m_is_old_any_active;
 };

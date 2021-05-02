@@ -100,8 +100,8 @@ public:
 	float2 scrolling;
 	float scale = 1.0f;
 
-	ShaderNode* selected = nullptr;
-	ShaderNode* hovered = nullptr;
+	ShaderNode* node_selected = nullptr;
+	ShaderNode* node_hovered = nullptr;
 
 	ActionGraph action;
 };

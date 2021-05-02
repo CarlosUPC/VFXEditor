@@ -21,10 +21,12 @@ void ShaderGraph::Draw()
 
 	for (std::list<ShaderNode*>::reverse_iterator it = nodes.rbegin(); it != nodes.rend(); ++it) // Interaction in reverse loop because the last one drawn shoud be the first to be interacted
 	{
-		//Mouse Input stuff ------
 
 		ImGui::PushID((*it)->UID);
+
+		//Mouse Input stuff ------
 		(*it)->InputNode(*this);
+
 		ImGui::PopID();
 	}
 
@@ -32,15 +34,15 @@ void ShaderGraph::Draw()
 	for (std::list<ShaderNode*>::iterator it = nodes.begin(); it != nodes.end(); ++it)
 	{
 		ImGui::PushID((*it)->UID);
+
 		//Draw stuff -------
 		(*it)->DrawNode(*this);
 		(*it)->DrawInputs(*this, (*it)->inputs_count);
 		(*it)->DrawOutputs(*this, (*it)->outputs_count);
 
-		
-
 		//Update stuff -------
 		(*it)->Update(*this);
+
 		ImGui::PopID();
 		
 	}

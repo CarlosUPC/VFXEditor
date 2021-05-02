@@ -19,39 +19,48 @@ ShaderNode::~ShaderNode()
 
 void ShaderNode::InputNode(ShaderGraph& graph)
 {
-	//m_is_old_any_active = ImGui::IsAnyItemActive();
-	//m_is_node_widgets_active = (!m_is_old_any_active && ImGui::IsAnyItemActive());
-
+	
+	//Hover node ----
 	if (NodeHovering(graph, this->position, this->size))
 	{
+		graph.node_hovered = this;
+	}
+	else
+	{
+		graph.node_hovered = nullptr;
+	}
 
+
+	//Set node hovered -----
+	if (graph.node_hovered != nullptr)
+	{
 		this->isHovered = true;
-		//isHovered = true;
-		//graph.hovered = this;
-
-
-		/*if (ImGui::IsMouseClicked(0))
-		{
-			graph.selected = this;
-		}*/
 	}
 	else
 	{
 		this->isHovered = false;
-		//isHovered = false;
-		//graph.hovered = nullptr;
 	}
 
-	 isItemActive = ImGui::IsItemActive();
-
-	 
+	//Select node -----
+	isItemActive = ImGui::IsItemActive();
 	if (ImGui::IsMouseDoubleClicked(0) &&
 		isItemActive)
+	{
+		graph.node_selected = this;
+	}
+
+	//Set node selected -----
+	if (graph.node_selected != nullptr)
 	{
 		this->isSelected = true;
 		this->isHovered = false;
 	}
+	else
+	{
+		this->isSelected = false;
+	}
 
+	//Drag node -----
 	if (isItemActive && ImGui::IsMouseDragging(0))
 	{
 		this->position = this->position + float2(ImGui::GetIO().MouseDelta.x, ImGui::GetIO().MouseDelta.y);
@@ -591,7 +600,7 @@ void Connector::DrawInputChannel(ShaderGraph& g, InputSocket& input)
 
 	if (ConnectorHovering(hitbox_pos, hitbox_size))
 	{
-		g.hovered = nullptr;
+		g.node_hovered = nullptr;
 	}
 }
 
@@ -611,7 +620,7 @@ void Connector::DrawOutputChannel(ShaderGraph& g, OutputSocket& output)
 
 	if (ConnectorHovering(hitbox_pos, hitbox_size))
 	{
-		g.hovered = nullptr;
+		g.node_hovered = nullptr;
 	}
 }
 

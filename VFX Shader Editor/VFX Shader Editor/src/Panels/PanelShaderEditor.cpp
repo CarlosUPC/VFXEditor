@@ -443,7 +443,10 @@ void PanelShaderEditor::NodeContext()
 		ImGui::IsWindowHovered())
 	{
 		if(!ImGui::IsAnyItemHovered())
+		{
+			current_shader->graph->node_hovered = current_shader->graph->node_selected = nullptr;
 			ImGui::OpenPopup("NewNode");
+		}
 	}
 
 	AddNewNodePopUp();
