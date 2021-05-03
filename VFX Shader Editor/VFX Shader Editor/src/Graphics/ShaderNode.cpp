@@ -69,35 +69,6 @@ void ShaderNode::InputNode(ShaderGraph& graph)
 		this->position = this->position + float2(ImGui::GetIO().MouseDelta.x, ImGui::GetIO().MouseDelta.y);
 	}
 
-
-	
-	
-
-
-
-	//if (isHovered)
-	//{
-	//	static bool dragging = false;
-	//	float2 clickOffset;
-	//	
-	//	//float2 mouseDelta = float2(ImGui::GetMouseDragDelta().x, ImGui::GetMouseDragDelta().y);
-	//	clickOffset = { ImGui::GetMousePos().x - position.x * graph.scale, ImGui::GetMousePos().y +  - position.y * graph.scale };
-	//	if (ImGui::IsMouseClicked(0))
-	//	{
-	//		dragging = true;
-	//	}
-	//	if (dragging && ImGui::IsMouseReleased(0))
-	//	{
-	//		dragging = false;
-	//	}
-	//	if (graph.selected == this && dragging && ImGui::IsMouseDragging(0))
-	//	{
-	//		//this->position += mouseDelta;
-	//		
-	//		this->position = { ImGui::GetWindowPos().x - ImGui::GetMousePos().x , ImGui::GetWindowPos().y - ImGui::GetMousePos().y  };
-	//		this->position /= graph.scale;
-	//	}
-	//}
 }
 
 void ShaderNode::DrawNode(ShaderGraph& graph)
@@ -129,37 +100,37 @@ void ShaderNode::DrawLinks(ShaderGraph& graph)
 {
 	auto draw_list = ImGui::GetWindowDrawList();
 
-	for (auto& link : this->links)
-	{
-		float2 input_pos = graph.scrolling + link.input_node->inputs[link.input_socket].position;
-		float2 output_pos = graph.scrolling + link.output_node->outputs[link.output_socket].position;
+	//for (auto& link : this->links)
+	//{
+	//	float2 input_pos = graph.scrolling + link.input_node->inputs[link.input_socket].position;
+	//	float2 output_pos = graph.scrolling + link.output_node->outputs[link.output_socket].position;
 
-		if (this == link.input_node)
-		{
-			input_pos = graph.scrolling + this->inputs[link.input_socket].position;
-			link.output_node->outputs[link.output_socket].isLinked = true;
-		}
-		else
-		{
-			output_pos = graph.scrolling + this->outputs[link.output_socket].position;
-			link.input_node->inputs[link.input_socket].isLinked = true;
-		}
+	//	if (this == link.input_node)
+	//	{
+	//		//input_pos = graph.scrolling + this->inputs[link.input_socket].position;
+	//		link.output_node->outputs[link.output_socket].isLinked = true;
+	//	}
+	//	else if(this == link.output_node)
+	//	{
+	//		//output_pos = graph.scrolling + this->outputs[link.output_socket].position;
+	//		link.input_node->inputs[link.input_socket].isLinked = true;
+	//	}
 
-		if (!this->inputs[link.input_socket].isLinked || !this->outputs[link.output_socket].isLinked)
-		{
+	//	if (!this->inputs[link.input_socket].isLinked || !this->outputs[link.output_socket].isLinked)
+	//	{
 
-			draw_list->AddBezierCurve
-			(
-				ImVec2(output_pos.x, output_pos.y), 
-				ImVec2(output_pos.x + 80.0f, output_pos.y), 
-				ImVec2(input_pos.x - 80.0f, input_pos.y), 
-				ImVec2(input_pos.x, input_pos.y), 
-				IM_COL32(0, 150, 250, 250),3,12
-			);
+	//		draw_list->AddBezierCurve
+	//		(
+	//			ImVec2(output_pos.x, output_pos.y), 
+	//			ImVec2(output_pos.x + 80.0f, output_pos.y), 
+	//			ImVec2(input_pos.x - 80.0f, input_pos.y), 
+	//			ImVec2(input_pos.x, input_pos.y), 
+	//			IM_COL32(0, 150, 250, 250),3,12
+	//		);
 
 
-		}
-	}
+	//	}
+	//}
 
 	if (graph.socket_state.node_selected == this)
 	{
@@ -174,8 +145,8 @@ void ShaderNode::DrawLinks(ShaderGraph& graph)
 
 		if (ImGui::IsMouseReleased(0))
 		{
-			//graph.socket_state.input_socket_actived = false;
-			//graph.socket_state.output_socket_actived = false;
+			graph.socket_state.input_socket_actived = false;
+			graph.socket_state.output_socket_actived = false;
 			graph.socket_state.node_selected = nullptr;
 		}
 	}
@@ -200,36 +171,7 @@ float2 ShaderNode::CalcNodePosition(ShaderGraph& g, float2 pos)
 	
 
 
-	//if (g.selected == this && g.hovered)
-	//{
-	//	bool is_done = !ImGui::IsMouseDragging(ImGuiMouseButton_Left);
-	//	float2 delta = float2(ImGui::GetMouseDragDelta().x, ImGui::GetMouseDragDelta().y);
-	//	float2 mouse_pos;
-
-	//	if (!is_done) {
-	//		pos += delta;
-	//	}
-	//	else
-	//	{
-	//		 mouse_pos = delta;
-	//		//this->position += mouse_pos;
-	//		//this->position /= g.scale;
-
-	//		//pos = this->position;
-	//		//pos.x += /*ImGui::GetWindowPos().x +*/ g.scrolling.x;
-	//		//pos.y += /*ImGui::GetWindowPos().y +*/ g.scrolling.y;
-	//		//pos *= g.scale;
-
-
-	//	}
-	//	this->position += mouse_pos;
-	//	this->position /= g.scale;
-	//	pos = this->position;
-	//	pos.x += ImGui::GetWindowPos().x + g.scrolling.x;
-	//	pos.y += ImGui::GetWindowPos().y + g.scrolling.y;
-	//	pos *= g.scale;
-
-	//}
+	
 	return pos;
 }
 
@@ -273,9 +215,9 @@ bool ShaderNode::ConnectorHovering(float2 position, float2 size)
 	return hovered;
 }
 
-bool ShaderNode::SocketHovering(float2& p, float2 e, const float r1, const float r2)
+bool ShaderNode::SocketHovering(float2& point1, float2 point2, const float r1, const float r2)
 {
-	float2 distance = float2(e.x - p.x, e.y - p.y);
+	float2 distance = float2(point2.x - point1.x, point2.y - point1.y);
 	float length = distance.x * distance.x + distance.y * distance.y;
 	float radius = (r1 + r2) * (r1 + r2);
 
@@ -290,11 +232,7 @@ bool ShaderNode::SocketHovering(float2& p, float2 e, const float r1, const float
 void ShaderNode::DrawTitle(ShaderGraph& g)
 {
 
-	//ImGui::Dummy(ImVec2(0, 3 * g.scale));
-	//ImGui::Dummy(ImVec2(0, 40 * g.scale));
-	//ImGui::SameLine();
-	//ImGui::Text(name.c_str());
-	//ImGui::Dummy(ImVec2(0, 10 * g.scale));
+	
 }
 
 void ShaderNode::DrawTitle(ImDrawList* draw_list, float2 pos, float2 size)
@@ -431,86 +369,7 @@ void ShaderNode::DrawInputConnector(ShaderGraph& graph, InputSocket& input, unsi
 	
 	
 	
-	//
-	//auto window = ImGui::GetCurrentWindow();
-	//float2 connector_pos = float2(window->DC.CursorPos.x + (10.0f * graph.scale), window->DC.CursorPos.y + (7.5f * graph.scale));
-
-
-	//
-	//input.position = connector_pos;
-
-	//
-
-
-	//float2 hitbox_pos = float2(connector_pos.x - graph.scale * 20.0f , connector_pos.y - graph.scale * 20.0f);
-	//float2 hitbox_size = float2(graph.scale * 40.0f);
-
-	//
-
-	//if (graph.action.type == ActionGraph::ActionType::NONE )
-	//{
-	//	if (ImGui::IsMouseDragging(ImGuiMouseButton_Left) && ConnectorHovering(hitbox_pos, hitbox_size))
-	//	{
-	//		
-	//		graph.action.type = ActionGraph::ActionType::DRAG_CONNECTOR;
-	//		//start linking
-	//		input.connector.to = this;
-	//		//input.connector.from = nullptr;
-
-	//		graph.action.connector = &input.connector;
-	//		graph.action.connector->index_in = index;
-
-	//	}
-	//}
-
-	// if (graph.action.type == ActionGraph::ActionType::DRAG_CONNECTOR )
-	//{
-	//	if (ImGui::IsMouseDragging(ImGuiMouseButton_Left) && ConnectorHovering(hitbox_pos, hitbox_size))
-	//	{
-	//		
-	//		//connect linking
-	//		Connector* current_connector = graph.action.connector;
-
-	//		if (current_connector->to != nullptr) return;
-	//		if (this == graph.action.connector->from) return;
-
-	//		current_connector->to = this;
-	//		current_connector->index_in = index;
-
-	//		//graph.action.type = ActionGraph::ActionType::RELEASE_CONNECTOR;
-	//	}
-	//}
-
-	// if (graph.action.type == ActionGraph::ActionType::RELEASE_CONNECTOR )
-	//{
-	//	if (ConnectorHovering( hitbox_pos, hitbox_size))
-	//	{
-	//		
-	//		//finish linking
-	//		Connector* current_connector = graph.action.connector;
-
-	//		//if (link->to == nullptr || link->from == nullptr) return;
-
-	//		current_connector->to = this;
-	//		current_connector->index_in = index;
-
-
-	//		input.connector = *current_connector;
-
-	//		for (uint i = 0; i < current_connector->from->outputs.size(); i++)
-	//		{
-	//			if (&current_connector->from->outputs[i].connector == current_connector)
-	//			{
-	//				current_connector->from->outputs[i].connector.to = nullptr;
-	//				current_connector->from->outputs[i].connector.from = nullptr;
-	//				break;
-	//			}
-	//		}
-	//		
-
-	//		graph.action.type = ActionGraph::ActionType::NONE;
-	//	}
-	//}
+	
 
 
 }
@@ -553,52 +412,7 @@ void ShaderNode::DrawOutputConnector(ShaderGraph& graph, OutputSocket& output, u
 
 
 
-	//
-
-	//if (graph.action.type == ActionGraph::ActionType::NONE )
-	//{
-	//	if (ImGui::IsMouseDragging(ImGuiMouseButton_Left) && ConnectorHovering( hitbox_pos, hitbox_size))
-	//	{
-	//		
-	//		//start linking
-	//		//output.connector.to = nullptr;
-	//		output.connector.from = this;
-
-	//		graph.action.connector = &output.connector;
-	//		graph.action.connector->index_out = index;
-
-	//		graph.action.type = ActionGraph::ActionType::DRAG_CONNECTOR;
-	//	}
-	//}
-	// if (graph.action.type == ActionGraph::ActionType::DRAG_CONNECTOR)
-	//{
-	//	if (ImGui::IsMouseDragging(ImGuiMouseButton_Left) && ConnectorHovering( hitbox_pos, hitbox_size))
-	//	{
-	//		
-	//		//connect linking
-	//		Connector* current_connector = graph.action.connector;
-
-	//		if (current_connector->from != nullptr) return;
-	//		if (this == graph.action.connector->to) return;
-
-	//		current_connector->from = this;
-	//		current_connector->index_out = index;
-
-	//		//graph.action.type = ActionGraph::ActionType::RELEASE_CONNECTOR;
-	//	}
-	//}
-	// if (graph.action.type == ActionGraph::ActionType::RELEASE_CONNECTOR )
-	//{
-	//	if (ConnectorHovering( hitbox_pos, hitbox_size))
-	//	{
-	//		
-	//		//finish linking
-
-	//		//Nothing to do, an input connector can not be bound to a output connector
-
-	//		graph.action.type = ActionGraph::ActionType::NONE;
-	//	}
-	//}
+	
 
 }
 
@@ -637,7 +451,7 @@ void ShaderNode::InputSocketInputs(ShaderGraph& graph, unsigned int numInputs, u
 
 			//IF OUTPUT WAS ACTIVATED
 		if (graph.socket_state.output_socket_actived &&
-			ImGui::IsMouseDown(0) &&
+			ImGui::IsMouseReleased(0) &&
 			SocketHovering(input_pos, float2(ImGui::GetIO().MousePos.x, ImGui::GetIO().MousePos.y), 10.0f, 2.0f)
 			)
 		{
@@ -652,7 +466,7 @@ void ShaderNode::InputSocketInputs(ShaderGraph& graph, unsigned int numInputs, u
 					else
 					{
 						//create link
-						this->links.push_back(ShaderLink(this, i, graph.socket_state.node_selected, graph.socket_state.socked_selected));
+						graph.links.push_back(new ShaderLink(this, i, graph.socket_state.node_selected, graph.socket_state.socked_selected));
 					}
 
 				}
@@ -717,7 +531,8 @@ void ShaderNode::InputSocketOutputs(ShaderGraph& graph, unsigned int numOutputs,
 				else
 				{
 					//create link
-					this->links.push_back(ShaderLink(this, i, graph.socket_state.node_selected, graph.socket_state.socked_selected));
+					graph.links.push_back(new ShaderLink(this, i, graph.socket_state.node_selected, graph.socket_state.socked_selected));
+					
 				}
 
 			}
@@ -733,166 +548,92 @@ void ShaderNode::InputSocketOutputs(ShaderGraph& graph, unsigned int numOutputs,
 	}
 }
 
-void Connector::DrawConnector(ShaderGraph& g, bool isInput)
-{
-	
-
-	if (g.action.type == ActionGraph::ActionType::DRAG_CONNECTOR && g.action.connector == this)
-	{
-		if(ImGui::IsMouseDragging(ImGuiMouseButton_Left))
-		{
-			ShaderNode* node_output = this->from;
-			ShaderNode* node_input = this->to;
-
-			if (node_input && node_output)
-			{
-				//render complete
-				float2 end = float2(this->to->inputs[index_in].position);
-				float2 start = float2(this->from->outputs[index_out].position);
-
-				this->AddBezierLine(g, start, end, true);
-
-				if (isInput) this->from = nullptr;
-				else this->to = nullptr;
-			}
-			else
-			{
-				//render incomplete
-				float2 start_pos;
-
-				if (node_output != nullptr) start_pos = float2(this->from->outputs[index_out].position);
-				else if (node_input != nullptr) start_pos = float2(this->to->inputs[index_in].position);
-
-				this->AddBezierLine(g, start_pos, float2(ImGui::GetMousePos().x, ImGui::GetMousePos().y), false);
-			}
-		}
-		else
-		{
-			g.action.type = ActionGraph::ActionType::RELEASE_CONNECTOR;
-		}
-	}
-	else if(g.action.type == ActionGraph::ActionType::RELEASE_CONNECTOR && g.action.connector == this)
-	{
-		g.action.type = ActionGraph::ActionType::NONE;
-	}
-	else
-	{
-		//drawing connection between nodes
-		ShaderNode* node_output = this->from;
-		ShaderNode* node_input = this->to;
-
-		if (node_input && node_output)
-		{
-			//render complete
-			float2 end = float2(this->to->inputs[index_in].position);
-			float2 start = float2(this->from->outputs[index_out].position);
-
-			this->AddBezierLine(g, start, end, true);
-
-			//if (node_output != nullptr) start_pos = float2(this->from->outputs[index].position);
-			//else if (node_input != nullptr) start_pos = float2(this->to->inputs[index].position);
-		}
-
-	}
 
 
-}
-
-void Connector::DrawInputChannel(ShaderGraph& g, InputSocket& input)
-{
-	auto draw_list = ImGui::GetCurrentWindow()->DrawList;
-
-	float thickness = 1 * g.scale;
-	ImU32 fillColor = IM_COL32(100, 100, 105, 255);
-	ImU32 outlineColor = IM_COL32(0, 200, 0, 255);
-
-	draw_list->AddCircleFilled(ImVec2(input.position.x, input.position.y), 10.0f * g.scale, fillColor, 16);
-	draw_list->AddCircle(ImVec2(input.position.x, input.position.y), 10.0f * g.scale, outlineColor, 16, thickness);
 
 
-	float2 hitbox_pos = float2(input.position.x - g.scale * 20.0f, input.position.y - g.scale * 20.0f);
-	float2 hitbox_size = float2(g.scale * 40.0f);
 
-	if (ConnectorHovering(hitbox_pos, hitbox_size))
-	{
-		g.node_hovered = nullptr;
-	}
-}
 
-void Connector::DrawOutputChannel(ShaderGraph& g, OutputSocket& output)
-{
-	auto draw_list = ImGui::GetCurrentWindow()->DrawList;
+//void Connector::AddBezierLine(ShaderGraph& g, float2 start, float2 end, bool isLinked)
+//{
+//	float2 v_start = start;
+//	float2 v_end = end;
+//	//float2 v_start(start.x, start.y);
+//	//float2 v_end(end.x, end.y);
+//
+//	float bezier = 200.0f;
+//
+//	//float length = start.x - end.x;
+//	float length = math::Length(float2(start.x, end.x));
+//
+//	length = math::Min(length * 0.5f, 50.0f * g.scale);
+//
+//	float2 cp0, cp1;
+//
+//	if (!isLinked && start.x > end.x) {
+//		std::swap(v_start, v_end);
+//		std::swap(start, end);
+//	}
+//
+//	if (v_start.x > v_end.x && false) {
+//		cp0 = v_start - float2(length, 0);
+//		cp1 = v_end + float2(length, 0);
+//	}
+//	else {
+//		cp0 = v_start + float2(length, 0);
+//		cp1 = v_end - float2(length, 0);
+//	}
+//
+//	//ImGui::GetCurrentWindow()->DrawList->AddLine(ImVec2(start.x, start.y), ImVec2(cp0.x, cp0.y), ImColor(120, 120, 120), g.scale * 5.f);
+//	//ImGui::GetCurrentWindow()->DrawList->AddLine(ImVec2(cp0.x, cp0.y), ImVec2(cp1.x, cp1.y), ImColor(120, 120, 120), g.scale * 5.f);
+//	//ImGui::GetCurrentWindow()->DrawList->AddLine(ImVec2(cp1.x, cp1.y), ImVec2(end.x, end.y), ImColor(120, 120, 120), g.scale * 5.f);
+//
+//	ImGui::GetCurrentWindow()->DrawList->AddBezierCurve(ImVec2(start.x, start.y), ImVec2(cp0.x, cp0.y), ImVec2(cp1.x, cp1.y), ImVec2(end.x, end.y), ImColor(120, 120, 120), g.scale * 5.f);
+//
+//}
 
-	float thickness = 1 * g.scale;
-	ImU32 fillColor = IM_COL32(100, 100, 105, 255);
-	ImU32 outlineColor = IM_COL32(0, 200, 0, 255);
 
-	draw_list->AddCircleFilled(ImVec2(output.position.x, output.position.y), 10.0f * g.scale, fillColor, 16);
-	draw_list->AddCircle(ImVec2(output.position.x, output.position.y), 10.0f * g.scale, outlineColor, 16, thickness);
-
-	float2 hitbox_pos = float2(output.position.x - g.scale * 20.0f, output.position.y - g.scale * 20.0f);
-	float2 hitbox_size = float2(g.scale * 40.0f);
-
-	if (ConnectorHovering(hitbox_pos, hitbox_size))
-	{
-		g.node_hovered = nullptr;
-	}
-}
-
-void Connector::AddBezierLine(ShaderGraph& g, float2 start, float2 end, bool isLinked)
-{
-	float2 v_start = start;
-	float2 v_end = end;
-	//float2 v_start(start.x, start.y);
-	//float2 v_end(end.x, end.y);
-
-	float bezier = 200.0f;
-
-	//float length = start.x - end.x;
-	float length = math::Length(float2(start.x, end.x));
-
-	length = math::Min(length * 0.5f, 50.0f * g.scale);
-
-	float2 cp0, cp1;
-
-	if (!isLinked && start.x > end.x) {
-		std::swap(v_start, v_end);
-		std::swap(start, end);
-	}
-
-	if (v_start.x > v_end.x && false) {
-		cp0 = v_start - float2(length, 0);
-		cp1 = v_end + float2(length, 0);
-	}
-	else {
-		cp0 = v_start + float2(length, 0);
-		cp1 = v_end - float2(length, 0);
-	}
-
-	//ImGui::GetCurrentWindow()->DrawList->AddLine(ImVec2(start.x, start.y), ImVec2(cp0.x, cp0.y), ImColor(120, 120, 120), g.scale * 5.f);
-	//ImGui::GetCurrentWindow()->DrawList->AddLine(ImVec2(cp0.x, cp0.y), ImVec2(cp1.x, cp1.y), ImColor(120, 120, 120), g.scale * 5.f);
-	//ImGui::GetCurrentWindow()->DrawList->AddLine(ImVec2(cp1.x, cp1.y), ImVec2(end.x, end.y), ImColor(120, 120, 120), g.scale * 5.f);
-
-	ImGui::GetCurrentWindow()->DrawList->AddBezierCurve(ImVec2(start.x, start.y), ImVec2(cp0.x, cp0.y), ImVec2(cp1.x, cp1.y), ImVec2(end.x, end.y), ImColor(120, 120, 120), g.scale * 5.f);
-
-}
-
-bool Connector::ConnectorHovering(float2 position, float2 size)
-{
-	ImVec2 previous = ImGui::GetCurrentWindow()->DC.CursorPos;
-
-	ImGui::SetCursorScreenPos(ImVec2(position.x, position.y));
-	ImGui::InvisibleButton("node", ImVec2(size.x, size.y));
-
-	bool hovered = ImGui::IsItemHovered();
-
-	ImGui::SetCursorScreenPos(previous);
-
-	return hovered;
-}
 
 ShaderLink::ShaderLink(ShaderNode* input_node, unsigned int input_socket, ShaderNode* output_node, unsigned int output_socket)
 	: input_node(input_node), input_socket(input_socket), output_node(output_node), output_socket(output_socket)
 {
+	
+}
+
+void ShaderLink::DrawLink(ShaderGraph& graph)
+{
+
+	auto draw_list = ImGui::GetWindowDrawList();
+
+	
+	float2 input_pos = graph.scrolling + this->input_node->inputs[this->input_socket].position;
+	float2 output_pos = graph.scrolling + this->output_node->outputs[this->output_socket].position;
+
+	//
+	//if (this == link.input_node)
+	//{
+	//	//input_pos = graph.scrolling + this->inputs[link.input_socket].position;
+	//	link.output_node->outputs[link.output_socket].isLinked = true;
+	//}
+	//else if (this == link.output_node)
+	//{
+	//	//output_pos = graph.scrolling + this->outputs[link.output_socket].position;
+	//	link.input_node->inputs[link.input_socket].isLinked = true;
+	//}
+
+
+	draw_list->AddBezierCurve
+	(
+		ImVec2(output_pos.x, output_pos.y),
+		ImVec2(output_pos.x + 80.0f, output_pos.y),
+		ImVec2(input_pos.x - 80.0f, input_pos.y),
+		ImVec2(input_pos.x, input_pos.y),
+		IM_COL32(0, 150, 250, 250), 3, 12
+	);
+
+
+	
+
+		
 	
 }

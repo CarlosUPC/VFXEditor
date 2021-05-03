@@ -40,28 +40,13 @@ struct ShaderLink
 
 	//bool isLinked = false;
 
+	void DrawLink(ShaderGraph& graph);
+
 
 };
 
 
-struct Connector
-{
-	
 
-	ShaderNode* to = nullptr;
-	ShaderNode* from = nullptr;
-	unsigned int index_in = 0;
-	unsigned int index_out = 0;
-
-	void DrawConnector(ShaderGraph& g, bool isInput = false);
-
-	void DrawInputChannel(ShaderGraph& g, InputSocket& input);
-	void DrawOutputChannel(ShaderGraph& g, OutputSocket& output);
-
-	void AddBezierLine(ShaderGraph& g, float2 start, float2 end, bool isLinked = true);
-
-	bool ConnectorHovering(float2 position, float2 size);
-};
 
 
 struct InputSocket
@@ -69,7 +54,7 @@ struct InputSocket
 	ValueType type = ValueType::NONE;
 	float2 position;
 	std::string name;
-	Connector connector;
+	
 
 	bool isLinked = false;
 
@@ -96,7 +81,7 @@ struct OutputSocket
 {
 	ValueType type = ValueType::NONE;
 	float2 position;
-	Connector connector;
+	
 	std::string name;
 
 	bool isLinked = false;

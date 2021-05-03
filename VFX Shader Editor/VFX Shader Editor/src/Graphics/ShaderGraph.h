@@ -7,7 +7,8 @@
 class ShaderGraph;
 class ShaderNode;
 enum NodeType;
-struct Connector;
+
+struct ShaderLink;
 
 enum class ShaderType
 {
@@ -60,24 +61,7 @@ public:
 
 };
 
-struct ActionGraph
-{
-	enum ActionType
-	{
-		DRAG_CONNECTOR,
-		RELEASE_CONNECTOR,
-		DRAG_SELECTION,
-		RELEASE_SELECTION,
-		NONE
-	};
 
-	ActionType type = ActionType::NONE;
-	Connector* connector;
-
-	float2 mousePos;
-	float2 mouseDeltaPos;
-
-};
 
 struct TempSocketData
 {
@@ -115,13 +99,14 @@ private:
 	std::string m_Name;
 public:
 	std::list<ShaderNode*> nodes;
+	std::list<ShaderLink*> links;
 	float2 scrolling;
 	float scale = 1.0f;
 
 	ShaderNode* node_selected = nullptr;
 	ShaderNode* node_hovered = nullptr;
 
-	ActionGraph action;
+	
 
 	TempNodeData node_state;
 	TempSocketData socket_state;
