@@ -134,6 +134,7 @@ public:
 
 	bool NodeHovering(ShaderGraph& graph, float2 position, float2 size);
 	bool ConnectorHovering(float2 position, float2 size);
+	bool SocketHovering(float2& p, float2 e,const float r1,const float r2);
 
 	void DrawTitle(ShaderGraph& g);
 	void DrawTitle(ImDrawList* draw_list, float2 pos, float2 size);
