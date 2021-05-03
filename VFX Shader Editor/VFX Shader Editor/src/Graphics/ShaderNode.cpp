@@ -19,7 +19,10 @@ ShaderNode::~ShaderNode()
 
 void ShaderNode::InputNode(ShaderGraph& graph)
 {
-	
+	//Node is being used to link another one
+	if (graph.socket_state.node_selected == this)
+		return;
+
 	//Hover node ----
 	if (NodeHovering(graph, this->position, this->size))
 	{
@@ -158,6 +161,25 @@ void ShaderNode::DrawLinks(ShaderGraph& graph)
 		}
 	}
 
+	if (graph.socket_state.node_selected == this)
+	{
+		draw_list->AddBezierCurve
+		(
+			ImVec2(graph.socket_state.socket_pos.x, graph.socket_state.socket_pos.y),
+			ImVec2(graph.socket_state.socket_pos.x + 80.0f, graph.socket_state.socket_pos.y),
+			ImGui::GetIO().MousePos,
+			ImGui::GetIO().MousePos,
+			IM_COL32(0, 150, 250, 250), 4
+		);
+
+		if (ImGui::IsMouseClicked(0))
+		{
+			graph.socket_state.input_socket_actived = false;
+			graph.socket_state.output_socket_actived = false;
+			graph.socket_state.node_selected = nullptr;
+		}
+	}
+
 
 }
 
@@ -239,14 +261,14 @@ bool ShaderNode::NodeHovering(ShaderGraph& graph, float2 position, float2 size)
 
 bool ShaderNode::ConnectorHovering(float2 position, float2 size)
 {
-	ImVec2 previous = ImGui::GetCurrentWindow()->DC.CursorPos;
+	//ImVec2 previous = ImGui::GetCurrentWindow()->DC.CursorPos;
 
 	ImGui::SetCursorScreenPos(ImVec2(position.x, position.y));
 	ImGui::InvisibleButton("node", ImVec2(size.x, size.y));
 
 	bool hovered = ImGui::IsItemHovered();
 
-	ImGui::SetCursorScreenPos(previous);
+	//ImGui::SetCursorScreenPos(previous);
 
 	return hovered;
 }
@@ -560,6 +582,130 @@ void ShaderNode::DrawOutputConnector(ShaderGraph& graph, OutputSocket& output, u
 	//	}
 	//}
 
+}
+
+void ShaderNode::InputSocketInputs(ShaderGraph& graph, unsigned int numInputs, unsigned int offset)
+{
+
+	for (int i = 0; i < numInputs; ++i)
+	{
+		InputSocket& input = this->inputs[i];
+
+		float2 input_pos = input.position;
+
+		if (ConnectorHovering(input.position - float2(5.0f), float2(10.0f, 10.0f)))
+		{
+			this->isHovered = false;
+		}
+		/*else
+		{
+			this->isSocketHovered = false;
+		}*/
+
+		//IF OUTPUT WAS NOT ACTIVATED
+		if (!graph.socket_state.output_socket_actived &&
+			ImGui::IsMouseDown(0) &&
+			ConnectorHovering(input.position - float2(5.0f), float2(10.0f, 10.0f)))
+		{
+			graph.socket_state.node_selected = this;
+			graph.socket_state.socked_selected = i;
+			graph.socket_state.input_socket_actived = true;
+			graph.socket_state.socket_pos = input_pos;
+
+			break;
+
+		}
+
+		//IF OUTPUT WAS ACTIVATED
+		if(graph.socket_state.output_socket_actived &&
+			ImGui::IsMouseReleased(0) &&
+			ConnectorHovering(input.position - float2(5.0f), float2(10.0f, 10.0f)))
+		{
+
+			if (graph.socket_state.node_selected != this) // this checks if we are trying to put the link in the same node and we dont want that happens
+			{
+
+				if (input.isLinked)
+				{
+					//swap links
+				}
+				else
+				{
+					//create link
+					this->links.push_back(ShaderLink(this, i, graph.socket_state.node_selected, graph.socket_state.socked_selected));
+				}
+
+			}
+
+			graph.socket_state.node_selected = nullptr;
+			graph.socket_state.socked_selected = 0;
+			graph.socket_state.output_socket_actived = false;
+			graph.socket_state.socket_pos = float2(0.0f);
+			break;
+		}
+
+	}
+}
+
+void ShaderNode::InputSocketOutputs(ShaderGraph& graph, unsigned int numOutputs, unsigned int offset)
+{
+
+	for (int i = 0; i < numOutputs; ++i)
+	{
+		OutputSocket& output = this->outputs[i];
+
+		float2 output_pos = output.position;
+
+		if (ConnectorHovering(output.position - float2(5.0f), float2(10.0f, 10.0f)))
+		{
+			this->isHovered = false;
+		}
+		
+
+
+		//IF INPUT WAS NOT ACTIVATED
+		if (!graph.socket_state.input_socket_actived &&
+			ImGui::IsMouseDown(0) &&
+			ConnectorHovering(output.position - float2(5.0f), float2(10.0f, 10.0f)))
+		{
+			graph.socket_state.node_selected = this;
+			graph.socket_state.socked_selected = i;
+			graph.socket_state.output_socket_actived = true;
+			graph.socket_state.socket_pos = output_pos;
+
+			break;
+
+		}
+
+		//IF INPUT WAS ACTIVATED
+		if (graph.socket_state.output_socket_actived &&
+			ImGui::IsMouseReleased(0) &&
+			ConnectorHovering(output.position - float2(5.0f), float2(10.0f, 10.0f)))
+		{
+
+			if (graph.socket_state.node_selected != this) // this checks if we are trying to put the link in the same node and we dont want that happens
+			{
+
+				if (output.isLinked)
+				{
+					//swap links
+				}
+				else
+				{
+					//create link
+					this->links.push_back(ShaderLink(this, i, graph.socket_state.node_selected, graph.socket_state.socked_selected));
+				}
+
+			}
+
+			graph.socket_state.node_selected = nullptr;
+			graph.socket_state.socked_selected = 0;
+			graph.socket_state.input_socket_actived = false;
+			graph.socket_state.socket_pos = float2(0.0);
+			break;
+
+		}
+	}
 }
 
 void Connector::DrawConnector(ShaderGraph& g, bool isInput)

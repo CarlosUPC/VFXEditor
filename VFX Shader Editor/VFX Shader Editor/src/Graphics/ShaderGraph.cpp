@@ -26,6 +26,8 @@ void ShaderGraph::Draw()
 
 		//Mouse Input stuff ------
 		(*it)->InputNode(*this);
+		(*it)->InputSocketInputs(*this, (*it)->inputs_count);
+		(*it)->InputSocketOutputs(*this, (*it)->outputs_count);
 
 		ImGui::PopID();
 	}

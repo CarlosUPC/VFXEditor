@@ -79,6 +79,24 @@ struct ActionGraph
 
 };
 
+struct TempSocketData
+{
+	ShaderNode* node_selected = nullptr;
+	unsigned int socked_selected = 0;
+
+	bool output_socket_actived = false;
+	bool input_socket_actived = false;
+
+	float2 socket_pos;
+
+};
+
+struct TempNodeData
+{
+	ShaderNode* node_selected = nullptr;
+	ShaderNode* node_hovered = nullptr;
+};
+
 class ShaderGraph 
 {
 	friend struct ShaderCompiler;
@@ -104,4 +122,7 @@ public:
 	ShaderNode* node_hovered = nullptr;
 
 	ActionGraph action;
+
+	TempNodeData node_state;
+	TempSocketData socket_state;
 };

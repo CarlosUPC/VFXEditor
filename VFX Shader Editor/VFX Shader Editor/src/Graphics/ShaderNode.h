@@ -143,6 +143,9 @@ public:
 
 	void DrawInputConnector(ShaderGraph& graph, InputSocket& input, unsigned int index = 0);
 	void DrawOutputConnector(ShaderGraph& graph, OutputSocket& output, unsigned int index = 0);
+
+	void InputSocketInputs(ShaderGraph& graph, unsigned int numInputs, unsigned int offset = 0);
+	void InputSocketOutputs(ShaderGraph& graph, unsigned int numOutputs, unsigned int offset = 0);
 public:
 	NodeType type;
 	float2 position;
@@ -167,5 +170,11 @@ public:
 	bool isHovered = false;
 	bool isSelected = false;
 	bool isItemActive = false;
+
+	bool isSocketHovered = false;
+
+	bool	m_is_node_widgets_active;
+	
+	bool	m_is_old_any_active;
 
 };
