@@ -36,6 +36,7 @@ void ShaderGraph::Draw()
 		ImGui::PushID((*it)->UID);
 
 		//Draw stuff -------
+		(*it)->DrawLinks(*this);
 		(*it)->DrawNode(*this);
 		(*it)->DrawInputs(*this, (*it)->inputs_count);
 		(*it)->DrawOutputs(*this, (*it)->outputs_count);

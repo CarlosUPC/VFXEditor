@@ -50,7 +50,7 @@ void ShaderNode::InputNode(ShaderGraph& graph)
 	}
 
 	//Set node selected -----
-	if (graph.node_selected != nullptr)
+	if (graph.node_selected != nullptr && graph.node_selected == this)
 	{
 		this->isSelected = true;
 		this->isHovered = false;
@@ -121,6 +121,48 @@ void ShaderNode::DrawNode(ShaderGraph& graph)
 	//draw_list->AddRectFilledMultiColor(ImVec2(m_Position.x, m_Position.y + 10.0f * 1), ImVec2(m_Position.x + m_Size.x, m_Position.y + 20.0f * 1), color_red, color_black, color_red, color_red);
 	//ImGui::SetCursorScreenPos(ImVec2(m_Position.x, m_Position.y));
 }
+
+void ShaderNode::DrawLinks(ShaderGraph& graph)
+{
+	auto draw_list = ImGui::GetWindowDrawList();
+
+	for (auto& link : this->links)
+	{
+		float2 input_pos = graph.scrolling + link.input_node->inputs[link.input_socket].position;
+		float2 output_pos = graph.scrolling + link.output_node->outputs[link.output_socket].position;
+
+		if (this == link.input_node)
+		{
+			input_pos = graph.scrolling + this->inputs[link.input_socket].position;
+			link.output_node->outputs[link.output_socket].isLinked = true;
+		}
+		else
+		{
+			output_pos = graph.scrolling + this->outputs[link.output_socket].position;
+			link.input_node->inputs[link.input_socket].isLinked = true;
+		}
+
+		if (!this->inputs[link.input_socket].isLinked || !this->outputs[link.output_socket].isLinked)
+		{
+
+			draw_list->AddBezierCurve
+			(
+				ImVec2(output_pos.x, output_pos.y), 
+				ImVec2(output_pos.x + 80.0f, output_pos.y), 
+				ImVec2(input_pos.x - 80.0f, input_pos.y), 
+				ImVec2(input_pos.x, input_pos.y), 
+				IM_COL32(0, 150, 250, 250),3,12
+			);
+
+
+		}
+	}
+
+
+}
+
+
+
 
 void ShaderNode::Update(ShaderGraph& graph)
 {
@@ -315,6 +357,8 @@ void ShaderNode::DrawOutputs(ShaderGraph& graph, unsigned int numOutputs, unsign
 		DrawOutputConnector(graph, output);
 	}
 }
+
+
 
 void ShaderNode::DrawInputConnector(ShaderGraph& graph, InputSocket& input, unsigned int index )
 {
@@ -674,4 +718,10 @@ bool Connector::ConnectorHovering(float2 position, float2 size)
 	ImGui::SetCursorScreenPos(previous);
 
 	return hovered;
+}
+
+ShaderLink::ShaderLink(ShaderNode* input_node, unsigned int input_socket, ShaderNode* output_node, unsigned int output_socket)
+	: input_node(input_node), input_socket(input_socket), output_node(output_node), output_socket(output_socket)
+{
+	
 }

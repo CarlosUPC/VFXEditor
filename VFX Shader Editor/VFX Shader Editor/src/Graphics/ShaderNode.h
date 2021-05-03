@@ -28,6 +28,21 @@ enum ValueType
 };
 
 
+struct ShaderLink
+{
+	ShaderLink(ShaderNode* input_node, unsigned int input_socket, ShaderNode* output_node, unsigned int output_socket);
+
+
+	ShaderNode* output_node = nullptr;
+	ShaderNode* input_node = nullptr;
+	unsigned int input_socket = 0;
+	unsigned int output_socket = 0;
+
+	//bool isLinked = false;
+
+
+};
+
 
 struct Connector
 {
@@ -56,6 +71,8 @@ struct InputSocket
 	std::string name;
 	Connector connector;
 
+	bool isLinked = false;
+
 	union
 	{
 		float value1;
@@ -82,6 +99,8 @@ struct OutputSocket
 	Connector connector;
 	std::string name;
 
+	bool isLinked = false;
+
 	OutputSocket(){}
 	OutputSocket(ValueType type)
 	{
@@ -107,6 +126,7 @@ public:
 
 	void InputNode(ShaderGraph& graph);
 	void DrawNode(ShaderGraph& graph);
+	void DrawLinks(ShaderGraph& graph);
 	virtual void Update(ShaderGraph& graph);
 
 	float2 CalcNodePosition(ShaderGraph& graph, float2 pos = {});
@@ -136,6 +156,9 @@ public:
 
 	std::vector<InputSocket> inputs;
 	std::vector<OutputSocket> outputs;
+
+	//Links
+	std::vector<ShaderLink> links;
 
 	int inputs_count = 0;
 	int outputs_count = 0;
