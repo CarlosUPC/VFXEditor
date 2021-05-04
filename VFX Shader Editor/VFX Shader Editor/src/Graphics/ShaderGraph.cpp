@@ -23,6 +23,12 @@ void ShaderGraph::Draw()
 	{
 		(*it)->DrawLink(*this);
 
+		if ((*it)->to_delete == true)
+		{
+			RELEASE((*it));
+			it = links.erase(it);
+		}
+
 	}
 
 

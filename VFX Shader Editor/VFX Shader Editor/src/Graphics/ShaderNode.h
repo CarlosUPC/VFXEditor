@@ -39,6 +39,7 @@ struct ShaderLink
 	unsigned int output_socket = 0;
 
 	//bool isLinked = false;
+	bool to_delete = false;
 
 	void DrawLink(ShaderGraph& graph);
 
@@ -57,6 +58,7 @@ struct InputSocket
 	
 
 	bool isLinked = false;
+	ShaderLink* link_ref = nullptr;
 
 	union
 	{
@@ -85,6 +87,7 @@ struct OutputSocket
 	std::string name;
 
 	bool isLinked = false;
+	ShaderLink* link_ref = nullptr;
 
 	OutputSocket(){}
 	OutputSocket(ValueType type)

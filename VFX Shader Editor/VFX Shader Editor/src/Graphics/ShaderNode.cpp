@@ -462,12 +462,18 @@ void ShaderNode::InputSocketInputs(ShaderGraph& graph, unsigned int numInputs, u
 					if (input.isLinked)
 					{
 						//swap links
+						if (input.link_ref != nullptr)
+						{
+							input.link_ref->to_delete = true;
+							input.isLinked = false;
+						}
+
 					}
-					else
-					{
-						//create link
-						graph.links.push_back(new ShaderLink(this, i, graph.socket_state.node_selected, graph.socket_state.socked_selected));
-					}
+					
+					//create link
+					input.link_ref = new ShaderLink(this, i, graph.socket_state.node_selected, graph.socket_state.socked_selected);
+					graph.links.push_back(input.link_ref);
+					
 
 				}
 
@@ -527,6 +533,8 @@ void ShaderNode::InputSocketOutputs(ShaderGraph& graph, unsigned int numOutputs,
 				if (output.isLinked)
 				{
 					//swap links
+					links.erase(links.begin() + i - 1);
+					graph.links.push_back(new ShaderLink(this, i, graph.socket_state.node_selected, graph.socket_state.socked_selected));
 				}
 				else
 				{
@@ -605,10 +613,17 @@ void ShaderLink::DrawLink(ShaderGraph& graph)
 
 	auto draw_list = ImGui::GetWindowDrawList();
 
-	
+
 	float2 input_pos = graph.scrolling + this->input_node->inputs[this->input_socket].position;
 	float2 output_pos = graph.scrolling + this->output_node->outputs[this->output_socket].position;
 
+	//Put sockets in linked state
+	if (!input_node->inputs[this->input_socket].isLinked || !output_node->outputs[this->output_socket].isLinked)
+	{
+		this->input_node->inputs[this->input_socket].isLinked = true;
+		this->output_node->outputs[this->output_socket].isLinked = true;
+	}
+	
 	//
 	//if (this == link.input_node)
 	//{
@@ -631,6 +646,8 @@ void ShaderLink::DrawLink(ShaderGraph& graph)
 		IM_COL32(0, 150, 250, 250), 3, 12
 	);
 
+
+	
 
 	
 
