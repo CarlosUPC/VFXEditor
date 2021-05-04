@@ -529,23 +529,7 @@ void ShaderNode::InputSocketInputs(ShaderGraph& graph, unsigned int numInputs, u
 
 		}
 
-		////DELETE LINKS ----
-		//if(!graph.socket_state.output_socket_actived &&
-		//	ImGui::IsMouseDown(0) &&
-		//	ImGui::GetIO().KeyAlt &&
-		//	SocketHovering(input_pos, float2(ImGui::GetIO().MousePos.x, ImGui::GetIO().MousePos.y), 30.0f, 2.0f))
-		//{
-		//	if (input.isLinked)
-		//	{
-		//		//swap links
-		//		if (input.link_ref != nullptr)
-		//		{
-		//			input.link_ref->to_delete = true;
-		//			input.isLinked = false;
-		//		}
-
-		//	}
-		//}
+		
 
 	}
 }
@@ -571,6 +555,23 @@ void ShaderNode::InputSocketOutputs(ShaderGraph& graph, unsigned int numOutputs,
 			ImGui::IsMouseDown(0) &&
 			SocketHovering(output_pos, float2(ImGui::GetIO().MousePos.x, ImGui::GetIO().MousePos.y), 10.0f, 2.0f))
 		{
+
+			if (ImGui::GetIO().KeyAlt)
+			{
+				if (output.isLinked)
+				{
+					//swap links
+					if (output.link_ref != nullptr)
+					{
+						output.link_ref->to_delete = true;
+						//input.isLinked = false;
+					}
+
+					break;
+				}
+
+			}
+
 			graph.socket_state.node_selected = this;
 			graph.socket_state.socked_selected = i;
 			graph.socket_state.output_socket_actived = true;
@@ -581,7 +582,7 @@ void ShaderNode::InputSocketOutputs(ShaderGraph& graph, unsigned int numOutputs,
 		}
 
 		//IF INPUT WAS ACTIVATED
-		if (graph.socket_state.output_socket_actived &&
+		if (graph.socket_state.input_socket_actived &&
 			ImGui::IsMouseReleased(0) &&
 			SocketHovering(output_pos, float2(ImGui::GetIO().MousePos.x, ImGui::GetIO().MousePos.y), 10.0f, 2.0f)
 			)
@@ -590,19 +591,19 @@ void ShaderNode::InputSocketOutputs(ShaderGraph& graph, unsigned int numOutputs,
 			if (graph.socket_state.node_selected != this) // this checks if we are trying to put the link in the same node and we dont want that happens
 			{
 
-				if (output.isLinked)
+				if (graph.socket_state.node_selected->inputs[graph.socket_state.socked_selected].isLinked)
 				{
 					//swap links
-					if (output.link_ref != nullptr)
+					if (graph.socket_state.node_selected->inputs[graph.socket_state.socked_selected].link_ref != nullptr)
 					{
-						output.link_ref->to_delete = true;
-						output.isLinked = false;
+						graph.socket_state.node_selected->inputs[graph.socket_state.socked_selected].link_ref->to_delete = true;
+						graph.socket_state.node_selected->inputs[graph.socket_state.socked_selected].isLinked = false;
 					}
 
 				}
 
 				//create link
-				output.link_ref = new ShaderLink(this, i, graph.socket_state.node_selected, graph.socket_state.socked_selected);
+				output.link_ref = new ShaderLink(graph.socket_state.node_selected, graph.socket_state.socked_selected, this, i);
 				graph.socket_state.node_selected->inputs[graph.socket_state.socked_selected].link_ref = output.link_ref;
 				graph.links.push_back(output.link_ref);
 

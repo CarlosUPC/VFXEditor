@@ -23,6 +23,7 @@ void ShaderGraph::Update(float dt)
 	this->Draw();
 
 	this->PostUpdate(dt);
+
 }
 
 void ShaderGraph::Draw()
