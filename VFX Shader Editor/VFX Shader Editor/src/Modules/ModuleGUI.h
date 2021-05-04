@@ -20,6 +20,10 @@ public:
 
 	void Draw();
 
+	bool UsingMouse() const;
+	bool UsingKeyboard() const;
+
 public:
 	std::list<Panel*> panels;
+	bool mouseOnScene = false;
 };

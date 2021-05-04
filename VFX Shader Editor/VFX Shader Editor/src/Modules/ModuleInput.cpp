@@ -3,6 +3,7 @@
 #include "ModuleWindow.h"
 #include "ModuleCamera.h"
 #include "ModuleRenderer.h"
+#include "ModuleGUI.h"
 
 #include "ImGui/imgui_impl_sdl.h"
 
@@ -134,12 +135,18 @@ bool ModuleInput::CleanUp()
 
 KEY_STATE ModuleInput::GetKey(int id) const
 {
-	return keyboard[id];
+	if (App->gui->UsingKeyboard())
+		return KEY_IDLE;
+	else
+		return keyboard[id];
 }
 
 KEY_STATE ModuleInput::GetMouseButton(int id) const
 {
-	return mouse_buttons[id];
+	if (App->gui->UsingMouse())
+		return KEY_IDLE;
+	else
+		return mouse_buttons[id];
 }
 
 int ModuleInput::GetMouseX() const

@@ -1,6 +1,7 @@
 #include "Application.h"
 #include "ModuleCamera.h"
 #include "ModuleInput.h"
+#include "Panel.h"
 
 ModuleCamera::ModuleCamera(bool start_enabled)
 	: Module(start_enabled)
@@ -34,7 +35,7 @@ bool ModuleCamera::Init()
 
 update_state ModuleCamera::Update(float dt)
 {
-	if (App->input->GetMouseButton(SDL_BUTTON_RIGHT) == KEY_REPEAT)
+	if (App->input->GetMouseButton(SDL_BUTTON_RIGHT) == KEY_REPEAT /*&& mouseOnPreview*/)
 	{
 		float3 newPos(0, 0, 0);
 		float speed = 0.2f;

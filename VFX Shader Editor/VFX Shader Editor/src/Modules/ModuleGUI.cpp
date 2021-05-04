@@ -151,3 +151,15 @@ void ModuleGUI::Draw()
 		SDL_GL_MakeCurrent(App->window->window, App->renderer->context);
 	}*/
 }
+
+bool ModuleGUI::UsingMouse() const
+{
+	ImGuiIO& io = ImGui::GetIO();
+	return io.WantCaptureMouse && !mouseOnScene;
+}
+
+bool ModuleGUI::UsingKeyboard() const
+{
+	ImGuiIO& io = ImGui::GetIO();
+	return io.WantTextInput && !mouseOnScene;
+}

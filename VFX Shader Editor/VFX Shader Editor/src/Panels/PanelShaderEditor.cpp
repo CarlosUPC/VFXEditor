@@ -33,9 +33,14 @@ void PanelShaderEditor::Draw()
 	if (ImGui::BeginMenu("Asset")) {
 
 		if (ImGui::MenuItem("New Shader"))
+		{ 
 			creating_shader = true;
+		}
 		if (ImGui::MenuItem("Load Shader"))
+		{
 			selecting_shader = true;
+
+		}
 		if (ImGui::MenuItem("Save Shader")) {}
 
 		
@@ -256,6 +261,7 @@ void PanelShaderEditor::CreateNewShaderPopUp()
 
 	ImGui::OpenPopup("Create New Shader");
 	ImGui::SetNextWindowSize({ 320,155 });
+	//ImGui::SetNextWindowPos({ float(App->window->width)/2.0f  - 200.0f, float(App->window->height) / 2.0f - 20.0f });
 	if (ImGui::BeginPopupModal("Create New Shader", &creating_shader, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove)) {
 		ImGui::PushItemWidth(235);
 		
@@ -288,6 +294,7 @@ void PanelShaderEditor::CreateNewShaderPopUp()
 			}
 			
 		}
+		
 
 		ImGui::EndPopup();
 	}

@@ -32,4 +32,6 @@ private:
 	float3 reference = { 0.0f,0.0f,0.0f };
 
 	Frustum frustum;
+public:
+	//bool mouseOnPreview = false;
 };

@@ -2,6 +2,8 @@
 #include "PanelPreview.h"
 #include "ModuleRenderer.h"
 #include "ModuleCamera.h"
+#include "ModuleGUI.h"
+
 
 PanelPreview::PanelPreview(const char* name)
 	:Panel(name)
@@ -25,6 +27,7 @@ void PanelPreview::Draw()
 	ImGui::Begin(name.c_str(), &active, flags);
 	ImGui::PopStyleVar(3);
 
+	App->gui->mouseOnScene = ImGui::IsWindowHovered();
 
 	ImVec2 avail_size = ImGui::GetWindowSize();
 
