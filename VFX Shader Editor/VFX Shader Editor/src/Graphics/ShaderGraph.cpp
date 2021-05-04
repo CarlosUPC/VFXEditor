@@ -59,6 +59,13 @@ void ShaderGraph::Draw()
 		//Update stuff -------
 		(*it)->Update(*this);
 
+		//Delete stuff
+		if ((*it)->to_delete == true)
+		{
+			RELEASE((*it));
+			it = nodes.erase(it);
+		}
+
 		ImGui::PopID();
 		
 	}

@@ -142,7 +142,7 @@ public:
 	float2 title_size;
 	uint UID;
 	std::string name;
-
+	bool to_delete = false;
 
 	//ActionNode action;
 

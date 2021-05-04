@@ -69,6 +69,24 @@ void ShaderNode::InputNode(ShaderGraph& graph)
 		this->position = this->position + float2(ImGui::GetIO().MouseDelta.x, ImGui::GetIO().MouseDelta.y);
 	}
 
+	//Remove node -----
+	if (this->isHovered && ImGui::IsMouseClicked(1))
+	{
+		ImGui::OpenPopup("delete_node");
+	}
+
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(8, 12));
+	//ImGui::SetNextWindowPos(ImGui::GetMousePos());
+	if (ImGui::BeginPopup("delete_node"))
+	{
+		if (ImGui::MenuItem("Delete"))
+		{
+			this->to_delete = true;
+		}
+		ImGui::EndPopup();
+	}
+	ImGui::PopStyleVar();
+
 }
 
 void ShaderNode::DrawNode(ShaderGraph& graph)
