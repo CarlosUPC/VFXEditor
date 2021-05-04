@@ -669,7 +669,7 @@ void ShaderNode::InputSocketOutputs(ShaderGraph& graph, unsigned int numOutputs,
 ShaderLink::ShaderLink(ShaderNode* input_node, unsigned int input_socket, ShaderNode* output_node, unsigned int output_socket)
 	: input_node(input_node), input_socket(input_socket), output_node(output_node), output_socket(output_socket)
 {
-	
+	UID = Random::GenerateUUID();
 }
 
 void ShaderLink::DrawLink(ShaderGraph& graph)
@@ -692,6 +692,20 @@ void ShaderLink::DrawLink(ShaderGraph& graph)
 		}
 
 		//draw line
+		if (this->isLineHovered)
+		{
+			draw_list->AddBezierCurve(
+				ImVec2(output_pos.x, output_pos.y),
+				ImVec2(output_pos.x + 80.0f, output_pos.y),
+				ImVec2(input_pos.x - 80.0f, input_pos.y),
+				ImVec2(input_pos.x, input_pos.y),
+				IM_COL32(255, 150, 0, 255),
+				7.0f, 12.0f
+			);
+
+		}
+
+
 		draw_list->AddBezierCurve
 		(
 			ImVec2(output_pos.x, output_pos.y),
@@ -700,6 +714,8 @@ void ShaderLink::DrawLink(ShaderGraph& graph)
 			ImVec2(input_pos.x, input_pos.y),
 			IM_COL32(0, 150, 250, 250), 3, 12
 		);
+
+
 
 	}
 
@@ -726,15 +742,26 @@ void ShaderLink::InputLink(ShaderGraph& graph)
 
 		if (LineHovering(float2(ImGui::GetIO().MousePos.x, ImGui::GetIO().MousePos.y), float2(link_pos.x, link_pos.y), 8.0f, 0.0f))
 		{
-			draw_list->AddBezierCurve(
+			/*draw_list->AddBezierCurve(
 				ImVec2(output_pos.x, output_pos.y),
 				ImVec2(output_pos.x + 80.0f, output_pos.y),
 				ImVec2(input_pos.x - 80.0f, input_pos.y),
 				ImVec2(input_pos.x, input_pos.y),
 				IM_COL32(255, 150, 0, 255),
 				7.0f, 12.0f
-			);
+			);*/
 
+			graph.link_hovered = this;
+		}
+		else
+		{
+			graph.link_hovered = nullptr;
+		}
+
+
+		//Set node hovered -----
+		if (graph.link_hovered == this)
+		{
 			this->isLineHovered = true;
 		}
 		else
@@ -742,25 +769,29 @@ void ShaderLink::InputLink(ShaderGraph& graph)
 			this->isLineHovered = false;
 		}
 
-
-
-
 		if (this->isLineHovered && ImGui::IsMouseClicked(1))
 		{
+			
 			ImGui::OpenPopup("delete_line");
 		}
 
+		
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(8, 12));
 		//ImGui::SetNextWindowPos(ImGui::GetMousePos());
 		if (ImGui::BeginPopup("delete_line"))
 		{
+			
 			if (ImGui::MenuItem("Delete"))
 			{
 				this->to_delete = true;
+				
 			}
 			ImGui::EndPopup();
 		}
 		ImGui::PopStyleVar();
+		
+
+		
 	}
 	
 

@@ -103,3 +103,8 @@ void Application::AddModule(Module* module)
 {
 	modules.push_back(module);
 }
+
+float Application::GetDT()
+{
+	return dt;
+}

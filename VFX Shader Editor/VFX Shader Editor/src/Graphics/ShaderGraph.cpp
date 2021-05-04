@@ -14,37 +14,28 @@ ShaderGraph::~ShaderGraph()
 {
 }
 
+
+void ShaderGraph::Update(float dt)
+{
+
+	this->Input();
+
+	this->Draw();
+
+	this->PostUpdate(dt);
+}
+
 void ShaderGraph::Draw()
 {
-	//ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(2.5 * 1, 2.5 * 1));
-	//ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(10, 0));
 	
-	for (std::list<ShaderLink*>::reverse_iterator it = links.rbegin(); it != links.rend(); ++it) // Interaction in reverse loop because the last one drawn shoud be the first to be interacted
-	{
-		//Mouse Input stuff -----
-		(*it)->InputLink(*this);
-
-	}
+	
 
 
 	for (std::list<ShaderLink*>::iterator it = links.begin(); it != links.end(); ++it)
 	{
 		//Draw stuff -----
-		(*it)->DrawLink(*this);
-
-	}
-
-
-	for (std::list<ShaderNode*>::reverse_iterator it = nodes.rbegin(); it != nodes.rend(); ++it) // Interaction in reverse loop because the last one drawn shoud be the first to be interacted
-	{
-
 		ImGui::PushID((*it)->UID);
-
-		//Mouse Input stuff ------
-		(*it)->InputNode(*this);
-		(*it)->InputSocketInputs(*this, (*it)->inputs_count);
-		(*it)->InputSocketOutputs(*this, (*it)->outputs_count);
-
+		(*it)->DrawLink(*this);
 		ImGui::PopID();
 	}
 
@@ -62,14 +53,44 @@ void ShaderGraph::Draw()
 		//Update stuff -------
 		(*it)->Update(*this);
 
-		
+
 		ImGui::PopID();
-		
+
+	}
+	
+
+}
+
+void ShaderGraph::Input()
+{
+	for (std::list<ShaderLink*>::reverse_iterator it = links.rbegin(); it != links.rend(); ++it) // Interaction in reverse loop because the last one drawn shoud be the first to be interacted
+	{
+		//Mouse Input stuff -----
+		ImGui::PushID((*it)->UID);
+		(*it)->InputLink(*this);
+		ImGui::PopID();
 	}
 
 
 
+	for (std::list<ShaderNode*>::reverse_iterator it = nodes.rbegin(); it != nodes.rend(); ++it) // Interaction in reverse loop because the last one drawn shoud be the first to be interacted
+	{
 
+		ImGui::PushID((*it)->UID);
+
+		//Mouse Input stuff ------
+		(*it)->InputNode(*this);
+		(*it)->InputSocketInputs(*this, (*it)->inputs_count);
+		(*it)->InputSocketOutputs(*this, (*it)->outputs_count);
+
+		ImGui::PopID();
+	}
+}
+
+
+
+void ShaderGraph::PostUpdate(float dt)
+{
 
 
 	for (std::list<ShaderNode*>::iterator it = nodes.begin(); it != nodes.end(); ++it)
@@ -109,7 +130,7 @@ void ShaderGraph::Draw()
 		//Remove stuff ----
 		if ((*it)->to_delete == true)
 		{
-			if((*it)->input_node != nullptr)
+			if ((*it)->input_node != nullptr)
 				(*it)->input_node->inputs[(*it)->input_socket].isLinked = false;
 
 			if ((*it)->output_node != nullptr)
@@ -119,13 +140,6 @@ void ShaderGraph::Draw()
 			it = links.erase(it);
 		}
 	}
-
-	
-
-
-	
-
-	//ImGui::PopStyleVar(2);
 }
 
 ShaderNode* ShaderGraph::CreateNode(const char* name, int type, float2 position)

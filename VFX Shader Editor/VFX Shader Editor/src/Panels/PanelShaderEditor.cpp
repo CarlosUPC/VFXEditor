@@ -29,6 +29,7 @@ void PanelShaderEditor::Draw()
 	static std::string menu_action = "";
 
 
+	// Asset bar -----
 	ImGui::BeginMenuBar();
 	if (ImGui::BeginMenu("Asset")) {
 
@@ -43,19 +44,16 @@ void PanelShaderEditor::Draw()
 		}
 		if (ImGui::MenuItem("Save Shader")) {}
 
-		
 		ImGui::EndMenu();
 	}
 	ImGui::EndMenuBar();
 	
 	
-	
-	
 
 	if (creating_shader)
-		CreateNewShaderPopUp();
+		CreateShaderContext();
 	if(selecting_shader)
-		LoadShaderPopUp();
+		LoadShaderContext();
 
 		
 	
@@ -64,15 +62,8 @@ void PanelShaderEditor::Draw()
 	{
 		ImGui::Text("Select or create a shader");
 		
-
-		////TEMPORAL
-		//ResourceShader* shader = new ResourceShader("Shaders/default.vs", "Shaders/default.fs");
-		//current_shader = shader;
-		//App->renderer->current_shader = shader;
-
 		ImGui::End();
 		ImGui::PopStyleColor();
-
 		return;
 	}
 
@@ -80,103 +71,7 @@ void PanelShaderEditor::Draw()
 	canvas.Init(ImGui::GetCursorScreenPos(), ImGui::GetWindowSize(), IM_COL32(0, 200, 120, 120));
 
 
-	//SELECT CURRENT_SHADER -> RESOURCE_SHADER -> GRAPH
-	//GRAPH POINTER
-	//RENDER GRAPH
 	
-	/*
-	ImVec2 win_pos4 = ImGui::GetWindowPos();
-	ImGui::Text("WindowPos (%.2f,%.2f)", win_pos4.x, win_pos4.y);
-	ImGui::Text("Hold middle mouse button to scroll (%.2f,%.2f)", scrollCoords.x, scrollCoords.y);
-	ImVec2 win_pos2 = ImGui::GetCursorPos();
-	ImVec2 win_pos3 = ImGui::GetCursorScreenPos();
-	ImGui::Text("CursorPos (%.2f,%.2f)", win_pos2.x, win_pos2.y);
-	ImGui::Text("CursorScreenPos (%.2f,%.2f)", win_pos3.x, win_pos3.y);
-	ImGui::SameLine(ImGui::GetWindowWidth() - 100);
-	ImGui::Checkbox("Show grid", &grid);
-
-	ImGui::PushStyleVar(ImGuiStyleVar_Alpha, 0.25f);
-	ImGui::Text("Zoom x %.1f", current_shader->graph->scale);
-	ImGui::PopStyleVar();
-	float num = 1.0f;
-	ImGui::InputFloat("test", &num);
-	*///ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(1, 1));
-	//ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-
-	//ImGui::BeginChild("scrolling_region", ImVec2(0, 0)/*, true*//*, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollWithMouse*/);
-	//ImGui::PushItemWidth(120.0f);
-
-	/*float wheel = ImGui::GetIO().MouseWheel;
-	
-	static float zoom = current_shader->graph->scale;
-	if (wheel > 0 && ImGui::IsWindowHovered())
-	{
-		zoom *= (1.0 + wheel * 0.2f);
-
-		float new_scale = zoom;
-		new_scale = Clamp(new_scale, 0.1f, 2.0f);
-		new_scale = ceilf(new_scale * 8) / 8;
-
-		float2 mousePos = { ImGui::GetMousePos().x , ImGui::GetMousePos().y  };
-
-		float2 relative_mouse = mousePos;
-		relative_mouse /= current_shader->graph->scale;
-
-		relative_mouse.x -= ImGui::GetWindowPos().x + current_shader->graph->scrolling.x;
-		relative_mouse.y -= ImGui::GetWindowPos().y + current_shader->graph->scrolling.y;
-
-		
-
-		if (new_scale != current_shader->graph->scale) {
-			current_shader->graph->scale = new_scale;
-
-
-			float2 relative_mouse2 = mousePos;
-			relative_mouse2 /= current_shader->graph->scale;
-
-			relative_mouse2.x -= ImGui::GetWindowPos().x + current_shader->graph->scrolling.x;
-			relative_mouse2.y -= ImGui::GetWindowPos().y + current_shader->graph->scrolling.y;
-
-			current_shader->graph->scrolling += relative_mouse2 - relative_mouse;
-
-		}
-	}
-	else if (wheel < 0 && ImGui::IsWindowHovered())
-	{
-		
-		zoom /= (1.0 - wheel * 0.2f);
-
-		float new_scale = zoom;
-
-		new_scale = Clamp(new_scale, 0.1f, 2.0f);
-		new_scale = ceilf(new_scale * 8) / 8;
-
-		float2 mousePos = { ImGui::GetMousePos().x , ImGui::GetMousePos().y };
-		
-		float2 relative_mouse = mousePos;
-
-		relative_mouse /= current_shader->graph->scale;
-		relative_mouse.x -= ImGui::GetWindowPos().x + current_shader->graph->scrolling.x;
-		relative_mouse.y -= ImGui::GetWindowPos().y + current_shader->graph->scrolling.y;
-
-
-
-		if (new_scale != current_shader->graph->scale) {
-			current_shader->graph->scale = new_scale;
-
-			float2 relative_mouse2 = mousePos;
-
-			relative_mouse2 /= current_shader->graph->scale;
-			relative_mouse2.x -= ImGui::GetWindowPos().x + current_shader->graph->scrolling.x;
-			relative_mouse2.y -= ImGui::GetWindowPos().y + current_shader->graph->scrolling.y;
-
-			current_shader->graph->scrolling += relative_mouse2 - relative_mouse;
-
-		}
-
-	}*/
-
-	//float2 offset = {  canvas.m_Scroll.x,  canvas.m_Scroll.y };
 	
 	//Canvas Stuff
 	ImDrawList* draw_list = ImGui::GetWindowDrawList();
@@ -189,7 +84,7 @@ void PanelShaderEditor::Draw()
 
 
 	//Graph Stuff
-	current_shader->graph->Draw();
+	current_shader->graph->Update(App->GetDT());
 	
 
 	
@@ -253,7 +148,7 @@ void PanelShaderEditor::OnShaderAction(std::string& action)
 	}
 }
 
-void PanelShaderEditor::CreateNewShaderPopUp()
+void PanelShaderEditor::CreateShaderContext()
 {
 
 	static char _name[MAX_PATH] = "Data Name";
@@ -288,6 +183,7 @@ void PanelShaderEditor::CreateNewShaderPopUp()
 				//TODO: set it as current shader resource to display the graph
 				current_shader = shader;
 				App->renderer->current_shader = current_shader;
+
 				strcpy_s(_name, "Data Name");
 				creating_shader = false;
 				
@@ -305,7 +201,7 @@ void PanelShaderEditor::CreateNewShaderPopUp()
 	}
 }
 
-void PanelShaderEditor::LoadShaderPopUp()
+void PanelShaderEditor::LoadShaderContext()
 {
 	ImGui::OpenPopup("Load Shader");
 	ImGui::SetNextWindowSize({ 320,155 });

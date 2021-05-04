@@ -46,8 +46,8 @@ public:
 
 	void Draw();
 	void OnShaderAction(std::string& action);
-	void CreateNewShaderPopUp();
-	void LoadShaderPopUp();
+	void CreateShaderContext();
+	void LoadShaderContext();
 	void AddNewNodePopUp();
 
 	void AddNode(ShaderGraph& graph, ShaderNode* node);

@@ -21,6 +21,7 @@ public:
 	~Application();
 
 	bool Init();
+	float GetDT();
 	void CalcFrameTime();
 	update_state Update();
 	bool CleanUp();

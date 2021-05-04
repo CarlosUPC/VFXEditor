@@ -41,7 +41,8 @@ struct ShaderLink
 	//bool isLinked = false;
 	bool to_delete = false;
 	bool isLineHovered = false;
-
+	ShaderLink* link_selected = nullptr;
+	uint UID;
 	void DrawLink(ShaderGraph& graph);
 	void InputLink(ShaderGraph& graph);
 	bool LineHovering(float2 p1, float2 p2, const float r1, const float r2);

@@ -89,6 +89,9 @@ public:
 	~ShaderGraph();
 
 	void Draw();
+	void Input();
+	void Update(float dt);
+	void PostUpdate(float dt);
 	ShaderNode* CreateNode(const char* name, int type, float2 position);
 
 	void CompileShader(ResourceShader* shader);
@@ -105,7 +108,7 @@ public:
 
 	ShaderNode* node_selected = nullptr;
 	ShaderNode* node_hovered = nullptr;
-
+	ShaderLink* link_hovered = nullptr;
 	
 
 	TempNodeData node_state;
