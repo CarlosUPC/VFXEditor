@@ -21,13 +21,8 @@ void ShaderGraph::Draw()
 
 	for (std::list<ShaderLink*>::iterator it = links.begin(); it != links.end(); ++it)
 	{
+		//Draw stuff -----
 		(*it)->DrawLink(*this);
-
-		if ((*it)->to_delete == true)
-		{
-			RELEASE((*it));
-			it = links.erase(it);
-		}
 
 	}
 
@@ -51,7 +46,7 @@ void ShaderGraph::Draw()
 		ImGui::PushID((*it)->UID);
 
 		//Draw stuff -------
-		(*it)->DrawLinks(*this);
+		(*it)->DrawLines(*this);
 		(*it)->DrawNode(*this);
 		(*it)->DrawInputs(*this, (*it)->inputs_count);
 		(*it)->DrawOutputs(*this, (*it)->outputs_count);
@@ -59,34 +54,65 @@ void ShaderGraph::Draw()
 		//Update stuff -------
 		(*it)->Update(*this);
 
-		//Delete stuff
-		if ((*it)->to_delete == true)
-		{
-			RELEASE((*it));
-			it = nodes.erase(it);
-		}
-
+		
 		ImGui::PopID();
 		
 	}
 
 
-	//hovered = nullptr;
 
-	/*for (std::list<ShaderNode*>::iterator it = nodes.begin(); it != nodes.end(); ++it)
+
+
+
+	for (std::list<ShaderNode*>::iterator it = nodes.begin(); it != nodes.end(); ++it)
 	{
-		for (auto& input : (*it)->inputs) {
-			input.connector.DrawInputChannel(*this, input);
-			input.connector.DrawConnector(*this, true);
-			
+		//Delete stuff
+		if ((*it)->to_delete == true)
+		{
+
+			//chack if node's sockets have links
+			for (auto&& input : (*it)->inputs)
+			{
+				if (input.link_ref != nullptr)
+				{
+					input.link_ref->to_delete = true;
+					input.link_ref->input_node = nullptr;
+				}
+			}
+			for (auto&& output : (*it)->outputs)
+			{
+				if (output.link_ref != nullptr)
+				{
+					output.link_ref->to_delete = true;
+					output.link_ref->output_node = nullptr;
+				}
+			}
+
+			//delete node
+			RELEASE((*it));
+			it = nodes.erase(it);
 		}
 
-		for (auto& output : (*it)->outputs) {
-			output.connector.DrawOutputChannel(*this, output);
-			output.connector.DrawConnector(*this, false);
-			
+	}
+
+
+	for (std::list<ShaderLink*>::iterator it = links.begin(); it != links.end(); ++it)
+	{
+		//Remove stuff ----
+		if ((*it)->to_delete == true)
+		{
+			if((*it)->input_node != nullptr)
+				(*it)->input_node->inputs[(*it)->input_socket].isLinked = false;
+
+			if ((*it)->output_node != nullptr)
+				(*it)->output_node->outputs[(*it)->output_socket].isLinked = false;
+
+			RELEASE((*it));
+			it = links.erase(it);
 		}
-	}*/
+	}
+
+	
 
 
 	

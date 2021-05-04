@@ -114,7 +114,7 @@ void ShaderNode::DrawNode(ShaderGraph& graph)
 	//ImGui::SetCursorScreenPos(ImVec2(m_Position.x, m_Position.y));
 }
 
-void ShaderNode::DrawLinks(ShaderGraph& graph)
+void ShaderNode::DrawLines(ShaderGraph& graph)
 {
 	auto draw_list = ImGui::GetWindowDrawList();
 
@@ -374,14 +374,15 @@ void ShaderNode::DrawInputConnector(ShaderGraph& graph, InputSocket& input, unsi
 
 
 
-	if (ConnectorHovering(input.position - float2(5.0f), float2(10.0f, 10.0f)))
+	if (SocketHovering(input.position, float2(ImGui::GetIO().MousePos.x, ImGui::GetIO().MousePos.y), 10.0f, 2.0f))
 	{
-		draw_list->AddCircleFilled(ImVec2(input.position.x, input.position.y), 5.0f - 2.0f, outlineColor);
+		//draw_list->AddCircleFilled(ImVec2(input.position.x, input.position.y), 5.0f - 2.0f, outlineColor);
+		draw_list->AddCircle(ImVec2(input.position.x, input.position.y), 10.0f, ImColor(255, 150, 0));
 
 	}
 	if (input.isLinked)
 	{
-		draw_list->AddCircleFilled(ImVec2(input.position.x, input.position.y), 5.0f - 2.0f, IM_COL32(100, 0, 0, 255));
+		draw_list->AddCircleFilled(ImVec2(input.position.x, input.position.y), 10.0f - 3.0f, IM_COL32(0, 200, 0, 255));
 	}
 
 	
@@ -414,10 +415,14 @@ void ShaderNode::DrawOutputConnector(ShaderGraph& graph, OutputSocket& output, u
 
 
 
-	if (ConnectorHovering(output.position - float2(5.0f), float2(10.0f, 10.0f)))
+	if (SocketHovering(output.position, float2(ImGui::GetIO().MousePos.x, ImGui::GetIO().MousePos.y), 10.0f, 2.0f))
 	{
-		draw_list->AddCircleFilled(ImVec2(output.position.x, output.position.y), 5.0f - 2.0f, outlineColor);
+		draw_list->AddCircle(ImVec2(output.position.x, output.position.y), 10.0f, ImColor(255, 150, 0));
 
+	}
+	if (output.isLinked)
+	{
+		draw_list->AddCircleFilled(ImVec2(output.position.x, output.position.y), 10.0f - 3.0f, IM_COL32(0, 200, 0, 255));
 	}
 
 
@@ -443,7 +448,7 @@ void ShaderNode::InputSocketInputs(ShaderGraph& graph, unsigned int numInputs, u
 
 		float2 input_pos = input.position;
 
-		if (ConnectorHovering(input.position - float2(5.0f), float2(10.0f, 10.0f)))
+		if (SocketHovering(input_pos, float2(ImGui::GetIO().MousePos.x, ImGui::GetIO().MousePos.y), 10.0f, 2.0f))
 		{
 			this->isHovered = false;
 		}
@@ -452,8 +457,26 @@ void ShaderNode::InputSocketInputs(ShaderGraph& graph, unsigned int numInputs, u
 		//IF OUTPUT WAS NOT ACTIVATED
 		if (!graph.socket_state.output_socket_actived &&
 			ImGui::IsMouseDown(0) &&
-			ConnectorHovering(input.position - float2(5.0f), float2(10.0f, 10.0f)))
+			SocketHovering(input_pos, float2(ImGui::GetIO().MousePos.x, ImGui::GetIO().MousePos.y), 10.0f, 2.0f))
 		{
+
+			if (ImGui::GetIO().KeyAlt)
+			{
+				if (input.isLinked)
+				{
+					//swap links
+					if (input.link_ref != nullptr)
+					{
+						input.link_ref->to_delete = true;
+						//input.isLinked = false;
+					}
+
+				break;
+				}
+
+			}
+
+
 			graph.socket_state.node_selected = this;
 			graph.socket_state.socked_selected = i;
 			graph.socket_state.input_socket_actived = true;
@@ -490,6 +513,7 @@ void ShaderNode::InputSocketInputs(ShaderGraph& graph, unsigned int numInputs, u
 					
 					//create link
 					input.link_ref = new ShaderLink(this, i, graph.socket_state.node_selected, graph.socket_state.socked_selected);
+					graph.socket_state.node_selected->outputs[graph.socket_state.socked_selected].link_ref = input.link_ref;
 					graph.links.push_back(input.link_ref);
 					
 
@@ -505,23 +529,23 @@ void ShaderNode::InputSocketInputs(ShaderGraph& graph, unsigned int numInputs, u
 
 		}
 
-		//DELETE LINKS ----
-		if(!graph.socket_state.output_socket_actived &&
-			ImGui::IsMouseDown(0) &&
-			ImGui::GetIO().KeyAlt &&
-			SocketHovering(input_pos, float2(ImGui::GetIO().MousePos.x, ImGui::GetIO().MousePos.y), 10.0f, 2.0f))
-		{
-			if (input.isLinked)
-			{
-				//swap links
-				if (input.link_ref != nullptr)
-				{
-					input.link_ref->to_delete = true;
-					input.isLinked = false;
-				}
+		////DELETE LINKS ----
+		//if(!graph.socket_state.output_socket_actived &&
+		//	ImGui::IsMouseDown(0) &&
+		//	ImGui::GetIO().KeyAlt &&
+		//	SocketHovering(input_pos, float2(ImGui::GetIO().MousePos.x, ImGui::GetIO().MousePos.y), 30.0f, 2.0f))
+		//{
+		//	if (input.isLinked)
+		//	{
+		//		//swap links
+		//		if (input.link_ref != nullptr)
+		//		{
+		//			input.link_ref->to_delete = true;
+		//			input.isLinked = false;
+		//		}
 
-			}
-		}
+		//	}
+		//}
 
 	}
 }
@@ -535,7 +559,7 @@ void ShaderNode::InputSocketOutputs(ShaderGraph& graph, unsigned int numOutputs,
 
 		float2 output_pos = output.position;
 
-		if (ConnectorHovering(output.position - float2(5.0f), float2(10.0f, 10.0f)))
+		if (SocketHovering(output_pos, float2(ImGui::GetIO().MousePos.x, ImGui::GetIO().MousePos.y), 10.0f, 2.0f))
 		{
 			this->isHovered = false;
 		}
@@ -545,7 +569,7 @@ void ShaderNode::InputSocketOutputs(ShaderGraph& graph, unsigned int numOutputs,
 		//IF INPUT WAS NOT ACTIVATED
 		if (!graph.socket_state.input_socket_actived &&
 			ImGui::IsMouseDown(0) &&
-			ConnectorHovering(output.position - float2(5.0f), float2(10.0f, 10.0f)))
+			SocketHovering(output_pos, float2(ImGui::GetIO().MousePos.x, ImGui::GetIO().MousePos.y), 10.0f, 2.0f))
 		{
 			graph.socket_state.node_selected = this;
 			graph.socket_state.socked_selected = i;
@@ -579,6 +603,7 @@ void ShaderNode::InputSocketOutputs(ShaderGraph& graph, unsigned int numOutputs,
 
 				//create link
 				output.link_ref = new ShaderLink(this, i, graph.socket_state.node_selected, graph.socket_state.socked_selected);
+				graph.socket_state.node_selected->inputs[graph.socket_state.socked_selected].link_ref = output.link_ref;
 				graph.links.push_back(output.link_ref);
 
 
@@ -652,44 +677,31 @@ void ShaderLink::DrawLink(ShaderGraph& graph)
 
 	auto draw_list = ImGui::GetWindowDrawList();
 
-
-	float2 input_pos = graph.scrolling + this->input_node->inputs[this->input_socket].position;
-	float2 output_pos = graph.scrolling + this->output_node->outputs[this->output_socket].position;
-
-	//Put sockets in linked state
-	if (!input_node->inputs[this->input_socket].isLinked || !output_node->outputs[this->output_socket].isLinked)
+	if (this->input_node != nullptr && this->output_node != nullptr)
 	{
-		this->input_node->inputs[this->input_socket].isLinked = true;
-		this->output_node->outputs[this->output_socket].isLinked = true;
+	
+		//get positions
+		float2 input_pos =/* graph.scrolling +*/ this->input_node->inputs[this->input_socket].position;
+		float2 output_pos = /*graph.scrolling +*/ this->output_node->outputs[this->output_socket].position;
+
+		//Put sockets in linked state
+		if (!input_node->inputs[this->input_socket].isLinked || !output_node->outputs[this->output_socket].isLinked)
+		{
+			this->input_node->inputs[this->input_socket].isLinked = true;
+			this->output_node->outputs[this->output_socket].isLinked = true;
+		}
+
+		//draw line
+		draw_list->AddBezierCurve
+		(
+			ImVec2(output_pos.x, output_pos.y),
+			ImVec2(output_pos.x + 80.0f, output_pos.y),
+			ImVec2(input_pos.x - 80.0f, input_pos.y),
+			ImVec2(input_pos.x, input_pos.y),
+			IM_COL32(0, 150, 250, 250), 3, 12
+		);
+
 	}
-	
-	//
-	//if (this == link.input_node)
-	//{
-	//	//input_pos = graph.scrolling + this->inputs[link.input_socket].position;
-	//	link.output_node->outputs[link.output_socket].isLinked = true;
-	//}
-	//else if (this == link.output_node)
-	//{
-	//	//output_pos = graph.scrolling + this->outputs[link.output_socket].position;
-	//	link.input_node->inputs[link.input_socket].isLinked = true;
-	//}
 
 
-	draw_list->AddBezierCurve
-	(
-		ImVec2(output_pos.x, output_pos.y),
-		ImVec2(output_pos.x + 80.0f, output_pos.y),
-		ImVec2(input_pos.x - 80.0f, input_pos.y),
-		ImVec2(input_pos.x, input_pos.y),
-		IM_COL32(0, 150, 250, 250), 3, 12
-	);
-
-
-	
-
-	
-
-		
-	
 }

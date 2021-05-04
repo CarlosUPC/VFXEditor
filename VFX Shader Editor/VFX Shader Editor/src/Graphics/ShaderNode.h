@@ -114,7 +114,7 @@ public:
 
 	void InputNode(ShaderGraph& graph);
 	void DrawNode(ShaderGraph& graph);
-	void DrawLinks(ShaderGraph& graph);
+	void DrawLines(ShaderGraph& graph);
 	virtual void Update(ShaderGraph& graph);
 
 	float2 CalcNodePosition(ShaderGraph& graph, float2 pos = {});
