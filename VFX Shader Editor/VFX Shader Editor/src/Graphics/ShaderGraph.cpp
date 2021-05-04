@@ -18,6 +18,14 @@ void ShaderGraph::Draw()
 {
 	//ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(2.5 * 1, 2.5 * 1));
 	//ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(10, 0));
+	
+	for (std::list<ShaderLink*>::reverse_iterator it = links.rbegin(); it != links.rend(); ++it) // Interaction in reverse loop because the last one drawn shoud be the first to be interacted
+	{
+		//Mouse Input stuff -----
+		(*it)->InputLink(*this);
+
+	}
+
 
 	for (std::list<ShaderLink*>::iterator it = links.begin(); it != links.end(); ++it)
 	{

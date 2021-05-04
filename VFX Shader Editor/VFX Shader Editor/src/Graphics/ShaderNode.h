@@ -40,8 +40,11 @@ struct ShaderLink
 
 	//bool isLinked = false;
 	bool to_delete = false;
+	bool isLineHovered = false;
 
 	void DrawLink(ShaderGraph& graph);
+	void InputLink(ShaderGraph& graph);
+	bool LineHovering(float2 p1, float2 p2, const float r1, const float r2);
 
 
 };
@@ -122,7 +125,7 @@ public:
 
 	bool NodeHovering(ShaderGraph& graph, float2 position, float2 size);
 	bool ConnectorHovering(float2 position, float2 size);
-	bool SocketHovering(float2& p, float2 e,const float r1,const float r2);
+	bool SocketHovering(float2& p1, float2 p2,const float r1,const float r2);
 
 	void DrawTitle(ShaderGraph& g);
 	void DrawTitle(ImDrawList* draw_list, float2 pos, float2 size);
@@ -144,13 +147,12 @@ public:
 	std::string name;
 	bool to_delete = false;
 
-	//ActionNode action;
+	
 
 	std::vector<InputSocket> inputs;
 	std::vector<OutputSocket> outputs;
 
-	//Links
-	std::vector<ShaderLink> links;
+	
 
 	int inputs_count = 0;
 	int outputs_count = 0;
@@ -162,8 +164,6 @@ public:
 
 	bool isSocketHovered = false;
 
-	bool	m_is_node_widgets_active;
 	
-	bool	m_is_old_any_active;
 
 };

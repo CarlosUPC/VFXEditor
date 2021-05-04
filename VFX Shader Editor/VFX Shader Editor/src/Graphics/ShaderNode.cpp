@@ -681,8 +681,8 @@ void ShaderLink::DrawLink(ShaderGraph& graph)
 	{
 	
 		//get positions
-		float2 input_pos =/* graph.scrolling +*/ this->input_node->inputs[this->input_socket].position;
-		float2 output_pos = /*graph.scrolling +*/ this->output_node->outputs[this->output_socket].position;
+		float2 input_pos = this->input_node->inputs[this->input_socket].position;
+		float2 output_pos = this->output_node->outputs[this->output_socket].position;
 
 		//Put sockets in linked state
 		if (!input_node->inputs[this->input_socket].isLinked || !output_node->outputs[this->output_socket].isLinked)
@@ -704,4 +704,82 @@ void ShaderLink::DrawLink(ShaderGraph& graph)
 	}
 
 
+}
+
+void ShaderLink::InputLink(ShaderGraph& graph)
+{
+	auto draw_list = ImGui::GetWindowDrawList();
+
+	if (this->input_node != nullptr && this->output_node != nullptr)
+	{
+		//get positions
+		float2 input_pos = this->input_node->inputs[this->input_socket].position;
+		float2 output_pos =  this->output_node->outputs[this->output_socket].position;
+
+		ImVec2 link_pos = ImBezierClosestPoint(
+			ImVec2(output_pos.x, output_pos.y), 
+			ImVec2(output_pos.x + 80.0f, output_pos.y), 
+			ImVec2(input_pos.x - 80.0f, input_pos.y), 
+			ImVec2(input_pos.x, input_pos.y),  
+			ImGui::GetIO().MousePos, 12.0f);
+
+
+		if (LineHovering(float2(ImGui::GetIO().MousePos.x, ImGui::GetIO().MousePos.y), float2(link_pos.x, link_pos.y), 8.0f, 0.0f))
+		{
+			draw_list->AddBezierCurve(
+				ImVec2(output_pos.x, output_pos.y),
+				ImVec2(output_pos.x + 80.0f, output_pos.y),
+				ImVec2(input_pos.x - 80.0f, input_pos.y),
+				ImVec2(input_pos.x, input_pos.y),
+				IM_COL32(255, 150, 0, 255),
+				7.0f, 12.0f
+			);
+
+			this->isLineHovered = true;
+		}
+		else
+		{
+			this->isLineHovered = false;
+		}
+
+
+
+
+		if (this->isLineHovered && ImGui::IsMouseClicked(1))
+		{
+			ImGui::OpenPopup("delete_line");
+		}
+
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(8, 12));
+		//ImGui::SetNextWindowPos(ImGui::GetMousePos());
+		if (ImGui::BeginPopup("delete_line"))
+		{
+			if (ImGui::MenuItem("Delete"))
+			{
+				this->to_delete = true;
+			}
+			ImGui::EndPopup();
+		}
+		ImGui::PopStyleVar();
+	}
+	
+
+
+
+
+
+}
+
+bool ShaderLink::LineHovering(float2 p1, float2 p2, const float r1, const float r2)
+{
+	float2 distance = float2(p2.x - p1.x, p2.y - p1.y);
+	float length = distance.x * distance.x + distance.y * distance.y;
+	float radius = (r1 + r2) * (r1 + r2);
+
+	if (length < radius)
+	{
+		return true;
+	}
+
+	return false;
 }
