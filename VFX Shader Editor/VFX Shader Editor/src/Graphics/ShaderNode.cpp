@@ -558,7 +558,7 @@ void ShaderNode::InputSocketOutputs(ShaderGraph& graph, unsigned int numOutputs,
 
 			if (ImGui::GetIO().KeyAlt)
 			{
-				if (output.isLinked)
+				if (output.isLinked) //TODO: el output si va apoder conectarse con muchos inputs debe tener una array de conexiones y no esto...
 				{
 					//swap links
 					if (output.link_ref != nullptr)

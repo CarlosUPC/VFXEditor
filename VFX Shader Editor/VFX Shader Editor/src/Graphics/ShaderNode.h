@@ -30,22 +30,29 @@ enum ValueType
 
 struct ShaderLink
 {
+
+public:
 	ShaderLink(ShaderNode* input_node, unsigned int input_socket, ShaderNode* output_node, unsigned int output_socket);
 
+	bool LineHovering(float2 p1, float2 p2, const float r1, const float r2);
 
+	void DrawLink(ShaderGraph& graph);
+	void InputLink(ShaderGraph& graph);
+	
+	
+public:
+	//core info
 	ShaderNode* output_node = nullptr;
 	ShaderNode* input_node = nullptr;
 	unsigned int input_socket = 0;
 	unsigned int output_socket = 0;
+	uint UID;
 
-	//bool isLinked = false;
+	//link states
 	bool to_delete = false;
 	bool isLineHovered = false;
 	ShaderLink* link_selected = nullptr;
-	uint UID;
-	void DrawLink(ShaderGraph& graph);
-	void InputLink(ShaderGraph& graph);
-	bool LineHovering(float2 p1, float2 p2, const float r1, const float r2);
+	
 
 
 };
@@ -116,9 +123,6 @@ public:
 	ShaderNode(const char* name, NodeType type, float2 position);
 	~ShaderNode();
 
-	void InputNode(ShaderGraph& graph);
-	void DrawNode(ShaderGraph& graph);
-	void DrawLines(ShaderGraph& graph);
 	virtual void Update(ShaderGraph& graph);
 
 	float2 CalcNodePosition(ShaderGraph& graph, float2 pos = {});
@@ -128,43 +132,42 @@ public:
 	bool ConnectorHovering(float2 position, float2 size);
 	bool SocketHovering(float2& p1, float2 p2,const float r1,const float r2);
 
+	void DrawLines(ShaderGraph& graph);
+	void DrawNode(ShaderGraph& graph);
 	void DrawTitle(ShaderGraph& g);
 	void DrawTitle(ImDrawList* draw_list, float2 pos, float2 size);
 	void DrawBody(ImDrawList* draw_list, float2 pos, float2 size);
 	void DrawInputs(ShaderGraph& graph, unsigned int numInputs, unsigned int offset = 0);
 	void DrawOutputs(ShaderGraph& graph, unsigned int numOutputs, unsigned int offset = 0);
-
 	void DrawInputConnector(ShaderGraph& graph, InputSocket& input, unsigned int index = 0);
 	void DrawOutputConnector(ShaderGraph& graph, OutputSocket& output, unsigned int index = 0);
 
+	void InputNode(ShaderGraph& graph);
 	void InputSocketInputs(ShaderGraph& graph, unsigned int numInputs, unsigned int offset = 0);
 	void InputSocketOutputs(ShaderGraph& graph, unsigned int numOutputs, unsigned int offset = 0);
+
 public:
+	//core info
 	NodeType type;
 	float2 position;
 	float2 size;
 	float2 title_size;
 	uint UID;
 	std::string name;
-	bool to_delete = false;
 
-	
-
+	//inputs & outputs
 	std::vector<InputSocket> inputs;
 	std::vector<OutputSocket> outputs;
-
-	
-
-	int inputs_count = 0;
-	int outputs_count = 0;
 
 	//node states
 	bool isHovered = false;
 	bool isSelected = false;
 	bool isItemActive = false;
-
 	bool isSocketHovered = false;
+	bool to_delete = false;
 
-	
+	//temp
+	int inputs_count = 0;
+	int outputs_count = 0;
 
 };
