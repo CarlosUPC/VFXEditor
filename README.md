@@ -1,2 +1,3 @@
-# VFX-Shader-Editor
+# Node-based Shader Editor for VFX
+
 FeelsCrunchMan
