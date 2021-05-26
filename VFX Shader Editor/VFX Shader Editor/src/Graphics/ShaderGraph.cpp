@@ -100,7 +100,7 @@ void ShaderGraph::PostUpdate(float dt)
 		if ((*it)->to_delete == true)
 		{
 
-			//chack if node's sockets have links
+			//check if node's sockets have links
 			for (auto&& input : (*it)->inputs)
 			{
 				if (input.link_ref != nullptr)
@@ -132,10 +132,16 @@ void ShaderGraph::PostUpdate(float dt)
 		if ((*it)->to_delete == true)
 		{
 			if ((*it)->input_node != nullptr)
+			{
 				(*it)->input_node->inputs[(*it)->input_socket].isLinked = false;
+				(*it)->input_node->inputs[(*it)->input_socket].link_ref = nullptr;
+			}
 
 			if ((*it)->output_node != nullptr)
+			{
 				(*it)->output_node->outputs[(*it)->output_socket].isLinked = false;
+				(*it)->output_node->outputs[(*it)->output_socket].link_ref = nullptr;
+			}
 
 			RELEASE((*it));
 			it = links.erase(it);

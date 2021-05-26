@@ -3,6 +3,13 @@
 #include "Module.h"
 #include "Panel.h"
 
+
+enum PANEL_TYPE
+{
+	PREVIEW = 0,
+	SHADERGRAPH,
+	INSPECTOR
+};
 class ModuleGUI : public Module
 {
 
@@ -24,6 +31,6 @@ public:
 	bool UsingKeyboard() const;
 
 public:
-	std::list<Panel*> panels;
+	std::vector<Panel*> panels;
 	bool mouseOnScene = false;
 };

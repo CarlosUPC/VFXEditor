@@ -98,6 +98,8 @@ struct OutputSocket
 	std::string name;
 
 	bool isLinked = false;
+
+	//TODO: MAKE IT VECTOR 
 	ShaderLink* link_ref = nullptr;
 
 	OutputSocket(){}

@@ -56,6 +56,7 @@ public:
 	void NodeOption(const char* name, NodeType type, float2 position, ResourceShader* shader, ShaderGraph* graph, ShaderNode* (ShaderGraph::*p)(const char* n, int t, float2 p));
 	void NodeOption(const char* name, NodeType type, ResourceShader* shader, ShaderGraph* graph);
 
+	ShaderGraph* GetGraph();
 
 	void Scrolling();
 	void NodeContext();

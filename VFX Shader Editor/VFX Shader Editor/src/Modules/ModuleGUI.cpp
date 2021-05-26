@@ -11,6 +11,7 @@
 
 #include "PanelPreview.h"
 #include "PanelShaderEditor.h"
+#include "PanelInspector.h"
 
 ModuleGUI::ModuleGUI(bool start_enabled)
 	: Module(start_enabled)
@@ -46,6 +47,7 @@ bool ModuleGUI::Start()
 	//Load panels
 	panels.push_back(new PanelPreview("Preview"));
 	panels.push_back(new PanelShaderEditor("Shader Graph Editor"));
+	panels.push_back(new PanelInspector("Details"));
 	return true;
 }
 
@@ -104,7 +106,7 @@ update_state ModuleGUI::PreUpdate(float dt)
 update_state ModuleGUI::Update(float dt)
 {
 	
-	for (std::list<Panel*>::iterator it_p = panels.begin(); it_p != panels.end(); ++it_p)
+	for (std::vector<Panel*>::iterator it_p = panels.begin(); it_p != panels.end(); ++it_p)
 	{
 		if ((*it_p)->IsActive())
 		{
@@ -128,7 +130,7 @@ bool ModuleGUI::CleanUp()
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui::DestroyContext();
 
-	for (std::list<Panel*>::iterator it_p = panels.begin(); it_p != panels.end(); ++it_p)
+	for (std::vector<Panel*>::iterator it_p = panels.begin(); it_p != panels.end(); ++it_p)
 	{
 		RELEASE((*it_p));
 	}

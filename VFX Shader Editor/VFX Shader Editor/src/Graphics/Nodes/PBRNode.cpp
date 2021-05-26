@@ -20,12 +20,4 @@ PBRNode::PBRNode(const char* name, NodeType type, float2 position)
 
 void PBRNode::Update(ShaderGraph& g)
 {
-
-	//ImGui::BeginGroup();
-	
-	//DrawTitle(g);
-	//DrawOutputs(g, outputs_count);
-	//DrawInputs(g, inputs_count);
-
-	//ImGui::EndGroup();
 }

@@ -317,6 +317,15 @@ void PanelShaderEditor::NodeOption(const char* name, NodeType type, ResourceShad
 	}
 }
 
+ShaderGraph* PanelShaderEditor::GetGraph()
+{
+	if (current_shader != nullptr)
+		return current_shader->graph;
+	else
+		return nullptr;
+	
+}
+
 void PanelShaderEditor::Scrolling()
 {
 	if (ImGui::IsWindowHovered() && 
