@@ -273,9 +273,9 @@ void PanelShaderEditor::AddNewNodePopUp()
 		node_pos.y = hit_pos.y - canvas.m_Scroll.y;
 
 
-		NodeOption("PBR", NodeType::PBR, float2(node_pos.x, node_pos.y), current_shader, current_shader->graph, &ShaderGraph::CreateNode);
-		NodeOption("UV", NodeType::PBR, float2(node_pos.x, node_pos.y), current_shader, current_shader->graph, &ShaderGraph::CreateNode);
-		NodeOption("ColorRGB", NodeType::PBR, float2(node_pos.x, node_pos.y), current_shader, current_shader->graph, &ShaderGraph::CreateNode);
+		NodeOption("PBR", NODE_TYPE::PBR, float2(node_pos.x, node_pos.y), current_shader, current_shader->graph, &ShaderGraph::CreateNode);
+		NodeOption("VEC1", NODE_TYPE::VECTOR1, float2(node_pos.x, node_pos.y), current_shader, current_shader->graph, &ShaderGraph::CreateNode);
+		//NodeOption("ColorRGB", NODE_TYPE::PBR, float2(node_pos.x, node_pos.y), current_shader, current_shader->graph, &ShaderGraph::CreateNode);
 
 		
 
@@ -284,7 +284,7 @@ void PanelShaderEditor::AddNewNodePopUp()
 
 }
 
-void PanelShaderEditor::NodeOption(const char* name, NodeType type,float2 position, ResourceShader* shader, ShaderGraph* graph, ShaderNode* (ShaderGraph::* p)(const char* n, int t, float2 pos))
+void PanelShaderEditor::NodeOption(const char* name, NODE_TYPE type,float2 position, ResourceShader* shader, ShaderGraph* graph, ShaderNode* (ShaderGraph::* p)(const char* n, int t, float2 pos))
 {
 	std::string node_name = name + std::string(" Node");
 
@@ -303,7 +303,7 @@ void PanelShaderEditor::NodeOption(const char* name, NodeType type,float2 positi
 	}
 }
 
-void PanelShaderEditor::NodeOption(const char* name, NodeType type, ResourceShader* shader, ShaderGraph* graph)
+void PanelShaderEditor::NodeOption(const char* name, NODE_TYPE type, ResourceShader* shader, ShaderGraph* graph)
 {
 	std::string node_name = name;
 	std::string format = "New " + node_name + " Node";

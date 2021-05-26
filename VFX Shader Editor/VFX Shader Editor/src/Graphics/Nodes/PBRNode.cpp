@@ -4,14 +4,16 @@ PBRNode::PBRNode()
 {
 }
 
-PBRNode::PBRNode(const char* name, NodeType type, float2 position)
+
+
+PBRNode::PBRNode(const char* name, NODE_TYPE type, float2 position)
 	: ShaderNode(name, type, position)
 {
-	inputs.push_back(InputSocket("diffuse", ValueType::FLOAT2));
-	inputs.push_back(InputSocket("metallic", ValueType::FLOAT1));
-	inputs.push_back(InputSocket("roughness", ValueType::FLOAT1));
+	inputs.push_back(InputSocket("diffuse", VALUE_TYPE::FLOAT2));
+	inputs.push_back(InputSocket("metallic", VALUE_TYPE::FLOAT1));
+	inputs.push_back(InputSocket("roughness", VALUE_TYPE::FLOAT1));
 	
-	outputs.push_back(OutputSocket(ValueType::FLOAT1));
+	outputs.push_back(OutputSocket(VALUE_TYPE::FLOAT1));
 
 	//temp hardcoded
 	inputs_count = 3;

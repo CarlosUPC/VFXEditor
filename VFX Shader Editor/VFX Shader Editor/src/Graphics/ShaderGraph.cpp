@@ -5,6 +5,7 @@
 #include <iostream>
 #include "ShaderNode.h"
 #include "Nodes/PBRNode.h"
+#include "Nodes/Parameter/FloatNode.h"
 ShaderGraph::ShaderGraph(std::string m_Name)
 	:m_Name(m_Name)
 {
@@ -48,8 +49,8 @@ void ShaderGraph::Draw()
 		//Draw stuff -------
 		(*it)->DrawLines(*this);
 		(*it)->DrawNode(*this);
-		(*it)->DrawInputs(*this, (*it)->inputs_count);
-		(*it)->DrawOutputs(*this, (*it)->outputs_count);
+		(*it)->DrawInputs(*this, (*it)->inputs.size());
+		(*it)->DrawOutputs(*this, (*it)->outputs.size());
 
 		//Update stuff -------
 		(*it)->Update(*this);
@@ -81,8 +82,8 @@ void ShaderGraph::Input()
 
 		//Mouse Input stuff ------
 		(*it)->InputNode(*this);
-		(*it)->InputSocketInputs(*this, (*it)->inputs_count);
-		(*it)->InputSocketOutputs(*this, (*it)->outputs_count);
+		(*it)->InputSocketInputs(*this, (*it)->inputs.size());
+		(*it)->InputSocketOutputs(*this, (*it)->outputs.size());
 
 		ImGui::PopID();
 	}
@@ -155,10 +156,13 @@ ShaderNode* ShaderGraph::CreateNode(const char* name, int type, float2 position)
 
 	switch (type)
 	{
-	case NodeType::PBR:
-		node = new PBRNode(name, (NodeType)type, position);
+	case NODE_TYPE::PBR:
+		node = new PBRNode(name, (NODE_TYPE)type, position);
 		break;
-	case NodeType::UNKNOWN:
+	case NODE_TYPE::VECTOR1:
+		node = new FloatNode(name, (NODE_TYPE)type, position);
+		break;
+	case NODE_TYPE::UNKNOWN:
 		break;
 
 	}

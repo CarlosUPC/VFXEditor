@@ -6,7 +6,7 @@
 class ResourceShader;
 class ShaderNode;
 class ShaderGraph;
-enum NodeType;
+enum NODE_TYPE;
 
 
 typedef ShaderNode* (ShaderGraph::* CreateNodeFn)(const char* n, int t);
@@ -53,8 +53,8 @@ public:
 	void AddNode(ShaderGraph& graph, ShaderNode* node);
 
 	ShaderNode CreateNode();
-	void NodeOption(const char* name, NodeType type, float2 position, ResourceShader* shader, ShaderGraph* graph, ShaderNode* (ShaderGraph::*p)(const char* n, int t, float2 p));
-	void NodeOption(const char* name, NodeType type, ResourceShader* shader, ShaderGraph* graph);
+	void NodeOption(const char* name, NODE_TYPE type, float2 position, ResourceShader* shader, ShaderGraph* graph, ShaderNode* (ShaderGraph::*p)(const char* n, int t, float2 p));
+	void NodeOption(const char* name, NODE_TYPE type, ResourceShader* shader, ShaderGraph* graph);
 
 	ShaderGraph* GetGraph();
 

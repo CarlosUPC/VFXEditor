@@ -5,6 +5,7 @@
 #include "ImGui\imgui_impl_opengl3.h"
 #include "ImGui\imgui_internal.h"
 
+
 #include "Globals.h"
 
 class ShaderGraph;
@@ -12,13 +13,14 @@ class ShaderNode;
 struct InputSocket;
 struct OutputSocket;
 
-enum NodeType
+enum NODE_TYPE
 {
+	VECTOR1,
 	PBR,
 	UNKNOWN
 };
 
-enum ValueType
+enum VALUE_TYPE
 {
 	FLOAT1,
 	FLOAT2,
@@ -63,7 +65,7 @@ public:
 
 struct InputSocket
 {
-	ValueType type = ValueType::NONE;
+	VALUE_TYPE type = VALUE_TYPE::NONE;
 	float2 position;
 	std::string name;
 	
@@ -80,7 +82,7 @@ struct InputSocket
 	};
 
 	 InputSocket(){}
-	 InputSocket(const char* name, ValueType type)
+	 InputSocket(const char* name, VALUE_TYPE type)
 	 {
 		 this->type = type;
 		 this->name = name;
@@ -92,7 +94,7 @@ struct InputSocket
 
 struct OutputSocket
 {
-	ValueType type = ValueType::NONE;
+	VALUE_TYPE type = VALUE_TYPE::NONE;
 	float2 position;
 	
 	std::string name;
@@ -103,12 +105,12 @@ struct OutputSocket
 	ShaderLink* link_ref = nullptr;
 
 	OutputSocket(){}
-	OutputSocket(ValueType type)
+	OutputSocket(VALUE_TYPE type)
 	{
 		this->type = type;
 	}
 
-	OutputSocket(const char* name, ValueType type)
+	OutputSocket(const char* name, VALUE_TYPE type)
 	{
 		this->type = type;
 		this->name = name;
@@ -122,10 +124,11 @@ class ShaderNode
 	
 public:
 	ShaderNode();
-	ShaderNode(const char* name, NodeType type, float2 position);
+	ShaderNode(const char* name, NODE_TYPE type, float2 position);
 	~ShaderNode();
 
 	virtual void Update(ShaderGraph& graph);
+	virtual void InspectorUpdate();
 
 	float2 CalcNodePosition(ShaderGraph& graph, float2 pos = {});
 	float2 CalcNodeSize(ShaderGraph& graph, ShaderNode* node);
@@ -150,7 +153,7 @@ public:
 
 public:
 	//core info
-	NodeType type;
+	NODE_TYPE type;
 	float2 position;
 	float2 size;
 	float2 title_size;
@@ -169,7 +172,7 @@ public:
 	bool to_delete = false;
 
 	//temp
-	int inputs_count = 0;
-	int outputs_count = 0;
+	float inputs_count = 0;
+	float outputs_count = 0;
 
 };

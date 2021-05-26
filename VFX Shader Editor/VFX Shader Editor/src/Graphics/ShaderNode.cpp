@@ -5,7 +5,7 @@ ShaderNode::ShaderNode()
 {
 }
 
-ShaderNode::ShaderNode(const char* name, NodeType type, float2 position)
+ShaderNode::ShaderNode(const char* name, NODE_TYPE type, float2 position)
 	: name(name), type(type), position(position)
 {
 	UID = Random::GenerateUUID();
@@ -179,6 +179,10 @@ void ShaderNode::Update(ShaderGraph& graph)
 {
 }
 
+void ShaderNode::InspectorUpdate()
+{
+}
+
 float2 ShaderNode::CalcNodePosition(ShaderGraph& g, float2 pos)
 {
 	pos.x +=  g.scrolling.x;
@@ -301,7 +305,7 @@ void ShaderNode::DrawInputs(ShaderGraph& graph, unsigned int numInputs, unsigned
 
 		//ImGui::SameLine(30.0f);
 
-		if (input.type == ValueType::FLOAT1)
+		if (input.type == VALUE_TYPE::FLOAT1)
 		{
 			//ImGui::SetNextItemWidth(100 * graph.scale);
 			//float num = 2.0f;
@@ -310,7 +314,7 @@ void ShaderNode::DrawInputs(ShaderGraph& graph, unsigned int numInputs, unsigned
 			//ImGui::SameLine(50.0f);
 			//ImGui::Text(input.name.c_str());
 		}
-		else if (input.type == ValueType::FLOAT2)
+		else if (input.type == VALUE_TYPE::FLOAT2)
 		{
 			//ImGui::SetNextItemWidth(100 * graph.scale);
 			////ImGui::SameLine();
@@ -319,13 +323,13 @@ void ShaderNode::DrawInputs(ShaderGraph& graph, unsigned int numInputs, unsigned
 			//ImGui::SameLine(50.0f);
 			//ImGui::Text(input.name.c_str());
 		}
-		else if (input.type == ValueType::FLOAT3)
+		else if (input.type == VALUE_TYPE::FLOAT3)
 		{
 			/*ImGui::SameLine();
 			ImGui::InputFloat(input.name.c_str(), &input.value1);*/
 			//ImGui::Text(input.name.c_str());
 		}
-		else if (input.type == ValueType::FLOAT4)
+		else if (input.type == VALUE_TYPE::FLOAT4)
 		{
 			/*ImGui::InputFloat(input.name.c_str(), &input.value1);*/
 			//ImGui::Text(input.name.c_str());
