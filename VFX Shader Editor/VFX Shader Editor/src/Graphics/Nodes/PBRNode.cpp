@@ -16,8 +16,8 @@ PBRNode::PBRNode(const char* name, NODE_TYPE type, float2 position)
 	outputs.push_back(OutputSocket(VALUE_TYPE::FLOAT1));
 
 	//temp hardcoded
-	inputs_count = 3;
-	outputs_count = 1;
+	inputs_size = 3;
+	outputs_size = 1;
 }
 
 void PBRNode::Update(ShaderGraph& g)

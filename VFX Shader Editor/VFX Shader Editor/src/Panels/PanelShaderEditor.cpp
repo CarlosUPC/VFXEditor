@@ -274,7 +274,7 @@ void PanelShaderEditor::AddNewNodePopUp()
 
 
 		NodeOption("PBR", NODE_TYPE::PBR, float2(node_pos.x, node_pos.y), current_shader, current_shader->graph, &ShaderGraph::CreateNode);
-		NodeOption("VEC1", NODE_TYPE::VECTOR1, float2(node_pos.x, node_pos.y), current_shader, current_shader->graph, &ShaderGraph::CreateNode);
+		NodeOption("VECTOR1", NODE_TYPE::VECTOR1, float2(node_pos.x, node_pos.y), current_shader, current_shader->graph, &ShaderGraph::CreateNode);
 		//NodeOption("ColorRGB", NODE_TYPE::PBR, float2(node_pos.x, node_pos.y), current_shader, current_shader->graph, &ShaderGraph::CreateNode);
 
 		

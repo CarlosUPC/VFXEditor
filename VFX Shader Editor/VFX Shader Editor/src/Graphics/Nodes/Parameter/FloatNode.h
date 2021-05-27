@@ -14,4 +14,6 @@ public:
 
 private:
 	float output;
+	std::vector<std::string> input_code;
+	std::vector<std::string> output_code;
 };

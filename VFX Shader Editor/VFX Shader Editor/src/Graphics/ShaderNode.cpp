@@ -201,7 +201,7 @@ float2 ShaderNode::CalcNodeSize(ShaderGraph& graph, ShaderNode* node)
 {
 	float width = 200.0f;
 
-	return float2(55.0f * node->inputs_count, 55.0f * node->inputs_count);
+	return float2(55.0f * node->inputs_size, 55.0f * node->inputs_size);
 
 	//return graph.scale * float2(width, 80.0F + fmax(1.0f, inputs.size()*40.0f)); // TODO: height should be based on input length
 }
@@ -294,8 +294,8 @@ void ShaderNode::DrawInputs(ShaderGraph& graph, unsigned int numInputs, unsigned
 	{
 		InputSocket& input = this->inputs[i];
 
-		
-		DrawInputConnector(graph, input, i);
+		if(input.context_type != CONTEXT_TYPE::PARAMETER)
+			DrawInputConnector(graph, input, i);
 
 
 		//ImGui::PushID(this->UID);
@@ -305,39 +305,39 @@ void ShaderNode::DrawInputs(ShaderGraph& graph, unsigned int numInputs, unsigned
 
 		//ImGui::SameLine(30.0f);
 
-		if (input.type == VALUE_TYPE::FLOAT1)
-		{
-			//ImGui::SetNextItemWidth(100 * graph.scale);
-			//float num = 2.0f;
-			//ImGui::InputFloat(input.name.c_str(), &num);
-			//ImGui::SetNextItemWidth(400 * graph.scale);
-			//ImGui::SameLine(50.0f);
-			//ImGui::Text(input.name.c_str());
-		}
-		else if (input.type == VALUE_TYPE::FLOAT2)
-		{
-			//ImGui::SetNextItemWidth(100 * graph.scale);
-			////ImGui::SameLine();
-			//ImGui::InputFloat2(input.name.c_str(), &input.value2.x, "%.2f");
-			//ImGui::SetNextItemWidth(400 * graph.scale);
-			//ImGui::SameLine(50.0f);
-			//ImGui::Text(input.name.c_str());
-		}
-		else if (input.type == VALUE_TYPE::FLOAT3)
-		{
-			/*ImGui::SameLine();
-			ImGui::InputFloat(input.name.c_str(), &input.value1);*/
-			//ImGui::Text(input.name.c_str());
-		}
-		else if (input.type == VALUE_TYPE::FLOAT4)
-		{
-			/*ImGui::InputFloat(input.name.c_str(), &input.value1);*/
-			//ImGui::Text(input.name.c_str());
-		}
-		else
-		{
-			//ImGui::Text(input.name.c_str());
-		}
+		//if (input.type == VALUE_TYPE::FLOAT1)
+		//{
+		//	//ImGui::SetNextItemWidth(100 * graph.scale);
+		//	//float num = 2.0f;
+		//	//ImGui::InputFloat(input.name.c_str(), &num);
+		//	//ImGui::SetNextItemWidth(400 * graph.scale);
+		//	//ImGui::SameLine(50.0f);
+		//	//ImGui::Text(input.name.c_str());
+		//}
+		//else if (input.type == VALUE_TYPE::FLOAT2)
+		//{
+		//	//ImGui::SetNextItemWidth(100 * graph.scale);
+		//	////ImGui::SameLine();
+		//	//ImGui::InputFloat2(input.name.c_str(), &input.value2.x, "%.2f");
+		//	//ImGui::SetNextItemWidth(400 * graph.scale);
+		//	//ImGui::SameLine(50.0f);
+		//	//ImGui::Text(input.name.c_str());
+		//}
+		//else if (input.type == VALUE_TYPE::FLOAT3)
+		//{
+		//	/*ImGui::SameLine();
+		//	ImGui::InputFloat(input.name.c_str(), &input.value1);*/
+		//	//ImGui::Text(input.name.c_str());
+		//}
+		//else if (input.type == VALUE_TYPE::FLOAT4)
+		//{
+		//	/*ImGui::InputFloat(input.name.c_str(), &input.value1);*/
+		//	//ImGui::Text(input.name.c_str());
+		//}
+		//else
+		//{
+		//	//ImGui::Text(input.name.c_str());
+		//}
 
 		//ImGui::PopID();
 	}
@@ -361,7 +361,7 @@ void ShaderNode::DrawInputConnector(ShaderGraph& graph, InputSocket& input, unsi
 
 	
 	input.position = graph.scrolling + float2(this->position.x +  10.0f,
-		this->position.y + this->size.y * (static_cast<float>(index) + 1) / (static_cast<float>(inputs_count) + 1));
+		this->position.y + this->size.y * (static_cast<float>(index) + 1) / (static_cast<float>(inputs_size) + 1));
 
 	input.position.y += 10.0f;
 
@@ -402,7 +402,7 @@ void ShaderNode::DrawOutputConnector(ShaderGraph& graph, OutputSocket& output, u
 
 	
 	output.position = graph.scrolling + float2(this->position.x + this->size.x - 10.0f,
-								               this->position.y + this->size.y * (static_cast<float>(index) + 1) / (static_cast<float>(outputs_count) + 1));
+								               this->position.y + this->size.y * (static_cast<float>(index) + 1) / (static_cast<float>(outputs_size) + 1));
 
 	output.position.y += 10.0f;
 
@@ -450,6 +450,10 @@ void ShaderNode::InputSocketInputs(ShaderGraph& graph, unsigned int numInputs, u
 	{
 		InputSocket& input = this->inputs[i];
 
+		if (input.context_type == CONTEXT_TYPE::PARAMETER)
+			break;
+
+
 		float2 input_pos = input.position;
 
 		if (SocketHovering(input_pos, float2(ImGui::GetIO().MousePos.x, ImGui::GetIO().MousePos.y), 10.0f, 2.0f))
@@ -490,8 +494,6 @@ void ShaderNode::InputSocketInputs(ShaderGraph& graph, unsigned int numInputs, u
 
 		}
 
-
-		
 
 
 			//IF OUTPUT WAS ACTIVATED
@@ -818,4 +820,30 @@ bool ShaderLink::LineHovering(float2 p1, float2 p2, const float r1, const float 
 	}
 
 	return false;
+}
+
+void InputSocket::DisplayInputSocketDetails()
+{
+
+	if (type == VALUE_TYPE::FLOAT1)
+	{
+		ImGui::Text("value: "); ImGui::SameLine();
+		ImGui::DragFloat(name.c_str(), &value1, 0.1f, 0.0f, 1.0f, "%.2f");
+	}
+	else if (type == VALUE_TYPE::FLOAT2)
+	{
+		ImGui::Text("value: "); ImGui::SameLine();
+		ImGui::DragFloat2(name.c_str(), &value2.x, 0.1f, 0.0f, 1.0f, "%.2f");
+	}
+	else if (type == VALUE_TYPE::FLOAT3)
+	{
+		ImGui::Text("value: "); ImGui::SameLine();
+		ImGui::DragFloat3(name.c_str(), &value3.y, 0.1f, 0.0f, 1.0f, "%.2f");
+	}
+	else if (type == VALUE_TYPE::FLOAT4)
+	{
+		ImGui::Text("value: "); ImGui::SameLine();
+		ImGui::DragFloat4(name.c_str(), &value4.w, 0.1f, 0.0f, 1.0f, "%.2f");
+	}
+
 }

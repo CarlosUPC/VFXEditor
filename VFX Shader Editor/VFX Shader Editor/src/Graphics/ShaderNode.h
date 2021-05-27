@@ -29,6 +29,14 @@ enum VALUE_TYPE
 	NONE
 };
 
+enum class CONTEXT_TYPE
+{
+	PARAMETER  = 0,
+	FUNCTION,
+	
+	NONE
+};
+
 
 struct ShaderLink
 {
@@ -66,9 +74,11 @@ public:
 struct InputSocket
 {
 	VALUE_TYPE type = VALUE_TYPE::NONE;
+	CONTEXT_TYPE context_type = CONTEXT_TYPE::NONE;
+
 	float2 position;
 	std::string name;
-	
+	std::string input_str;
 
 	bool isLinked = false;
 	ShaderLink* link_ref = nullptr;
@@ -86,9 +96,20 @@ struct InputSocket
 	 {
 		 this->type = type;
 		 this->name = name;
+		 
+		 value1 = 5.f;
+	 }
+
+	 InputSocket(const char* name, VALUE_TYPE type, CONTEXT_TYPE context)
+	 {
+		 this->type = type;
+		 this->name = name;
+		 this->context_type = context;
 
 		 value1 = 5.f;
 	 }
+
+	 void DisplayInputSocketDetails();
 
 };
 
@@ -98,6 +119,7 @@ struct OutputSocket
 	float2 position;
 	
 	std::string name;
+	std::string output_str;
 
 	bool isLinked = false;
 
@@ -172,7 +194,10 @@ public:
 	bool to_delete = false;
 
 	//temp
-	float inputs_count = 0;
-	float outputs_count = 0;
+	float inputs_size = 0;
+	float outputs_size = 0;
+
+protected:
+	std::string code_str;
 
 };
