@@ -67,6 +67,23 @@ void PanelShaderEditor::Draw()
 		return;
 	}
 
+
+	//Shader info
+	ImGui::SetNextItemWidth(128);
+	ImGui::PushStyleColor(ImGuiCol_FrameBg, ImGui::GetStyle().Colors[ImGuiCol_TitleBg]);
+	
+	ImGui::PushID((void*)&current_shader->id);
+	ImGui::InputText("##", (char*)current_shader->name.c_str(), MAX_PATH);
+	ImGui::PopID();
+
+	ImGui::PopStyleColor();
+
+	ImGui::SameLine();
+	if (ImGui::Button("Compile")) {
+		current_shader->graph->CompileShader(current_shader);
+	}
+
+
 	//INIT CANVAS
 	canvas.Init(ImGui::GetCursorScreenPos(), ImGui::GetWindowSize(), IM_COL32(0, 200, 120, 120));
 

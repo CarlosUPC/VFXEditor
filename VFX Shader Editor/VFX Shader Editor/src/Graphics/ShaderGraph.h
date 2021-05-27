@@ -32,6 +32,8 @@ public:
 	std::string OutputLine(const std::string& line);
 	std::string OutputTabbedLine(const std::string& line);
 
+	std::string CheckTypeOutput(const std::string& code, const std::string& type, const std::string& requiredType);
+
 	//Vertex Shader
 	std::string BeginVertexHeader();
 	std::string OutputVertexHeader();
@@ -113,4 +115,6 @@ public:
 
 	TempNodeData node_state;
 	TempSocketData socket_state;
+
+	ShaderNode* mainNode = nullptr;
 };

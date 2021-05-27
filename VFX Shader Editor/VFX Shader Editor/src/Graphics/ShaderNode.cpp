@@ -627,6 +627,22 @@ void ShaderNode::InputSocketOutputs(ShaderGraph& graph, unsigned int numOutputs,
 	}
 }
 
+InputSocket ShaderNode::GetInputSocketbyName(const std::string& inputName)
+{
+
+	for (int i = 0; i < inputs.size(); ++i)
+	{
+		InputSocket& input = this->inputs[i];
+
+		if (input.name.compare(inputName) == 0)
+		{
+			return input;
+		}
+
+	}
+	
+}
+
 
 
 

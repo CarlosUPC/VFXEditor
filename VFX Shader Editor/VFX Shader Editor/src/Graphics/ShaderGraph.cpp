@@ -9,6 +9,9 @@
 ShaderGraph::ShaderGraph(std::string m_Name)
 	:m_Name(m_Name)
 {
+	mainNode = CreateNode("PBR", NODE_TYPE::PBR, float2(1500.f, 350.f));
+	nodes.push_back(mainNode);
+
 }
 
 ShaderGraph::~ShaderGraph()
@@ -320,6 +323,23 @@ std::string ShaderCompiler::OutputTabbedLine(const std::string& line)
 	return "\t" + line + "\n";
 }
 
+std::string ShaderCompiler::CheckTypeOutput(const std::string& code, const std::string& type, const std::string& requiredType)
+{
+	if (type.compare(requiredType) == 0)
+	{
+		return code;
+
+	}
+	else if (requiredType.compare("vec4") == 0)
+	{
+		if (type.compare("float") == 0)
+		{
+			return "vec4(vec3(" + code + ", " + code + ", " + code + "), 1.0 )";
+		}
+	}
+
+}
+
 std::string ShaderCompiler::BeginVertexHeader()
 {
 	std::string code = "";
@@ -399,7 +419,7 @@ std::string ShaderCompiler::OutputFragmentHeader()
 	code += OutputLine("#version 330 core\n");
 
 	// FragData layout
-	code += OutputLine("out vec4 FragColor;");
+	code += OutputLine("layout(location = 0) out vec4 DiffuseColor;");
 
 	return code;
 }
@@ -422,12 +442,51 @@ std::string ShaderCompiler::BeginFragment()
 
 std::string ShaderCompiler::OutputFragment()
 {
-	//more stuff ...
 	std::string code = "";
-	std::string tmp_color = "vec4(1.0f, 0.0f, 0.0f, 1.0f)"; // it should be take it from shadergraph reference
+	
+	
+	//Update Diffuse
+	InputSocket inputDiffuse = graph.mainNode->GetInputSocketbyName("diffuse");
+	
+	//if it has a link
+	if (inputDiffuse.isLinked)
+	{
+		ShaderNode* out_node = inputDiffuse.link_ref->output_node;
+
+		std::string varDefinition = out_node->GetOutputDefinition();
+		code += varDefinition;
+
+		if (out_node)
+		{
+			//Output code variable
+			std::string out_code = out_node->outputs[inputDiffuse.link_ref->output_socket].output_str;
+
+			//Output code type 
+			std::string type_code = out_node->outputs[inputDiffuse.link_ref->output_socket].type_str;
+
+			//Check and transform typing
+			out_code = CheckTypeOutput(out_code, type_code, "vec4");
+
+			//Update Diffuse Color
+			code += OutputTabbedLine("DiffuseColor = " + out_code + ";\n");
+		}
+
+
+	}
+	else
+	{
+		//Set Default Diffuse Color
+		 std::string tmp_color = "vec4(1.0f, 0.0f, 0.0f, 1.0f)";
+		 code += OutputTabbedLine("DiffuseColor = " + tmp_color + ";\n");
+
+	}
+	
+	
+	//more stuff ...
+	//std::string tmp_color = "vec4(1.0f, 0.0f, 0.0f, 1.0f)"; // it should be take it from shadergraph reference
 
 	// Final position output 
-	code += OutputTabbedLine("FragColor = " + tmp_color + ";\n");
+	//code += OutputTabbedLine("FragColor = DiffuseColor;\n");
 	return code;
 }
 

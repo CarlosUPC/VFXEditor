@@ -120,6 +120,7 @@ struct OutputSocket
 	
 	std::string name;
 	std::string output_str;
+	std::string type_str;
 
 	bool isLinked = false;
 
@@ -173,6 +174,9 @@ public:
 	void InputSocketInputs(ShaderGraph& graph, unsigned int numInputs, unsigned int offset = 0);
 	void InputSocketOutputs(ShaderGraph& graph, unsigned int numOutputs, unsigned int offset = 0);
 
+	InputSocket GetInputSocketbyName(const std::string& inputName);
+
+	std::string GetOutputDefinition() { return code_str; }
 public:
 	//core info
 	NODE_TYPE type;

@@ -22,6 +22,7 @@ void FloatNode::Update(ShaderGraph& graph)
 
 	inputs[0].input_str = std::to_string(inputs[0].value1);
 	outputs[0].output_str = std::string(name + "_out");
+	outputs[0].type_str = std::string("float");
 	
 	this->code_str = std::string("float " + outputs[0].output_str + "=" + inputs[0].input_str + ";\n");
 
