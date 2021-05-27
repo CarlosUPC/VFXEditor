@@ -1,5 +1,6 @@
 #include "FloatNode.h"
 #include <string>
+#include "ShaderGraph.h"
 
 FloatNode::FloatNode()
 {
@@ -22,10 +23,12 @@ void FloatNode::Update(ShaderGraph& graph)
 
 	inputs[0].input_str = std::to_string(inputs[0].value1);
 	outputs[0].output_str = std::string(name + "_out");
-	outputs[0].type_str = std::string("float");
-	
-	this->code_str = std::string("float " + outputs[0].output_str + "=" + inputs[0].input_str + ";\n");
 
+
+	outputs[0].type_str = ShaderCompiler::SetOutputType(outputs[0].type);
+	
+	this->code_str = ShaderCompiler::SetOutputVarFloat(inputs[0].input_str, outputs[0].output_str);
+	
 	/*for (unsigned int i = 0; i < inputs.size(); i++)
 	{
 		InputSocket& input = this->inputs[i];

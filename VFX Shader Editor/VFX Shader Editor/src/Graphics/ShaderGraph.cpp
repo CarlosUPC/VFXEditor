@@ -497,3 +497,24 @@ std::string ShaderCompiler::EndFragment()
 	code += EndFragmentHeader();
 	return code;
 }
+
+std::string ShaderCompiler::SetOutputType(VALUE_TYPE type)
+{
+	std::string out_type = "";
+	switch (type)
+	{
+		case VALUE_TYPE::FLOAT1:
+			out_type = "float";
+			break;
+
+		default:
+			break;
+	}
+
+	return out_type;
+}
+
+std::string ShaderCompiler::SetOutputVarFloat(const std::string& value, const std::string& name)
+{
+	return  std::string("float " + name + "=" + value + ";\n");
+}

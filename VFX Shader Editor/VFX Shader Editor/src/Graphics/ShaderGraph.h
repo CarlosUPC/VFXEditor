@@ -6,7 +6,8 @@
 
 class ShaderGraph;
 class ShaderNode;
-enum NodeType;
+enum NODE_TYPE;
+enum VALUE_TYPE;
 
 struct ShaderLink;
 
@@ -52,6 +53,9 @@ public:
 	std::string OutputFragment();
 	std::string EndFragment();
 
+	//Build-in GLSL abstraction functions
+	static std::string SetOutputType(VALUE_TYPE type);
+	static std::string SetOutputVarFloat(const std::string& value, const std::string& name);
 
 private:
 

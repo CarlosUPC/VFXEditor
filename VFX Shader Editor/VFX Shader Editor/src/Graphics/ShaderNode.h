@@ -9,6 +9,7 @@
 #include "Globals.h"
 
 class ShaderGraph;
+class ShaderCompiler;
 class ShaderNode;
 struct InputSocket;
 struct OutputSocket;

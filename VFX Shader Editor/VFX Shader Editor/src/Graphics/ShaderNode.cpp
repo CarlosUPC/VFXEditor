@@ -19,6 +19,7 @@ ShaderNode::~ShaderNode()
 
 void ShaderNode::InputNode(ShaderGraph& graph)
 {
+	
 	//Node is being used to link another one
 	if (graph.socket_state.node_selected == this)
 		return;
@@ -185,8 +186,8 @@ void ShaderNode::InspectorUpdate()
 
 float2 ShaderNode::CalcNodePosition(ShaderGraph& g, float2 pos)
 {
-	pos.x +=  g.scrolling.x;
-	pos.y +=  g.scrolling.y;
+	pos.x += g.scrolling.x;
+	pos.y += g.scrolling.y;
 	pos *= g.scale;
 
 
