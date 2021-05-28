@@ -56,6 +56,7 @@ public:
 	//Build-in GLSL abstraction functions
 	static std::string SetOutputType(VALUE_TYPE type);
 	static std::string SetOutputVarFloat(const std::string& value, const std::string& name);
+	static std::string SetOutputVarVector2(const std::string& value1, const std::string& value2, const std::string& name);
 
 private:
 

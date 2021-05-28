@@ -165,8 +165,16 @@ ShaderNode* ShaderGraph::CreateNode(const char* name, int type, float2 position)
 	case NODE_TYPE::VECTOR1:
 		node = new FloatNode(name, (NODE_TYPE)type, position);
 		break;
-	case NODE_TYPE::UNKNOWN:
+	case NODE_TYPE::VECTOR2:
+		node = new Vector2Node(name, (NODE_TYPE)type, position);
 		break;
+	case NODE_TYPE::VECTOR3:
+		//node = new FloatNode(name, (NODE_TYPE)type, position);
+		break;
+	case NODE_TYPE::VECTOR4:
+		//node = new FloatNode(name, (NODE_TYPE)type, position);
+		break;
+	
 
 	}
 
@@ -459,7 +467,7 @@ std::string ShaderCompiler::OutputFragment()
 		if (out_node)
 		{
 			//Output code variable
-			std::string out_code = out_node->outputs[inputDiffuse.link_ref->output_socket].output_str;
+			std::string out_code = out_node->outputs[inputDiffuse.link_ref->output_socket].data_str;
 
 			//Output code type 
 			std::string type_code = out_node->outputs[inputDiffuse.link_ref->output_socket].type_str;
@@ -507,6 +515,10 @@ std::string ShaderCompiler::SetOutputType(VALUE_TYPE type)
 			out_type = "float";
 			break;
 
+		case VALUE_TYPE::FLOAT2:
+			out_type = "vec2";
+			break;
+
 		default:
 			break;
 	}
@@ -517,4 +529,9 @@ std::string ShaderCompiler::SetOutputType(VALUE_TYPE type)
 std::string ShaderCompiler::SetOutputVarFloat(const std::string& value, const std::string& name)
 {
 	return  std::string("float " + name + "=" + value + ";\n");
+}
+
+std::string ShaderCompiler::SetOutputVarVector2(const std::string& value1, const std::string& value2, const std::string& name)
+{
+	return std::string("vec2 " + name + "=" + "vec2(" + value1 + "," + value2 + ");\n");
 }

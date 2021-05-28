@@ -68,6 +68,7 @@ void ShaderNode::InputNode(ShaderGraph& graph)
 	if (isItemActive && ImGui::IsMouseDragging(0) )
 	{
 		this->position = this->position + float2(ImGui::GetIO().MouseDelta.x, ImGui::GetIO().MouseDelta.y);
+		
 	}
 
 	//Remove node -----
@@ -845,22 +846,51 @@ void InputSocket::DisplayInputSocketDetails()
 	if (type == VALUE_TYPE::FLOAT1)
 	{
 		ImGui::Text("value: "); ImGui::SameLine();
-		ImGui::DragFloat(name.c_str(), &value1, 0.1f, 0.0f, 1.0f, "%.2f");
+		ImGui::DragFloat(name.c_str(), &value1, 0.1f, 0.0f, 9999999.0f, "%.2f");
 	}
 	else if (type == VALUE_TYPE::FLOAT2)
 	{
-		ImGui::Text("value: "); ImGui::SameLine();
-		ImGui::DragFloat2(name.c_str(), &value2.x, 0.1f, 0.0f, 1.0f, "%.2f");
+		ImGui::PushID("##X");
+		ImGui::Text("X: "); ImGui::SameLine();
+		ImGui::DragFloat(name.c_str(), &value2.x, 0.1f, 0.0f, 9999999.0f, "%.2f");
+		ImGui::PopID();
+
+		ImGui::PushID("##Y");
+		ImGui::Text("Y: "); ImGui::SameLine();
+		ImGui::DragFloat(name.c_str(), &value2.y, 0.1f, 0.0f, 9999999.0f, "%.2f");
+		ImGui::PopID();
+
 	}
 	else if (type == VALUE_TYPE::FLOAT3)
 	{
-		ImGui::Text("value: "); ImGui::SameLine();
-		ImGui::DragFloat3(name.c_str(), &value3.y, 0.1f, 0.0f, 1.0f, "%.2f");
+		ImGui::PushID("##X");
+		ImGui::Text("X: "); ImGui::SameLine();
+		ImGui::DragFloat(name.c_str(), &value3.x, 0.1f, 0.0f, 9999999.0f, "%.2f");
+		ImGui::PopID();
+
+		ImGui::PushID("##Y");
+		ImGui::Text("Y: "); ImGui::SameLine();
+		ImGui::DragFloat(name.c_str(), &value3.y, 0.1f, 0.0f, 9999999.0f, "%.2f");
+		ImGui::PopID();
+
+		ImGui::PushID("##Z");
+		ImGui::Text("Z: "); ImGui::SameLine();
+		ImGui::DragFloat(name.c_str(), &value3.z, 0.1f, 0.0f, 9999999.0f, "%.2f");
+		ImGui::PopID();
 	}
 	else if (type == VALUE_TYPE::FLOAT4)
 	{
-		ImGui::Text("value: "); ImGui::SameLine();
-		ImGui::DragFloat4(name.c_str(), &value4.w, 0.1f, 0.0f, 1.0f, "%.2f");
+		ImGui::Text("X: "); ImGui::SameLine();
+		ImGui::DragFloat(name.c_str(), &value3.x, 0.1f, 0.0f, 9999999.0f, "%.2f");
+
+		ImGui::Text("Y: "); ImGui::SameLine();
+		ImGui::DragFloat(name.c_str(), &value3.y, 0.1f, 0.0f, 9999999.0f, "%.2f");
+
+		ImGui::Text("Z: "); ImGui::SameLine();
+		ImGui::DragFloat(name.c_str(), &value3.z, 0.1f, 0.0f, 9999999.0f, "%.2f");
+
+		ImGui::Text("W: "); ImGui::SameLine();
+		ImGui::DragFloat(name.c_str(), &value4.w, 0.1f, 0.0f, 9999999.0f, "%.2f");
 	}
 
 }

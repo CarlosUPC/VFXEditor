@@ -17,7 +17,11 @@ struct OutputSocket;
 enum NODE_TYPE
 {
 	VECTOR1,
+	VECTOR2,
+	VECTOR3,
+	VECTOR4,
 	PBR,
+
 	UNKNOWN
 };
 
@@ -79,8 +83,8 @@ struct InputSocket
 
 	float2 position;
 	std::string name;
-	std::string input_str;
-
+	std::string value_str;
+	std::vector<std::string> values_str;
 	bool isLinked = false;
 	ShaderLink* link_ref = nullptr;
 
@@ -110,6 +114,41 @@ struct InputSocket
 		 value1 = 5.f;
 	 }
 
+	 InputSocket(const char* name, VALUE_TYPE type, float val, CONTEXT_TYPE context)
+	 {
+		 this->type = type;
+		 this->name = name;
+		 this->context_type = context;
+		 this->value1 = val;
+	 }
+
+	 InputSocket(const char* name, VALUE_TYPE type, float2 val, CONTEXT_TYPE context)
+	 {
+		 this->type = type;
+		 this->name = name;
+		 this->context_type = context;
+		 this->value2 = val;
+
+		 this->values_str.push_back("");
+		 this->values_str.push_back("");
+	 }
+
+	 InputSocket(const char* name, VALUE_TYPE type, float3 val, CONTEXT_TYPE context)
+	 {
+		 this->type = type;
+		 this->name = name;
+		 this->context_type = context;
+		 this->value3 = val;
+	 }
+
+	 InputSocket(const char* name, VALUE_TYPE type, float4 val, CONTEXT_TYPE context)
+	 {
+		 this->type = type;
+		 this->name = name;
+		 this->context_type = context;
+		 this->value4 = val;
+	 }
+
 	 void DisplayInputSocketDetails();
 
 };
@@ -120,7 +159,7 @@ struct OutputSocket
 	float2 position;
 	
 	std::string name;
-	std::string output_str;
+	std::string data_str;
 	std::string type_str;
 
 	bool isLinked = false;

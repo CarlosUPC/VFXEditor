@@ -1,11 +1,11 @@
 //////// FRAGMENT_SHADER_BEGIN ////////
 #version 330 core
 
-out vec4 FragColor;
+layout(location = 0) out vec4 DiffuseColor;
 
 // Fragment Main
 void main()
 {
-	FragColor = vec4(1.0f, 0.0f, 0.0f, 1.0f);
+	DiffuseColor = vec4(1.0f, 0.0f, 0.0f, 1.0f);
 
 }
