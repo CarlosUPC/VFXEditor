@@ -38,6 +38,7 @@ enum class CONTEXT_TYPE
 {
 	PARAMETER  = 0,
 	FUNCTION,
+	READ_ONLY,
 	
 	NONE
 };

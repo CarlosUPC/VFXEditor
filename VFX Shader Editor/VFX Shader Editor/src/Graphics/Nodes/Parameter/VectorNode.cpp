@@ -130,7 +130,7 @@ Vector3Node::Vector3Node(const char* name, NODE_TYPE type, float2 position)
 	outputs.push_back(OutputSocket(VALUE_TYPE::FLOAT3));
 	
 	//temp hardcoded
-	inputs_size = 2;
+	inputs_size = 1.5;
 	outputs_size = 1;
 }
 
@@ -181,7 +181,7 @@ Vector4Node::Vector4Node(const char* name, NODE_TYPE type, float2 position)
 	outputs.push_back(OutputSocket(VALUE_TYPE::FLOAT4));
 
 	//temp hardcoded
-	inputs_size = 2;
+	inputs_size = 1.5;
 	outputs_size = 1;
 }
 

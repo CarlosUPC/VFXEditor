@@ -38,9 +38,9 @@ protected:
 enum NODE_MENU_TYPE :unsigned char
 {
 	PARAMETER = 0,
-	TEXTURE,
-	MATH,
 	MASTER,
+	//TEXTURE,
+	//MATH,
 
 	TOTAL_SIZE
 };
@@ -85,7 +85,7 @@ private:
 	std::vector<std::string> menu_nodes;
 	bool selecting_menu_nodes[TOTAL_SIZE];
 	bool selecting_menu = false;
-
+	bool open_menu = false;
 
 	Canvas canvas;
 	ImVec2 hit_pos;

@@ -9,14 +9,17 @@ PBRNode::PBRNode()
 PBRNode::PBRNode(const char* name, NODE_TYPE type, float2 position)
 	: ShaderNode(name, type, position)
 {
-	inputs.push_back(InputSocket("diffuse", VALUE_TYPE::FLOAT2));
-	inputs.push_back(InputSocket("metallic", VALUE_TYPE::FLOAT1));
-	inputs.push_back(InputSocket("roughness", VALUE_TYPE::FLOAT1));
-	
-	outputs.push_back(OutputSocket(VALUE_TYPE::FLOAT1));
+	inputs.push_back(InputSocket("Albedo", VALUE_TYPE::FLOAT3));
+	inputs.push_back(InputSocket("Normal", VALUE_TYPE::FLOAT3, CONTEXT_TYPE::READ_ONLY));
+	inputs.push_back(InputSocket("Emission", VALUE_TYPE::FLOAT3, CONTEXT_TYPE::READ_ONLY));
+	inputs.push_back(InputSocket("Metallic", VALUE_TYPE::FLOAT1, CONTEXT_TYPE::READ_ONLY));
+	inputs.push_back(InputSocket("Specular", VALUE_TYPE::FLOAT1, CONTEXT_TYPE::READ_ONLY));
+	inputs.push_back(InputSocket("Roughness", VALUE_TYPE::FLOAT1, CONTEXT_TYPE::READ_ONLY));
+
+	//outputs.push_back(OutputSocket(VALUE_TYPE::FLOAT1));
 
 	//temp hardcoded
-	inputs_size = 3;
+	inputs_size = 6;
 	outputs_size = 1;
 }
 

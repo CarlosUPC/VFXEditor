@@ -439,7 +439,7 @@ std::string ShaderCompiler::OutputFragmentHeader()
 	code += OutputLine("#version 330 core\n");
 
 	// FragData layout
-	code += OutputLine("layout(location = 0) out vec4 DiffuseColor;");
+	code += OutputLine("layout(location = 0) out vec4 AlbedoColor;");
 
 	return code;
 }
@@ -466,7 +466,7 @@ std::string ShaderCompiler::OutputFragment()
 	
 	
 	//Update Diffuse
-	InputSocket inputDiffuse = graph.mainNode->GetInputSocketbyName("diffuse");
+	InputSocket inputDiffuse = graph.mainNode->GetInputSocketbyName("Albedo");
 	
 	//if it has a link
 	if (inputDiffuse.isLinked)
@@ -488,7 +488,7 @@ std::string ShaderCompiler::OutputFragment()
 			out_code = CheckTypeOutput(out_code, type_code, "vec4");
 
 			//Update Diffuse Color
-			code += OutputTabbedLine("DiffuseColor = " + out_code + ";\n");
+			code += OutputTabbedLine("AlbedoColor = " + out_code + ";\n");
 		}
 
 
@@ -497,7 +497,7 @@ std::string ShaderCompiler::OutputFragment()
 	{
 		//Set Default Diffuse Color
 		 std::string tmp_color = "vec4(1.0f, 0.0f, 0.0f, 1.0f)";
-		 code += OutputTabbedLine("DiffuseColor = " + tmp_color + ";\n");
+		 code += OutputTabbedLine("AlbedoColor = " + tmp_color + ";\n");
 
 	}
 	
