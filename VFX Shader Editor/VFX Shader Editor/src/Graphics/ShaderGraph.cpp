@@ -5,7 +5,7 @@
 #include <iostream>
 #include "ShaderNode.h"
 #include "Nodes/PBRNode.h"
-#include "Nodes/Parameter/FloatNode.h"
+#include "Nodes/Parameter/VectorNode.h"
 ShaderGraph::ShaderGraph(std::string m_Name)
 	:m_Name(m_Name)
 {
@@ -163,7 +163,7 @@ ShaderNode* ShaderGraph::CreateNode(const char* name, int type, float2 position)
 		node = new PBRNode(name, (NODE_TYPE)type, position);
 		break;
 	case NODE_TYPE::VECTOR1:
-		node = new FloatNode(name, (NODE_TYPE)type, position);
+		node = new Vector1Node(name, (NODE_TYPE)type, position);
 		break;
 	case NODE_TYPE::VECTOR2:
 		node = new Vector2Node(name, (NODE_TYPE)type, position);
@@ -172,7 +172,7 @@ ShaderNode* ShaderGraph::CreateNode(const char* name, int type, float2 position)
 		node = new Vector3Node(name, (NODE_TYPE)type, position);
 		break;
 	case NODE_TYPE::VECTOR4:
-		//node = new FloatNode(name, (NODE_TYPE)type, position);
+		node = new Vector4Node(name, (NODE_TYPE)type, position);
 		break;
 	
 
@@ -539,4 +539,9 @@ std::string ShaderCompiler::SetOutputVarVector2(const std::string& value1, const
 std::string ShaderCompiler::SetOutputVarVector3(const std::string& value_x, const std::string& value_y, const std::string& value_z, const std::string& name)
 {
 	return std::string("vec3 " + name + "=" + "vec3(" + value_x + "," + value_y + "," + value_z + ");\n");
+}
+
+std::string ShaderCompiler::SetOutputVarVector4(const std::string& value_x, const std::string& value_y, const std::string& value_z, const std::string& value_w, const std::string& name)
+{
+	return std::string("vec4 " + name + "=" + "vec4(" + value_x + "," + value_y + "," + value_z + value_w + "," + ");\n");
 }

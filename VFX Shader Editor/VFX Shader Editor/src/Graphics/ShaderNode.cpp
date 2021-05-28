@@ -880,17 +880,25 @@ void InputSocket::DisplayInputSocketDetails()
 	}
 	else if (type == VALUE_TYPE::FLOAT4)
 	{
+		ImGui::PushID("##X");
 		ImGui::Text("X: "); ImGui::SameLine();
 		ImGui::DragFloat(name.c_str(), &value3.x, 0.1f, 0.0f, 9999999.0f, "%.2f");
+		ImGui::PopID();
 
+		ImGui::PushID("##Y");
 		ImGui::Text("Y: "); ImGui::SameLine();
 		ImGui::DragFloat(name.c_str(), &value3.y, 0.1f, 0.0f, 9999999.0f, "%.2f");
+		ImGui::PopID();
 
+		ImGui::PushID("##Z");
 		ImGui::Text("Z: "); ImGui::SameLine();
 		ImGui::DragFloat(name.c_str(), &value3.z, 0.1f, 0.0f, 9999999.0f, "%.2f");
+		ImGui::PopID();
 
+		ImGui::PushID("##W");
 		ImGui::Text("W: "); ImGui::SameLine();
 		ImGui::DragFloat(name.c_str(), &value4.w, 0.1f, 0.0f, 9999999.0f, "%.2f");
+		ImGui::PopID();
 	}
 
 }

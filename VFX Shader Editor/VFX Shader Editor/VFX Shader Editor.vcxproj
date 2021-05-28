@@ -200,7 +200,7 @@
     <ClCompile Include="Dependencies\pcg\extras\entropy.c" />
     <ClCompile Include="src\Core\Application.cpp" />
     <ClCompile Include="src\Core\Main.cpp" />
-    <ClCompile Include="src\Graphics\Nodes\Parameter\FloatNode.cpp" />
+    <ClCompile Include="src\Graphics\Nodes\Parameter\VectorNode.cpp" />
     <ClCompile Include="src\Graphics\Nodes\PBRNode.cpp" />
     <ClCompile Include="src\Graphics\ShaderGraph.cpp" />
     <ClCompile Include="src\Graphics\ShaderNode.cpp" />
@@ -293,7 +293,7 @@
     <ClInclude Include="Dependencies\pcg\include\pcg_variants.h" />
     <ClInclude Include="src\Core\Application.h" />
     <ClInclude Include="src\Core\Globals.h" />
-    <ClInclude Include="src\Graphics\Nodes\Parameter\FloatNode.h" />
+    <ClInclude Include="src\Graphics\Nodes\Parameter\VectorNode.h" />
     <ClInclude Include="src\Graphics\Nodes\PBRNode.h" />
     <ClInclude Include="src\Graphics\ShaderGraph.h" />
     <ClInclude Include="src\Graphics\ShaderNode.h" />
