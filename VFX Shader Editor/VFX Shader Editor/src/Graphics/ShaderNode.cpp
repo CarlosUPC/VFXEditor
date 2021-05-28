@@ -66,7 +66,7 @@ void ShaderNode::InputNode(ShaderGraph& graph)
 
 	//if click outside the node
 	if (graph.node_selected != nullptr && graph.node_selected == this
-		&& graph.node_hovered != this)
+		&& graph.node_hovered != this && ImGui::IsWindowHovered())
 	{
 		if (ImGui::IsMouseClicked(0) || ImGui::IsMouseClicked(1))
 		{
@@ -484,42 +484,46 @@ void ShaderNode::InputSocketInputs(ShaderGraph& graph, unsigned int numInputs, u
 
 		float2 input_pos = input.position;
 
-		if (SocketHovering(input_pos, float2(ImGui::GetIO().MousePos.x, ImGui::GetIO().MousePos.y), 10.0f, 2.0f))
+		//Check if node is not being dragged in the moment
+		if (!ImGui::IsMouseDragging(0))
 		{
-			this->isHovered = false;
-		}
-		
-
-		//IF OUTPUT WAS NOT ACTIVATED
-		if (!graph.socket_state.output_socket_actived &&
-			ImGui::IsMouseDown(0) &&
-			SocketHovering(input_pos, float2(ImGui::GetIO().MousePos.x, ImGui::GetIO().MousePos.y), 10.0f, 2.0f))
-		{
-
-			if (ImGui::GetIO().KeyAlt)
+			if (SocketHovering(input_pos, float2(ImGui::GetIO().MousePos.x, ImGui::GetIO().MousePos.y), 10.0f, 2.0f))
 			{
-				if (input.isLinked)
-				{
-					//swap links
-					if (input.link_ref != nullptr)
-					{
-						input.link_ref->to_delete = true;
-						//input.isLinked = false;
-					}
-
-				break;
-				}
-
+				this->isHovered = false;
 			}
 
 
-			graph.socket_state.node_selected = this;
-			graph.socket_state.socked_selected = i;
-			graph.socket_state.input_socket_actived = true;
-			graph.socket_state.socket_pos = input_pos;
+			//IF OUTPUT WAS NOT ACTIVATED
+			if (!graph.socket_state.output_socket_actived &&
+				ImGui::IsMouseDown(0) &&
+				SocketHovering(input_pos, float2(ImGui::GetIO().MousePos.x, ImGui::GetIO().MousePos.y), 10.0f, 2.0f))
+			{
 
-			break;
+				if (ImGui::GetIO().KeyAlt)
+				{
+					if (input.isLinked)
+					{
+						//swap links
+						if (input.link_ref != nullptr)
+						{
+							input.link_ref->to_delete = true;
+							//input.isLinked = false;
+						}
 
+						break;
+					}
+
+				}
+
+
+				graph.socket_state.node_selected = this;
+				graph.socket_state.socked_selected = i;
+				graph.socket_state.input_socket_actived = true;
+				graph.socket_state.socket_pos = input_pos;
+
+				break;
+
+			}
 		}
 
 
@@ -583,36 +587,39 @@ void ShaderNode::InputSocketOutputs(ShaderGraph& graph, unsigned int numOutputs,
 		}
 		
 
-
-		//IF INPUT WAS NOT ACTIVATED
-		if (!graph.socket_state.input_socket_actived &&
-			ImGui::IsMouseDown(0) &&
-			SocketHovering(output_pos, float2(ImGui::GetIO().MousePos.x, ImGui::GetIO().MousePos.y), 10.0f, 2.0f))
+		//Check if node is not being dragged in the moment
+		if (!ImGui::IsMouseDragging(0))
 		{
-
-			if (ImGui::GetIO().KeyAlt)
+			//IF INPUT WAS NOT ACTIVATED
+			if (!graph.socket_state.input_socket_actived &&
+				ImGui::IsMouseDown(0) &&
+				SocketHovering(output_pos, float2(ImGui::GetIO().MousePos.x, ImGui::GetIO().MousePos.y), 10.0f, 2.0f))
 			{
-				if (output.isLinked) //TODO: el output si va apoder conectarse con muchos inputs debe tener una array de conexiones y no esto...
+
+				if (ImGui::GetIO().KeyAlt)
 				{
-					//swap links
-					if (output.link_ref != nullptr)
+					if (output.isLinked) //TODO: el output si va apoder conectarse con muchos inputs debe tener una array de conexiones y no esto...
 					{
-						output.link_ref->to_delete = true;
-						//input.isLinked = false;
+						//swap links
+						if (output.link_ref != nullptr)
+						{
+							output.link_ref->to_delete = true;
+							//input.isLinked = false;
+						}
+
+						break;
 					}
 
-					break;
 				}
 
+				graph.socket_state.node_selected = this;
+				graph.socket_state.socked_selected = i;
+				graph.socket_state.output_socket_actived = true;
+				graph.socket_state.socket_pos = output_pos;
+
+				break;
+
 			}
-
-			graph.socket_state.node_selected = this;
-			graph.socket_state.socked_selected = i;
-			graph.socket_state.output_socket_actived = true;
-			graph.socket_state.socket_pos = output_pos;
-
-			break;
-
 		}
 
 		//IF INPUT WAS ACTIVATED
