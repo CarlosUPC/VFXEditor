@@ -169,7 +169,7 @@ ShaderNode* ShaderGraph::CreateNode(const char* name, int type, float2 position)
 		node = new Vector2Node(name, (NODE_TYPE)type, position);
 		break;
 	case NODE_TYPE::VECTOR3:
-		//node = new FloatNode(name, (NODE_TYPE)type, position);
+		node = new Vector3Node(name, (NODE_TYPE)type, position);
 		break;
 	case NODE_TYPE::VECTOR4:
 		//node = new FloatNode(name, (NODE_TYPE)type, position);
@@ -534,4 +534,9 @@ std::string ShaderCompiler::SetOutputVarFloat(const std::string& value, const st
 std::string ShaderCompiler::SetOutputVarVector2(const std::string& value1, const std::string& value2, const std::string& name)
 {
 	return std::string("vec2 " + name + "=" + "vec2(" + value1 + "," + value2 + ");\n");
+}
+
+std::string ShaderCompiler::SetOutputVarVector3(const std::string& value_x, const std::string& value_y, const std::string& value_z, const std::string& name)
+{
+	return std::string("vec3 " + name + "=" + "vec3(" + value_x + "," + value_y + "," + value_z + ");\n");
 }

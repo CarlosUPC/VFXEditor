@@ -139,6 +139,10 @@ struct InputSocket
 		 this->name = name;
 		 this->context_type = context;
 		 this->value3 = val;
+
+		 this->values_str.push_back("");
+		 this->values_str.push_back("");
+		 this->values_str.push_back("");
 	 }
 
 	 InputSocket(const char* name, VALUE_TYPE type, float4 val, CONTEXT_TYPE context)
@@ -147,6 +151,11 @@ struct InputSocket
 		 this->name = name;
 		 this->context_type = context;
 		 this->value4 = val;
+
+		 this->values_str.push_back("");
+		 this->values_str.push_back("");
+		 this->values_str.push_back("");
+		 this->values_str.push_back("");
 	 }
 
 	 void DisplayInputSocketDetails();

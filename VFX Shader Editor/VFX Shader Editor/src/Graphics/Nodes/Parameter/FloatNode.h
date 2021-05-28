@@ -33,3 +33,17 @@ public:
 private:
 	
 };
+
+
+class Vector3Node : public ShaderNode
+{
+public:
+	Vector3Node();
+	Vector3Node(const char* name, NODE_TYPE type, float2 position);
+
+	void Update(ShaderGraph& graph) override;
+	void InspectorUpdate() override;
+
+private:
+
+};
