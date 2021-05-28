@@ -344,6 +344,18 @@ std::string ShaderCompiler::CheckTypeOutput(const std::string& code, const std::
 		{
 			return "vec4(vec3(" + code + ", " + code + ", " + code + "), 1.0 )";
 		}
+		else if (type.compare("vec2") == 0)
+		{
+			return "vec4(" + code + ", 0.0, 1.0)";
+		}
+		else if (type.compare("vec3") == 0)
+		{
+			return "vec4(" + code + ", 1.0)";
+		}
+		else
+		{
+			return code;
+		}
 	}
 
 }
@@ -514,9 +526,14 @@ std::string ShaderCompiler::SetOutputType(VALUE_TYPE type)
 		case VALUE_TYPE::FLOAT1:
 			out_type = "float";
 			break;
-
 		case VALUE_TYPE::FLOAT2:
 			out_type = "vec2";
+			break;
+		case VALUE_TYPE::FLOAT3:
+			out_type = "vec3";
+			break;
+		case VALUE_TYPE::FLOAT4:
+			out_type = "vec4";
 			break;
 
 		default:
@@ -543,5 +560,5 @@ std::string ShaderCompiler::SetOutputVarVector3(const std::string& value_x, cons
 
 std::string ShaderCompiler::SetOutputVarVector4(const std::string& value_x, const std::string& value_y, const std::string& value_z, const std::string& value_w, const std::string& name)
 {
-	return std::string("vec4 " + name + "=" + "vec4(" + value_x + "," + value_y + "," + value_z + value_w + "," + ");\n");
+	return std::string("vec4 " + name + "=" + "vec4(" + value_x + "," + value_y + "," + value_z + "," + value_w  + ");\n");
 }
