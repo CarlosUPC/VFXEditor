@@ -543,22 +543,22 @@ std::string ShaderCompiler::SetOutputType(VALUE_TYPE type)
 	return out_type;
 }
 
-std::string ShaderCompiler::SetOutputVarFloat(const std::string& value, const std::string& name)
-{
-	return  std::string("	float " + name + " = " + value + ";\n");
-}
-
-std::string ShaderCompiler::SetOutputVarVector2(const std::string& value1, const std::string& value2, const std::string& name)
-{
-	return std::string("	vec2 " + name + " = " + "vec2(" + value1 + "," + value2 + ");\n");
-}
-
-std::string ShaderCompiler::SetOutputVarVector3(const std::string& value_x, const std::string& value_y, const std::string& value_z, const std::string& name)
-{
-	return std::string("	vec3 " + name + " = " + "vec3(" + value_x + "," + value_y + "," + value_z + ");\n");
-}
-
-std::string ShaderCompiler::SetOutputVarVector4(const std::string& value_x, const std::string& value_y, const std::string& value_z, const std::string& value_w, const std::string& name)
-{
-	return std::string("	vec4 " + name + " = " + "vec4(" + value_x + "," + value_y + "," + value_z + "," + value_w  + ");\n");
-}
+//std::string ShaderCompiler::GLSLAbstractVarFloat(const std::string& value, const std::string& name)
+//{
+//	return  std::string("	float " + name + " = " + value + ";\n");
+//}
+//
+//std::string ShaderCompiler::SetOutputVarVector2(const std::string& value1, const std::string& value2, const std::string& name)
+//{
+//	return std::string("	vec2 " + name + " = " + "vec2(" + value1 + "," + value2 + ");\n");
+//}
+//
+//std::string ShaderCompiler::SetOutputVarVector3(const std::string& value_x, const std::string& value_y, const std::string& value_z, const std::string& name)
+//{
+//	return std::string("	vec3 " + name + " = " + "vec3(" + value_x + "," + value_y + "," + value_z + ");\n");
+//}
+//
+//std::string ShaderCompiler::SetOutputVarVector4(const std::string& value_x, const std::string& value_y, const std::string& value_z, const std::string& value_w, const std::string& name)
+//{
+//	return std::string("	vec4 " + name + " = " + "vec4(" + value_x + "," + value_y + "," + value_z + "," + value_w  + ");\n");
+//}

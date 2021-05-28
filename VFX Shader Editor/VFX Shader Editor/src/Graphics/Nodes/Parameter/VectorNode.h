@@ -11,6 +11,7 @@ public:
 
 	void Update(ShaderGraph& graph) override;
 	void InspectorUpdate() override;
+	std::string GLSLAbstactVarFloat(const std::string& value, const std::string& name);
 
 private:
 	float output;
@@ -27,6 +28,7 @@ public:
 	
 	void Update(ShaderGraph& graph) override;
 	void InspectorUpdate() override;
+	std::string GLSLAbstactVarVec2(const std::string& value_x, const std::string& value_y, const std::string& name);
 	
 
 	
@@ -43,6 +45,7 @@ public:
 
 	void Update(ShaderGraph& graph) override;
 	void InspectorUpdate() override;
+	std::string GLSLAbstactVarVec3(const std::string& value_x, const std::string& value_y, const std::string& value_z, const std::string& name);
 
 private:
 
@@ -56,6 +59,8 @@ public:
 
 	void Update(ShaderGraph& graph) override;
 	void InspectorUpdate() override;
+	
+	std::string GLSLAbstactVarVec4(const std::string& value_x, const std::string& value_y, const std::string& value_z, const std::string& value_w, const std::string& name);
 
 private:
 

@@ -28,7 +28,8 @@ void Vector1Node::Update(ShaderGraph& graph)
 
 	outputs[0].type_str = ShaderCompiler::SetOutputType(outputs[0].type);
 	
-	this->code_str = ShaderCompiler::SetOutputVarFloat(inputs[0].value_str, outputs[0].data_str);
+	this->code_str = GLSLAbstactVarFloat(inputs[0].value_str, outputs[0].data_str);
+
 	
 	/*for (unsigned int i = 0; i < inputs.size(); i++)
 	{
@@ -68,6 +69,11 @@ void Vector1Node::InspectorUpdate()
 	}
 }
 
+std::string Vector1Node::GLSLAbstactVarFloat(const std::string& value, const std::string& name)
+{
+	return  std::string("	float " + name + " = " + value + ";\n");
+}
+
 Vector2Node::Vector2Node()
 {
 }
@@ -97,7 +103,7 @@ void Vector2Node::Update(ShaderGraph& graph)
 	outputs[0].type_str = ShaderCompiler::SetOutputType(outputs[0].type);
 
 	//Abstract to GLSL code
-	this->code_str = ShaderCompiler::SetOutputVarVector2(inputs[0].values_str[0], inputs[0].values_str[1], outputs[0].data_str);
+	this->code_str = GLSLAbstactVarVec2(inputs[0].values_str[0], inputs[0].values_str[1], outputs[0].data_str);
 }
 
 void Vector2Node::InspectorUpdate()
@@ -117,6 +123,11 @@ void Vector2Node::InspectorUpdate()
 		ImGui::Text(code_str.c_str());
 
 	}
+}
+
+std::string Vector2Node::GLSLAbstactVarVec2(const std::string& value_x, const std::string& value_y, const std::string& name)
+{
+	return std::string("	vec2 " + name + " = " + "vec2(" + value_x + "," + value_y + ");\n");
 }
 
 Vector3Node::Vector3Node()
@@ -148,7 +159,7 @@ void Vector3Node::Update(ShaderGraph& graph)
 	outputs[0].type_str = ShaderCompiler::SetOutputType(outputs[0].type);
 
 	//Abstract to GLSL code
-	this->code_str = ShaderCompiler::SetOutputVarVector3(inputs[0].values_str[0], inputs[0].values_str[1], inputs[0].values_str[2], outputs[0].data_str);
+	this->code_str = GLSLAbstactVarVec3(inputs[0].values_str[0], inputs[0].values_str[1], inputs[0].values_str[2], outputs[0].data_str);
 }
 
 void Vector3Node::InspectorUpdate()
@@ -168,6 +179,11 @@ void Vector3Node::InspectorUpdate()
 		ImGui::Text(code_str.c_str());
 
 	}
+}
+
+std::string Vector3Node::GLSLAbstactVarVec3(const std::string& value_x, const std::string& value_y, const std::string& value_z, const std::string& name)
+{
+	return std::string("	vec3 " + name + " = " + "vec3(" + value_x + "," + value_y + "," + value_z + ");\n");
 }
 
 Vector4Node::Vector4Node()
@@ -200,7 +216,7 @@ void Vector4Node::Update(ShaderGraph& graph)
 	outputs[0].type_str = ShaderCompiler::SetOutputType(outputs[0].type);
 
 	//Abstract to GLSL code
-	this->code_str = ShaderCompiler::SetOutputVarVector4(inputs[0].values_str[0], inputs[0].values_str[1], inputs[0].values_str[2], inputs[0].values_str[3], outputs[0].data_str);
+	this->code_str = GLSLAbstactVarVec4(inputs[0].values_str[0], inputs[0].values_str[1], inputs[0].values_str[2], inputs[0].values_str[3], outputs[0].data_str);
 }
 
 void Vector4Node::InspectorUpdate()
@@ -221,4 +237,9 @@ void Vector4Node::InspectorUpdate()
 		ImGui::Text(code_str.c_str());
 
 	}
+}
+
+std::string Vector4Node::GLSLAbstactVarVec4(const std::string& value_x, const std::string& value_y, const std::string& value_z, const std::string& value_w, const std::string& name)
+{
+	return std::string("	vec4 " + name + " = " + "vec4(" + value_x + "," + value_y + "," + value_z + "," + value_w + ");\n");
 }

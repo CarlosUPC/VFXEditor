@@ -202,6 +202,7 @@ public:
 
 	virtual void Update(ShaderGraph& graph);
 	virtual void InspectorUpdate();
+	
 
 	float2 CalcNodePosition(ShaderGraph& graph, float2 pos = {});
 	float2 CalcNodeSize(ShaderGraph& graph, ShaderNode* node);
