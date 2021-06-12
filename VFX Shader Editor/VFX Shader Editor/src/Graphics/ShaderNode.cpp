@@ -214,6 +214,7 @@ float2 ShaderNode::CalcNodeSize(ShaderGraph& graph, ShaderNode* node)
 	float width;
 
 	if (node->type == NODE_TYPE::PBR) width = 200.0f;
+	else if (node->type == NODE_TYPE::TEXTURE) width = 180.0f;
 	else width = 55.0f * 1.5f;
 
 	return float2(width, 55.0f * node->inputs_size);
@@ -273,9 +274,9 @@ void ShaderNode::DrawTitle(ShaderGraph& g)
 
 void ShaderNode::DrawTitle(ImDrawList* draw_list, float2 pos, float2 size)
 {
-	draw_list->AddRectFilled(ImVec2(pos.x, pos.y), ImVec2(pos.x + size.x, pos.y + 35.0f /** graph.scale*/), ImColor(255, 0, 0), 15.0f, 15.0f);
-	draw_list->AddRectFilled(ImVec2(pos.x, pos.y + 10.0f /** graph.scale*/), ImVec2(pos.x + size.x, pos.y + 38.0f /** graph.scale*/), ImColor(255, 0, 0));
-	ImGui::SetCursorScreenPos(ImVec2(pos.x + 10.0f, pos.y + 15.0f));
+	draw_list->AddRectFilled(ImVec2(pos.x, pos.y), ImVec2(pos.x + size.x, pos.y + 15.0f /** graph.scale*/), ImColor(255, 0, 0), 5.0f);
+	draw_list->AddRectFilled(ImVec2(pos.x, pos.y + 10.0f /** graph.scale*/), ImVec2(pos.x + size.x, pos.y + 25.0f /** graph.scale*/), ImColor(255, 0, 0));
+	ImGui::SetCursorScreenPos(ImVec2(pos.x + 10.0f, pos.y + 5.0f));
 	//ImGui::BeginGroup();
 	ImGui::TextColored(ImVec4(255,255,255,255), "%s", name.c_str());
 }
@@ -289,16 +290,16 @@ void ShaderNode::DrawBody(ImDrawList* draw_list, float2 pos, float2 size)
 	if (this->isHovered && !this->isSelected)
 	{
 		float border = 1.5f;
-		draw_list->AddRect(ImVec2(pos.x - border, pos.y - border), ImVec2(pos.x + size.x + border, pos.y + size.y + border), ImColor(255, 150, 0),15.0f);
+		draw_list->AddRect(ImVec2(pos.x - border, pos.y - border), ImVec2(pos.x + size.x + border, pos.y + size.y + border), ImColor(255, 150, 0),5.0f);
 	}
 	else if (this->isSelected)
 	{
 		float border = 0.5f;
-		draw_list->AddRect(ImVec2(pos.x - border, pos.y - border), ImVec2(pos.x + size.x + border, pos.y + size.y + border), ImColor(255, 0, 0), 15.0f, 15.0f, 5.0f);
+		draw_list->AddRect(ImVec2(pos.x - border, pos.y - border), ImVec2(pos.x + size.x + border, pos.y + size.y + border), ImColor(255, 0, 0), 5.0f, 15.0f, 5.0f);
 	}
 
 
-	draw_list->AddRectFilled(ImVec2(pos.x, pos.y), ImVec2(pos.x + size.x, pos.y + size.y), ImColor(20, 20, 20, 180), 15.0f);
+	draw_list->AddRectFilled(ImVec2(pos.x, pos.y), ImVec2(pos.x + size.x, pos.y + size.y), ImColor(20, 20, 20, 180), 5.0f);
 	
 }
 
@@ -390,6 +391,7 @@ void ShaderNode::DrawInputConnector(ShaderGraph& graph, InputSocket& input, unsi
 		else if (input.type == VALUE_TYPE::FLOAT2) ImGui::TextColored(ImVec4(255, 255, 255, 255), "(2)");
 		else if (input.type == VALUE_TYPE::FLOAT3) ImGui::TextColored(ImVec4(255, 255, 255, 255), "(3)");
 		else if (input.type == VALUE_TYPE::FLOAT4) ImGui::TextColored(ImVec4(255, 255, 255, 255), "(4)");
+		else if (input.type == VALUE_TYPE::TEXTURE2D) ImGui::TextColored(ImVec4(255, 255, 255, 255), "(T2)");
 
 		auto draw_list = ImGui::GetCurrentWindow()->DrawList;
 		ImU32 fillColor = IM_COL32(100, 100, 105, 255);
@@ -676,6 +678,27 @@ InputSocket ShaderNode::GetInputSocketbyName(const std::string& inputName)
 
 	}
 	
+}
+
+void ShaderNode::CheckNodeConnections(ShaderNode* current_node)
+{
+
+	for (int i = 0; i < current_node->inputs.size(); i++)
+	{
+		InputSocket& input = current_node->inputs[i];
+
+		if (input.isLinked)
+		{
+			std::string outVariable = input.link_ref->output_node->outputs[input.link_ref->output_socket].data_str;
+			input.data_str = outVariable;
+		}
+		else
+		{
+			//TODO: Change input values to defaults ?
+		}
+	}
+
+
 }
 
 

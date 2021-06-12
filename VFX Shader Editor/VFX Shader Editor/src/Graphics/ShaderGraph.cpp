@@ -6,6 +6,7 @@
 #include "ShaderNode.h"
 #include "Nodes/PBRNode.h"
 #include "Nodes/Parameter/VectorNode.h"
+#include "Nodes/Parameter/TextureSamplerNode.h"
 ShaderGraph::ShaderGraph(std::string m_Name)
 	:m_Name(m_Name)
 {
@@ -173,6 +174,9 @@ ShaderNode* ShaderGraph::CreateNode(const char* name, int type, float2 position)
 		break;
 	case NODE_TYPE::VECTOR4:
 		node = new Vector4Node(name, (NODE_TYPE)type, position);
+		break;
+	case NODE_TYPE::TEXTURE:
+		node = new TextureSamplerNode(name, (NODE_TYPE)type, position);
 		break;
 	
 
@@ -379,10 +383,14 @@ std::string ShaderCompiler::OutputVertexHeader()
 
 	//Attribute layouts
 	code += OutputLine("layout (location = 0) in vec3 position;");
+	code += OutputLine("layout (location = 1) in vec2 aTexCoord;");
 	
 	//Uniforms
 	code += OutputLine("uniform mat4 u_View;");
 	code += OutputLine("uniform mat4 u_Projection;");
+
+	//Outs
+	code += OutputLine("out vec2 TexCoord;");
 
 	return code;
 }
@@ -408,6 +416,8 @@ std::string ShaderCompiler::OutputVertex()
 	//more stuff ...
 	std::string code = "";
 
+	//TexCoord
+	code += OutputTabbedLine("TexCoord = vec2(aTexCoord.x, aTexCoord.y);\n");
 	// Final position output 
 	code += OutputTabbedLine("gl_Position = u_Projection*u_View*vec4(position, 1.0);\n");
 	return code;
@@ -439,7 +449,10 @@ std::string ShaderCompiler::OutputFragmentHeader()
 	code += OutputLine("#version 330 core\n");
 
 	// FragData layout
-	code += OutputLine("layout(location = 0) out vec4 AlbedoColor;");
+	code += OutputLine("layout(location = 0) out vec4 AlbedoColor;\n");
+
+	//Frag Ins
+	code += OutputLine("in vec2 TexCoord;\n");
 
 	return code;
 }

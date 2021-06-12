@@ -14,12 +14,13 @@ class ShaderNode;
 struct InputSocket;
 struct OutputSocket;
 
-enum NODE_TYPE
+enum  NODE_TYPE
 {
 	VECTOR1,
 	VECTOR2,
 	VECTOR3,
 	VECTOR4,
+	TEXTURE,
 	PBR,
 
 	UNKNOWN
@@ -31,6 +32,7 @@ enum VALUE_TYPE
 	FLOAT2,
 	FLOAT3,
 	FLOAT4,
+	TEXTURE2D,
 	NONE
 };
 
@@ -85,6 +87,7 @@ struct InputSocket
 	float2 position;
 	std::string name;
 	std::string value_str;
+	std::string data_str;
 	std::vector<std::string> values_str;
 	bool isLinked = false;
 	ShaderLink* link_ref = nullptr;
@@ -228,6 +231,8 @@ public:
 	InputSocket GetInputSocketbyName(const std::string& inputName);
 
 	std::string GetOutputDefinition() { return code_str; }
+
+	void CheckNodeConnections(ShaderNode* current_node);
 public:
 	//core info
 	NODE_TYPE type;
@@ -255,4 +260,6 @@ public:
 protected:
 	std::string code_str;
 
+	std::string GLSL_Definition;
+	std::string GLSL_Declaration;
 };

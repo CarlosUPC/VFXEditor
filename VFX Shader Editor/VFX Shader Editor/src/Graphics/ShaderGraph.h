@@ -6,7 +6,7 @@
 
 class ShaderGraph;
 class ShaderNode;
-enum NODE_TYPE;
+enum  NODE_TYPE;
 enum VALUE_TYPE;
 
 struct ShaderLink;

@@ -35,12 +35,13 @@ protected:
 
 };
 
-enum NODE_MENU_TYPE :unsigned char
+
+enum class NODE_MENU_TYPE
 {
 	PARAMETER = 0,
+	TEXTURE,
 	MASTER,
-	//TEXTURE,
-	//MATH,
+
 
 	TOTAL_SIZE
 };
@@ -49,6 +50,7 @@ class PanelShaderEditor : public Panel
 {
 	//friend class Canvas;
 public:
+	
 
 	PanelShaderEditor(const char* name);
 	~PanelShaderEditor();
@@ -83,7 +85,7 @@ private:
 	bool selecting_shader = false;
 
 	std::vector<std::string> menu_nodes;
-	bool selecting_menu_nodes[TOTAL_SIZE];
+	bool selecting_menu_nodes[(int)NODE_MENU_TYPE::TOTAL_SIZE];
 	bool selecting_menu = false;
 	bool open_menu = false;
 
