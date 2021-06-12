@@ -1,4 +1,5 @@
 #include "TextureSamplerNode.h"
+#include "ShaderUniform.h"
 
 TextureSamplerNode::TextureSamplerNode()
 {
@@ -11,9 +12,19 @@ TextureSamplerNode::TextureSamplerNode(const char* name, NODE_TYPE type, float2 
 	inputs.push_back(InputSocket("UV", VALUE_TYPE::FLOAT2));
 	outputs.push_back(OutputSocket(VALUE_TYPE::FLOAT4));
 
+
+	std::string uName = std::string(name) + std::to_string(UID);
+	/*UniformTexture* uniform = new UniformTexture(uName, 0, 0);
+	if (uniform)
+	{
+		
+	}*/
+
 	//temp hardcoded
 	inputs_size = 3;
 	outputs_size = 1;
+
+	isUniform = true;
 }
 
 void TextureSamplerNode::Update(ShaderGraph& graph)

@@ -205,6 +205,7 @@
     <ClCompile Include="src\Graphics\Nodes\PBRNode.cpp" />
     <ClCompile Include="src\Graphics\ShaderGraph.cpp" />
     <ClCompile Include="src\Graphics\ShaderNode.cpp" />
+    <ClCompile Include="src\Graphics\ShaderUniform.cpp" />
     <ClCompile Include="src\Modules\ModuleCamera.cpp" />
     <ClCompile Include="src\Modules\ModuleGUI.cpp" />
     <ClCompile Include="src\Modules\ModuleInput.cpp" />
@@ -299,6 +300,7 @@
     <ClInclude Include="src\Graphics\Nodes\PBRNode.h" />
     <ClInclude Include="src\Graphics\ShaderGraph.h" />
     <ClInclude Include="src\Graphics\ShaderNode.h" />
+    <ClInclude Include="src\Graphics\ShaderUniform.h" />
     <ClInclude Include="src\Modules\Module.h" />
     <ClInclude Include="src\Modules\ModuleCamera.h" />
     <ClInclude Include="src\Modules\ModuleGUI.h" />

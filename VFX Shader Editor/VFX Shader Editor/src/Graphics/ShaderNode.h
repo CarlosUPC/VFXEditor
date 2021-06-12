@@ -257,6 +257,9 @@ public:
 	float inputs_size = 0;
 	float outputs_size = 0;
 
+	bool isUniform = false;
+	u32 uniformLocation = 0;
+
 protected:
 	std::string code_str;
 

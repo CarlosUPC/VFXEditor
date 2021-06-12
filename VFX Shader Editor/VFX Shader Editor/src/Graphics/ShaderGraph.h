@@ -3,6 +3,7 @@
 #include "Globals.h"
 #include "ResourceShader.h"
 #include <list>
+#include <unordered_map>
 
 class ShaderGraph;
 class ShaderNode;
@@ -10,6 +11,7 @@ enum  NODE_TYPE;
 enum VALUE_TYPE;
 
 struct ShaderLink;
+class ShaderUniform;
 
 enum class ShaderType
 {
@@ -125,4 +127,7 @@ public:
 	TempSocketData socket_state;
 
 	ShaderNode* mainNode = nullptr;
+
+	std::unordered_map<std::string, ShaderUniform*> uniforms;
+	u32 textureSamplerLocation = 0;
 };

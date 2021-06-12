@@ -201,6 +201,9 @@
     <ClCompile Include="src\Graphics\Nodes\Parameter\TextureSamplerNode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Graphics\ShaderUniform.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Dependencies\ImGui\imconfig.h">
@@ -480,6 +483,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Graphics\Nodes\Parameter\TextureSamplerNode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Graphics\ShaderUniform.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

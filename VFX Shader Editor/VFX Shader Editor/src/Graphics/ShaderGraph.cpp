@@ -7,6 +7,8 @@
 #include "Nodes/PBRNode.h"
 #include "Nodes/Parameter/VectorNode.h"
 #include "Nodes/Parameter/TextureSamplerNode.h"
+
+#include "ShaderUniform.h"
 ShaderGraph::ShaderGraph(std::string m_Name)
 	:m_Name(m_Name)
 {
@@ -179,6 +181,27 @@ ShaderNode* ShaderGraph::CreateNode(const char* name, int type, float2 position)
 		node = new TextureSamplerNode(name, (NODE_TYPE)type, position);
 		break;
 	
+
+	}
+
+	if (node->isUniform)
+	{
+
+		switch (type)
+		{
+		case NODE_TYPE::TEXTURE:
+			
+			std::string uName = std::string(node->name) + std::to_string(node->UID);
+			node->uniformLocation = this->textureSamplerLocation++;
+			UniformTexture* uniform = new UniformTexture(uName, 0, node->uniformLocation);
+			if (uniform)
+			{
+				this->uniforms[uniform->GetName()] = uniform;
+			}
+
+			break;
+		}
+
 
 	}
 
