@@ -9,11 +9,16 @@
 #include "Nodes/Parameter/TextureSamplerNode.h"
 
 #include "ShaderUniform.h"
+#include "Texture.h"
+#include "Application.h"
 ShaderGraph::ShaderGraph(std::string m_Name)
 	:m_Name(m_Name)
 {
 	mainNode = CreateNode("PBR", NODE_TYPE::PBR, float2(1500.f, 350.f));
 	nodes.push_back(mainNode);
+
+	//Load default assets
+	defaultTexIdx = LoadTexture2D(App, "Textures/color_white.png");
 
 }
 
@@ -193,7 +198,7 @@ ShaderNode* ShaderGraph::CreateNode(const char* name, int type, float2 position)
 			
 			std::string uName = std::string(node->name) + std::to_string(node->UID);
 			node->uniformLocation = this->textureSamplerLocation++;
-			UniformTexture* uniform = new UniformTexture(uName, 0, node->uniformLocation);
+			UniformTexture* uniform = new UniformTexture(uName, App->textures[defaultTexIdx].handle, node->uniformLocation);
 			if (uniform)
 			{
 				this->uniforms[uniform->GetName()] = uniform;

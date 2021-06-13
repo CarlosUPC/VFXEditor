@@ -129,5 +129,8 @@ public:
 	ShaderNode* mainNode = nullptr;
 
 	std::unordered_map<std::string, ShaderUniform*> uniforms;
+	std::unordered_map<std::string, u32> locations;
 	u32 textureSamplerLocation = 0;
+
+	u32 defaultTexIdx;
 };

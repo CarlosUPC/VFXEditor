@@ -13,6 +13,8 @@ class ModuleGUI;
 class ModuleCamera;
 class ModuleResources;
 
+#include "Texture.h"
+
 class Application
 {
 //METHODS
@@ -36,6 +38,9 @@ public:
 	ModuleGUI*				gui = nullptr;
 	ModuleCamera*			camera = nullptr;
 	ModuleResources*		resources = nullptr;
+
+	//temp
+	std::vector<Texture>  textures;
 private:
 	std::list<Module*> modules;
 	Timer timer;

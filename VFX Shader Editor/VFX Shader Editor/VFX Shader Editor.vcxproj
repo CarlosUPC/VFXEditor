@@ -93,7 +93,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)VFX Shader Editor\src\Graphics;$(SolutionDir)VFX Shader Editor\src\Resources;$(SolutionDir)VFX Shader Editor\src\Utilities;$(SolutionDir)VFX Shader Editor\src\Tools;$(SolutionDir)VFX Shader Editor\src\Panels;$(SolutionDir)VFX Shader Editor\src\Modules;$(SolutionDir)VFX Shader Editor\src\Core;$(SolutionDir)VFX Shader Editor\Dependencies\MathGeoLib\include;$(SolutionDir)VFX Shader Editor\Dependencies\GLEW\include;$(SolutionDir)VFX Shader Editor\Dependencies</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)VFX Shader Editor\Dependencies\stb;$(SolutionDir)VFX Shader Editor\src\Graphics;$(SolutionDir)VFX Shader Editor\src\Resources;$(SolutionDir)VFX Shader Editor\src\Utilities;$(SolutionDir)VFX Shader Editor\src\Tools;$(SolutionDir)VFX Shader Editor\src\Panels;$(SolutionDir)VFX Shader Editor\src\Modules;$(SolutionDir)VFX Shader Editor\src\Core;$(SolutionDir)VFX Shader Editor\Dependencies\MathGeoLib\include;$(SolutionDir)VFX Shader Editor\Dependencies\GLEW\include;$(SolutionDir)VFX Shader Editor\Dependencies</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>GLEW_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <LanguageStandard>Default</LanguageStandard>
@@ -110,7 +110,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)VFX Shader Editor\Dependencies\GLEW\include;$(SolutionDir)VFX Shader Editor\Dependencies;$(SolutionDir)VFX Shader Editor\Dependencies\MathGeoLib\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)VFX Shader Editor\Dependencies\stb;$(SolutionDir)VFX Shader Editor\Dependencies\GLEW\include;$(SolutionDir)VFX Shader Editor\Dependencies;$(SolutionDir)VFX Shader Editor\Dependencies\MathGeoLib\include</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>GLEW_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
@@ -127,7 +127,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)VFX Shader Editor\src\Resources;$(SolutionDir)VFX Shader Editor\src\Graphics;$(SolutionDir)VFX Shader Editor\src\Utilities;$(SolutionDir)VFX Shader Editor\src\Tools;$(SolutionDir)VFX Shader Editor\src\Panels;$(SolutionDir)VFX Shader Editor\src\Modules;$(SolutionDir)VFX Shader Editor\src\Core;$(SolutionDir)VFX Shader Editor\Dependencies\MathGeoLib\include;$(SolutionDir)VFX Shader Editor\Dependencies\GLEW\include;$(SolutionDir)VFX Shader Editor\Dependencies</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)VFX Shader Editor\Dependencies\stb;$(SolutionDir)VFX Shader Editor\src\Resources;$(SolutionDir)VFX Shader Editor\src\Graphics;$(SolutionDir)VFX Shader Editor\src\Utilities;$(SolutionDir)VFX Shader Editor\src\Tools;$(SolutionDir)VFX Shader Editor\src\Panels;$(SolutionDir)VFX Shader Editor\src\Modules;$(SolutionDir)VFX Shader Editor\src\Core;$(SolutionDir)VFX Shader Editor\Dependencies\MathGeoLib\include;$(SolutionDir)VFX Shader Editor\Dependencies\GLEW\include;$(SolutionDir)VFX Shader Editor\Dependencies</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>GLEW_STATIC;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
@@ -148,7 +148,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <PreprocessorDefinitions>GLEW_STATIC_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)VFX Shader Editor\Dependencies\GLEW\include;$(SolutionDir)VFX Shader Editor\Dependencies;$(SolutionDir)VFX Shader Editor\Dependencies\MathGeoLib\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)VFX Shader Editor\Dependencies\stb;$(SolutionDir)VFX Shader Editor\Dependencies\GLEW\include;$(SolutionDir)VFX Shader Editor\Dependencies;$(SolutionDir)VFX Shader Editor\Dependencies\MathGeoLib\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -222,6 +222,7 @@
     <ClCompile Include="src\Utilities\Color.cpp" />
     <ClCompile Include="src\Utilities\log.cpp" />
     <ClCompile Include="src\Utilities\Primitive.cpp" />
+    <ClCompile Include="src\Utilities\Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Dependencies\ImGui\imconfig.h" />
@@ -318,6 +319,7 @@
     <ClInclude Include="src\Tools\Timer.h" />
     <ClInclude Include="src\Utilities\Color.h" />
     <ClInclude Include="src\Utilities\Primitive.h" />
+    <ClInclude Include="src\Utilities\Texture.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

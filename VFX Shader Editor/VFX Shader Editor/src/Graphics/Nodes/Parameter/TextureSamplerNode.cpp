@@ -8,20 +8,13 @@ TextureSamplerNode::TextureSamplerNode()
 TextureSamplerNode::TextureSamplerNode(const char* name, NODE_TYPE type, float2 position)
 	: ShaderNode(name, type, position)
 {
-	inputs.push_back(InputSocket("Texture", VALUE_TYPE::TEXTURE2D));
 	inputs.push_back(InputSocket("UV", VALUE_TYPE::FLOAT2));
+	inputs.push_back(InputSocket("Texture", VALUE_TYPE::TEXTURE2D));
 	outputs.push_back(OutputSocket(VALUE_TYPE::FLOAT4));
 
 
-	std::string uName = std::string(name) + std::to_string(UID);
-	/*UniformTexture* uniform = new UniformTexture(uName, 0, 0);
-	if (uniform)
-	{
-		
-	}*/
-
 	//temp hardcoded
-	inputs_size = 3;
+	inputs_size = 5;
 	outputs_size = 1;
 
 	isUniform = true;
@@ -38,19 +31,23 @@ void TextureSamplerNode::Update(ShaderGraph& graph)
 
 
 	//In Default Variable
-	inputs[0].data_str = std::string(name) + std::to_string(UID);
-	inputs[1].data_str = "TexCoord";
+	inputs[0].data_str = "TexCoord";
+	inputs[1].data_str = std::string(name) + std::to_string(UID);
 
 	//Check For Ins Variables
 	CheckNodeConnections(this);
 
 	//Variable definition (need inputs)
-	this->GLSL_Definition = SetGLSLDefinition(outputs[0].data_str, inputs[0].data_str, inputs[1].data_str);
+	this->GLSL_Definition = SetGLSLDefinition(outputs[0].data_str, inputs[1].data_str, inputs[0].data_str);
 
 }
 
 void TextureSamplerNode::InspectorUpdate()
 {
+
+
+
+
 }
 
 std::string TextureSamplerNode::SetGLSLDeclaration(const std::string& out_name)

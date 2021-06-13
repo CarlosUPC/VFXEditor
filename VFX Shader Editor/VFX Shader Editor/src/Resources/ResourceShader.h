@@ -24,6 +24,8 @@ public:
 	//Uniforms
 	void SetUniformMat4f(const char* name, float* value) const;
 
+	void BindTexture(const char* name, const u32& texID, const u32 index);
+
 private:
 
 

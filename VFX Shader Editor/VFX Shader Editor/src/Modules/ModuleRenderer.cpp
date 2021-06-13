@@ -4,6 +4,8 @@
 #include "ModuleGUI.h"
 #include "ModuleCamera.h"
 #include "ResourceShader.h"
+#include "ShaderGraph.h"
+#include "ShaderUniform.h"
 
 //TMP
 #include "Primitive.h"
@@ -162,6 +164,11 @@ update_state ModuleRenderer::PostUpdate(float dt)
 		////Send data to shader
 		current_shader->SetUniformMat4f("u_Projection", App->camera->getProjectionMatrix());
 		current_shader->SetUniformMat4f("u_View", App->camera->getViewMatrix());
+
+		/*for (auto it = current_shader->graph->uniforms.begin(); it != current_shader->graph->uniforms.end(); ++it)
+		{
+			it->second->Bind(current_shader);
+		}*/
 	}
 
 	//Draw data

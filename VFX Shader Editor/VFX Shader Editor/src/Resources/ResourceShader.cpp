@@ -110,6 +110,21 @@ void ResourceShader::SetUniformMat4f(const char* name, float* value) const
 	glUniformMatrix4fv(location, 1, GL_FALSE, value);
 }
 
+void ResourceShader::BindTexture(const char* name, const u32& texID, const u32 index)
+{
+	glEnable(GL_TEXTURE_2D);
+	glActiveTexture(GL_TEXTURE0 + index);
+
+	auto location = graph->locations.find(name);
+	if (location != graph->locations.end())
+	{
+		glUniform1i(location->second, index);
+	}
+
+	glBindTexture(GL_TEXTURE_2D, texID);
+
+}
+
 
 uint ResourceShader::CompileShader(const char* shaderSource, GLenum shaderType)
 {
@@ -155,6 +170,34 @@ uint ResourceShader::CreateShader(const char* vertexSource, const char* fragment
 		glGetProgramInfoLog(program, 512, NULL, infoLog);
 		LOG("Error linking program: %s", infoLog);
 	}
+
+	//Check for new uniforms
+	s32 UniformCount = -1;
+	glGetProgramiv(program, GL_ACTIVE_UNIFORMS, &UniformCount);
+	for (s32 i = 0; i < UniformCount; ++i)
+	{
+		s32 NameLength = -1;
+		s32 Number = -1;
+		GLenum Type = GL_ZERO;
+		char Name[256];
+
+		glGetActiveUniform(program,
+			static_cast<GLuint>(i),
+			sizeof(Name) - 1,
+			&NameLength,
+			&Number,
+			&Type,
+			Name);
+		Name[NameLength] = 0;
+
+		GLuint Location = glGetUniformLocation(program, Name);
+
+		// Cache location of uniform
+		graph->locations[Name] = (u32)Location;
+	}
+
+	glDetachShader(program, vertexShader);
+	glDetachShader(program, fragmentShader);
 
 	//Delete shaders (already linked into program)
 	glDeleteShader(vertexShader);

@@ -1,6 +1,7 @@
 #include "ShaderNode.h"
 #include "ShaderGraph.h"
 #include "Random.h"
+#include "ShaderUniform.h"
 ShaderNode::ShaderNode()
 {
 }
@@ -312,6 +313,22 @@ void ShaderNode::DrawInputs(ShaderGraph& graph, unsigned int numInputs, unsigned
 		if(input.context_type != CONTEXT_TYPE::PARAMETER)
 			DrawInputConnector(graph, input, i);
 
+
+		if (input.type == VALUE_TYPE::TEXTURE2D)
+		{
+			auto uniform = graph.uniforms.find(name + std::to_string(UID));
+			if (uniform != graph.uniforms.end())
+			{
+				ImGui::SetCursorScreenPos(ImVec2(input.position.x - 10, input.position.y + 30));
+				ImGui::Image((ImTextureID)uniform->second->GetTextureID(), ImVec2(140, 130));
+			}
+
+			//float num = 2.0f;
+			//ImGui::InputFloat(input.name.c_str(), &num);
+			//ImGui::SetNextItemWidth(400 * graph.scale);
+			//ImGui::SameLine(50.0f);
+			//ImGui::Text(input.name.c_str());
+		}
 
 		//ImGui::PushID(this->UID);
 		
