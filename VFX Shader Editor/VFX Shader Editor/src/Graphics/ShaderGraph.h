@@ -133,4 +133,7 @@ public:
 	u32 textureSamplerLocation = 0;
 
 	u32 defaultTexIdx;
+
+	u32 currentTexIdx;
+	std::vector<std::string> texIndices;
 };

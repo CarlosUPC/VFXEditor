@@ -26,7 +26,7 @@ void PanelInspector::Draw()
 		if (graph->node_selected != nullptr)
 		{
 			ImGui::Text(graph->node_selected->name.c_str());
-			graph->node_selected->InspectorUpdate();
+			graph->node_selected->InspectorUpdate(*graph);
 		}
 	}
 

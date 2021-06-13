@@ -204,7 +204,7 @@ public:
 	~ShaderNode();
 
 	virtual void Update(ShaderGraph& graph);
-	virtual void InspectorUpdate();
+	virtual void InspectorUpdate(ShaderGraph& graph);
 	
 
 	float2 CalcNodePosition(ShaderGraph& graph, float2 pos = {});

@@ -49,7 +49,7 @@ void Vector1Node::Update(ShaderGraph& graph)
 
 
 
-void Vector1Node::InspectorUpdate()
+void Vector1Node::InspectorUpdate(ShaderGraph& graph)
 {
 	
 	if (ImGui::CollapsingHeader("Node Configuration", ImGuiTreeNodeFlags_DefaultOpen))
@@ -106,7 +106,7 @@ void Vector2Node::Update(ShaderGraph& graph)
 	this->code_str = GLSLAbstactVarVec2(inputs[0].values_str[0], inputs[0].values_str[1], outputs[0].data_str);
 }
 
-void Vector2Node::InspectorUpdate()
+void Vector2Node::InspectorUpdate(ShaderGraph& graph)
 {
 	if (ImGui::CollapsingHeader("Node Configuration", ImGuiTreeNodeFlags_DefaultOpen))
 	{
@@ -162,7 +162,7 @@ void Vector3Node::Update(ShaderGraph& graph)
 	this->code_str = GLSLAbstactVarVec3(inputs[0].values_str[0], inputs[0].values_str[1], inputs[0].values_str[2], outputs[0].data_str);
 }
 
-void Vector3Node::InspectorUpdate()
+void Vector3Node::InspectorUpdate(ShaderGraph& graph)
 {
 	if (ImGui::CollapsingHeader("Node Configuration", ImGuiTreeNodeFlags_DefaultOpen))
 	{
@@ -219,7 +219,7 @@ void Vector4Node::Update(ShaderGraph& graph)
 	this->code_str = GLSLAbstactVarVec4(inputs[0].values_str[0], inputs[0].values_str[1], inputs[0].values_str[2], inputs[0].values_str[3], outputs[0].data_str);
 }
 
-void Vector4Node::InspectorUpdate()
+void Vector4Node::InspectorUpdate(ShaderGraph& graph)
 {
 
 	if (ImGui::CollapsingHeader("Node Configuration", ImGuiTreeNodeFlags_DefaultOpen))

@@ -10,7 +10,7 @@ public:
 	TextureSamplerNode(const char* name, NODE_TYPE type, float2 position);
 
 	void Update(ShaderGraph& graph) override;
-	void InspectorUpdate() override;
+	void InspectorUpdate(ShaderGraph& graph) override;
 	//std::string GLSLAbstactVarFloat(const std::string& value, const std::string& name);
 
 	std::string SetGLSLDeclaration(const std::string& out_name);

@@ -192,7 +192,7 @@ void ShaderNode::Update(ShaderGraph& graph)
 {
 }
 
-void ShaderNode::InspectorUpdate()
+void ShaderNode::InspectorUpdate(ShaderGraph& graph)
 {
 }
 
@@ -320,7 +320,7 @@ void ShaderNode::DrawInputs(ShaderGraph& graph, unsigned int numInputs, unsigned
 			if (uniform != graph.uniforms.end())
 			{
 				ImGui::SetCursorScreenPos(ImVec2(input.position.x - 10, input.position.y + 30));
-				ImGui::Image((ImTextureID)uniform->second->GetTextureID(), ImVec2(140, 130));
+				ImGui::Image((ImTextureID)static_cast<UniformTexture*>(uniform->second)->GetTextureID(), ImVec2(140, 130));
 			}
 
 			//float num = 2.0f;

@@ -19,6 +19,10 @@ ShaderGraph::ShaderGraph(std::string m_Name)
 
 	//Load default assets
 	defaultTexIdx = LoadTexture2D(App, "Textures/color_white.png");
+	LoadTexture2D(App, "Textures/bricks2.jpg");
+
+	texIndices.push_back("     default");
+	texIndices.push_back("     texture_1");
 
 }
 
