@@ -2,6 +2,7 @@
 #include "ShaderGraph.h"
 #include "Random.h"
 #include "ShaderUniform.h"
+
 ShaderNode::ShaderNode()
 {
 }
@@ -695,6 +696,34 @@ InputSocket ShaderNode::GetInputSocketbyName(const std::string& inputName)
 
 	}
 	
+}
+
+std::string ShaderNode::GetOutputDeclaration(ShaderCompiler& compiler)
+{
+	std::string finalOutput = "";
+
+	
+	if (IsDeclared())
+		return finalOutput;
+
+	for (int i=0; i < inputs.size(); i++)
+	{
+		InputSocket& input = inputs[i];
+
+		if (input.isLinked && input.context_type != CONTEXT_TYPE::PARAMETER)
+		{
+			if(!input.link_ref->output_node->IsDeclared())
+				input.link_ref->output_node->GetOutputDeclaration(compiler);
+
+		}
+
+	}
+
+	std::string variableDeclaration = compiler.OutputLine(this->GLSL_Declaration);
+
+	SetDeclared(true);
+
+	return (finalOutput + variableDeclaration);
 }
 
 void ShaderNode::CheckNodeConnections(ShaderNode* current_node)

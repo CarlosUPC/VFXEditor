@@ -231,6 +231,10 @@ public:
 	InputSocket GetInputSocketbyName(const std::string& inputName);
 
 	std::string GetOutputDefinition() { return code_str; }
+	std::string GetOutputDeclaration(ShaderCompiler& compiler);
+
+	bool IsDeclared() const { return isVariableDeclared; }
+	void SetDeclared(bool declared) { isVariableDeclared = declared; }
 
 	void CheckNodeConnections(ShaderNode* current_node);
 public:
@@ -259,6 +263,8 @@ public:
 
 	bool isUniform = false;
 	u32 uniformLocation = 0;
+
+	bool isVariableDeclared = false;
 
 protected:
 	std::string code_str;

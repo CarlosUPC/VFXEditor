@@ -21,8 +21,8 @@ ShaderGraph::ShaderGraph(std::string m_Name)
 	defaultTexIdx = LoadTexture2D(App, "Textures/color_white.png");
 	LoadTexture2D(App, "Textures/bricks2.jpg");
 
-	texIndices.push_back("     default");
-	texIndices.push_back("     texture_1");
+	texIndices.push_back("default");
+	texIndices.push_back("texture_1");
 
 }
 
@@ -485,6 +485,18 @@ std::string ShaderCompiler::OutputFragmentHeader()
 
 	//Frag Ins
 	code += OutputLine("in vec2 TexCoord;\n");
+
+
+	//Declarations
+	InputSocket inputDiffuse = graph.mainNode->GetInputSocketbyName("Albedo");
+	if (inputDiffuse.isLinked)
+	{
+		ShaderNode* out_node = inputDiffuse.link_ref->output_node;
+
+		std::string varDefinition = out_node->GetOutputDeclaration(*this);
+		code += varDefinition;
+	}
+
 
 	return code;
 }

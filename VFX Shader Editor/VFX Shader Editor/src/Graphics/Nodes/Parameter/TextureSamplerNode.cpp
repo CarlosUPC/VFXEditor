@@ -46,17 +46,9 @@ void TextureSamplerNode::Update(ShaderGraph& graph)
 
 void TextureSamplerNode::InspectorUpdate(ShaderGraph& graph)
 {
-	/*static int item_current = 0;
-	const char* items[] = { "default", "texture_1", "texture_2", "texture_3", "Depth texture_4", "texture_5", "texture_6" };
-
-	const char* textures = graph.texIndices[0].c_str();
-	if (ImGui::Combo("Textures", &item_current, textures, IM_ARRAYSIZE(textures)))
-	{
-		graph.currentTexIdx = item_current;
-	}*/
-
-	//const char* items[] = { "AAAA", "BBBB", "CCCC", "DDDD", "EEEE", "FFFF", "GGGG", "HHHH", "IIII", "JJJJ", "KKKK", "LLLLLLL", "MMMM", "OOOOOOO", "PPPP", "QQQQQQQQQQ", "RRR", "SSSS" };
-	static const char* current_item = graph.texIndices[0].c_str();;
+	
+	std::string item_name = std::string("     ") + graph.texIndices[0];
+	static const char* current_item = item_name.c_str();
 
 	ImGuiStyle& style = ImGui::GetStyle();
 	style.FrameRounding = 2.0f;
@@ -71,7 +63,9 @@ void TextureSamplerNode::InspectorUpdate(ShaderGraph& graph)
 			bool is_selected = (current_item == graph.texIndices[idx].c_str());
 			auto drawList = ImGui::GetWindowDrawList();
 
-			if (ImGui::Selectable(graph.texIndices[idx].c_str(), is_selected)) {
+			std::string item_name = std::string("     ") + graph.texIndices[idx];
+
+			if (ImGui::Selectable(item_name.c_str(), is_selected)) {
 				
 				selected_idx = idx;
 				current_item = graph.texIndices[idx].c_str();
@@ -106,8 +100,6 @@ void TextureSamplerNode::InspectorUpdate(ShaderGraph& graph)
 		auto drawList = ImGui::GetWindowDrawList();
 		drawList->AddImage((ImTextureID)App->textures[selected_idx].handle, rect_min, rect_max, ImVec2(0, 0), ImVec2(1, 1), IM_COL32(255, 255, 255, 255));
 
-
-
 	}
 
 
@@ -115,7 +107,7 @@ void TextureSamplerNode::InspectorUpdate(ShaderGraph& graph)
 
 std::string TextureSamplerNode::SetGLSLDeclaration(const std::string& out_name)
 {
-	return "	uniform sampler2D " + out_name + ";\n";
+	return "uniform sampler2D " + out_name + ";\n";
 }
 
 std::string TextureSamplerNode::SetGLSLDefinition(const std::string& out_name, const std::string& param1, const std::string& param2)
