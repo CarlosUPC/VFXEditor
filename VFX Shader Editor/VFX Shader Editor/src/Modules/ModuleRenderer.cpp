@@ -180,7 +180,7 @@ update_state ModuleRenderer::PostUpdate(float dt)
 	if (current_shader != nullptr)
 		current_shader->Unbind();
 
-	
+	glBindTexture(GL_TEXTURE_2D, 0);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	
 

@@ -186,8 +186,11 @@ ShaderNode* ShaderGraph::CreateNode(const char* name, int type, float2 position)
 	case NODE_TYPE::VECTOR4:
 		node = new Vector4Node(name, (NODE_TYPE)type, position);
 		break;
-	case NODE_TYPE::TEXTURE:
+	case NODE_TYPE::TEXTURE_SAMPLER:
 		node = new TextureSamplerNode(name, (NODE_TYPE)type, position);
+		break;
+	case NODE_TYPE::TEXTURE:
+		node = new TextureNode(name, (NODE_TYPE)type, position);
 		break;
 	
 
@@ -198,17 +201,19 @@ ShaderNode* ShaderGraph::CreateNode(const char* name, int type, float2 position)
 
 		switch (type)
 		{
-		case NODE_TYPE::TEXTURE:
-			
-			std::string uName = std::string(node->name) + std::to_string(node->UID);
-			node->uniformLocation = this->textureSamplerLocation++;
-			UniformTexture* uniform = new UniformTexture(uName, App->textures[defaultTexIdx].handle, node->uniformLocation);
-			if (uniform)
+			case NODE_TYPE::TEXTURE_SAMPLER:
 			{
-				this->uniforms[uniform->GetName()] = uniform;
-			}
+				std::string uName = std::string(node->name) + std::to_string(node->UID);
+				node->uniformLocation = this->textureSamplerLocation++;
+				UniformTexture* uniform = new UniformTexture(uName, App->textures[defaultTexIdx].handle, node->uniformLocation);
+				if (uniform)
+				{
+					this->uniforms[uniform->GetName()] = uniform;
+				}
 
-			break;
+				break;
+			}
+		
 		}
 
 
@@ -591,6 +596,9 @@ std::string ShaderCompiler::SetOutputType(VALUE_TYPE type)
 			break;
 		case VALUE_TYPE::FLOAT4:
 			out_type = "vec4";
+			break;
+		case VALUE_TYPE::TEXTURE2D:
+			out_type = "sampler2D";
 			break;
 
 		default:

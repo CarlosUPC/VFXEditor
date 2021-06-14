@@ -2,6 +2,7 @@
 #include "ShaderGraph.h"
 #include "Random.h"
 #include "ShaderUniform.h"
+#include "Application.h"
 
 ShaderNode::ShaderNode()
 {
@@ -216,7 +217,8 @@ float2 ShaderNode::CalcNodeSize(ShaderGraph& graph, ShaderNode* node)
 	float width;
 
 	if (node->type == NODE_TYPE::PBR) width = 200.0f;
-	else if (node->type == NODE_TYPE::TEXTURE) width = 200.0f;
+	else if (node->type == NODE_TYPE::TEXTURE_SAMPLER) width = 200.0f;
+	else if (node->type == NODE_TYPE::TEXTURE) width = 150.0f;
 	else width = 55.0f * 1.5f;
 
 	return float2(width, 55.0f * node->inputs_size);
@@ -311,17 +313,24 @@ void ShaderNode::DrawInputs(ShaderGraph& graph, unsigned int numInputs, unsigned
 	{
 		InputSocket& input = this->inputs[i];
 
-		if(input.context_type != CONTEXT_TYPE::PARAMETER)
-			DrawInputConnector(graph, input, i);
+		
+		DrawInputConnector(graph, input, i);
 
 
 		if (input.type == VALUE_TYPE::TEXTURE2D)
 		{
+			//Texture Samplers
 			auto uniform = graph.uniforms.find(name + std::to_string(UID));
 			if (uniform != graph.uniforms.end())
 			{
 				ImGui::SetCursorScreenPos(ImVec2(input.position.x - 10, input.position.y + 30));
 				ImGui::Image((ImTextureID)static_cast<UniformTexture*>(uniform->second)->GetTextureID(), ImVec2(140, 130));
+			}
+			//Textures
+			else
+			{
+				ImGui::SetCursorScreenPos(ImVec2(input.position.x - 10, input.position.y - 15));
+				ImGui::Image((ImTextureID)input.texid, ImVec2(110, 110));
 			}
 
 			//float num = 2.0f;
@@ -398,44 +407,48 @@ void ShaderNode::DrawInputConnector(ShaderGraph& graph, InputSocket& input, unsi
 
 	input.position.y += 10.0f;
 
-
-	if (input.context_type != CONTEXT_TYPE::READ_ONLY)
+	if (input.context_type != CONTEXT_TYPE::PARAMETER)
 	{
-		ImGui::SetCursorScreenPos(ImVec2(input.position.x + 20.0f, input.position.y - 8.0f));
-		ImGui::TextColored(ImVec4(255, 255, 255, 255), "%s", input.name.c_str());
-		ImGui::SameLine();
 
-		if(input.type == VALUE_TYPE::FLOAT1) ImGui::TextColored(ImVec4(255, 255, 255, 255), "(1)");
-		else if (input.type == VALUE_TYPE::FLOAT2) ImGui::TextColored(ImVec4(255, 255, 255, 255), "(2)");
-		else if (input.type == VALUE_TYPE::FLOAT3) ImGui::TextColored(ImVec4(255, 255, 255, 255), "(3)");
-		else if (input.type == VALUE_TYPE::FLOAT4) ImGui::TextColored(ImVec4(255, 255, 255, 255), "(4)");
-		else if (input.type == VALUE_TYPE::TEXTURE2D) ImGui::TextColored(ImVec4(255, 255, 255, 255), "(T2)");
-
-		auto draw_list = ImGui::GetCurrentWindow()->DrawList;
-		ImU32 fillColor = IM_COL32(100, 100, 105, 255);
-		ImU32 outlineColor = IM_COL32(0, 200, 0, 255);
-		draw_list->AddCircleFilled(ImVec2(input.position.x, input.position.y), 10.0f, fillColor, 16);
-		draw_list->AddCircle(ImVec2(input.position.x, input.position.y), 10.0f, outlineColor);
-
-
-
-		if (SocketHovering(input.position, float2(ImGui::GetIO().MousePos.x, ImGui::GetIO().MousePos.y), 10.0f, 2.0f))
+		if (input.context_type != CONTEXT_TYPE::READ_ONLY)
 		{
-			//draw_list->AddCircleFilled(ImVec2(input.position.x, input.position.y), 5.0f - 2.0f, outlineColor);
-			draw_list->AddCircle(ImVec2(input.position.x, input.position.y), 10.0f, ImColor(255, 150, 0));
+			ImGui::SetCursorScreenPos(ImVec2(input.position.x + 20.0f, input.position.y - 8.0f));
+			ImGui::TextColored(ImVec4(255, 255, 255, 255), "%s", input.name.c_str());
+			ImGui::SameLine();
+
+			if(input.type == VALUE_TYPE::FLOAT1) ImGui::TextColored(ImVec4(255, 255, 255, 255), "(1)");
+			else if (input.type == VALUE_TYPE::FLOAT2) ImGui::TextColored(ImVec4(255, 255, 255, 255), "(2)");
+			else if (input.type == VALUE_TYPE::FLOAT3) ImGui::TextColored(ImVec4(255, 255, 255, 255), "(3)");
+			else if (input.type == VALUE_TYPE::FLOAT4) ImGui::TextColored(ImVec4(255, 255, 255, 255), "(4)");
+			else if (input.type == VALUE_TYPE::TEXTURE2D) ImGui::TextColored(ImVec4(255, 255, 255, 255), "(T2)");
+
+			auto draw_list = ImGui::GetCurrentWindow()->DrawList;
+			ImU32 fillColor = IM_COL32(100, 100, 105, 255);
+			ImU32 outlineColor = IM_COL32(0, 200, 0, 255);
+			draw_list->AddCircleFilled(ImVec2(input.position.x, input.position.y), 10.0f, fillColor, 16);
+			draw_list->AddCircle(ImVec2(input.position.x, input.position.y), 10.0f, outlineColor);
+
+
+
+			if (SocketHovering(input.position, float2(ImGui::GetIO().MousePos.x, ImGui::GetIO().MousePos.y), 10.0f, 2.0f))
+			{
+				//draw_list->AddCircleFilled(ImVec2(input.position.x, input.position.y), 5.0f - 2.0f, outlineColor);
+				draw_list->AddCircle(ImVec2(input.position.x, input.position.y), 10.0f, ImColor(255, 150, 0));
+
+			}
+			if (input.isLinked)
+			{
+				draw_list->AddCircleFilled(ImVec2(input.position.x, input.position.y), 10.0f - 3.0f, IM_COL32(0, 200, 0, 255));
+			}
+		}
+		else
+		{
+			ImGui::SetCursorScreenPos(ImVec2(input.position.x + 15.0f, input.position.y - 8.0f));
+			ImGui::TextDisabled(input.name.c_str());
 
 		}
-		if (input.isLinked)
-		{
-			draw_list->AddCircleFilled(ImVec2(input.position.x, input.position.y), 10.0f - 3.0f, IM_COL32(0, 200, 0, 255));
-		}
 	}
-	else
-	{
-		ImGui::SetCursorScreenPos(ImVec2(input.position.x + 15.0f, input.position.y - 8.0f));
-		ImGui::TextDisabled(input.name.c_str());
 
-	}
 
 	
 	
@@ -750,7 +763,7 @@ std::string ShaderNode::GetOutputDeclaration(ShaderCompiler& compiler)
 	return (finalOutput + variableDeclaration);
 }
 
-void ShaderNode::CheckNodeConnections(ShaderNode* current_node)
+void ShaderNode::CheckNodeConnections(ShaderNode* current_node, ShaderGraph& graph)
 {
 
 	for (int i = 0; i < current_node->inputs.size(); i++)
@@ -759,8 +772,22 @@ void ShaderNode::CheckNodeConnections(ShaderNode* current_node)
 
 		if (input.isLinked)
 		{
+
+			//Update Input Node value
 			std::string outVariable = input.link_ref->output_node->outputs[input.link_ref->output_socket].data_str;
 			input.data_str = outVariable;
+
+			//Update Uniform value
+			if (input.link_ref->output_node->outputs[input.link_ref->output_socket].type == VALUE_TYPE::TEXTURE2D)
+			{
+				int textureID = input.link_ref->output_node->inputs[0].texid;
+
+				auto uniform = graph.uniforms.find(std::string(name) + std::to_string(UID));
+				if (uniform != graph.uniforms.end())
+				{
+					static_cast<UniformTexture*>(uniform->second)->SetTextureID(textureID);
+				}
+			}
 		}
 		else
 		{
@@ -966,7 +993,7 @@ bool ShaderLink::LineHovering(float2 p1, float2 p2, const float r1, const float 
 	return false;
 }
 
-void InputSocket::DisplayInputSocketDetails()
+void InputSocket::DisplayInputSocketDetails(ShaderGraph& graph, ShaderNode& node)
 {
 
 	if (type == VALUE_TYPE::FLOAT1)
@@ -1025,6 +1052,66 @@ void InputSocket::DisplayInputSocketDetails()
 		ImGui::Text("W: "); ImGui::SameLine();
 		ImGui::DragFloat(name.c_str(), &value4.w, 0.1f, 0.0f, 9999999.0f, "%.2f");
 		ImGui::PopID();
+	}
+	else if (type == VALUE_TYPE::TEXTURE2D)
+	{
+		std::string item_name = std::string("     ") + graph.texIndices[0];
+		static std::string current_item = item_name;
+
+		ImGuiStyle& style = ImGui::GetStyle();
+		style.FrameRounding = 2.0f;
+		style.FrameBorderSize = 1.0f;
+
+		static uint selected_idx = 0;
+
+		if (ImGui::BeginCombo("##combo", current_item.c_str())) // The second parameter is the label previewed before opening the combo.
+		{
+			for (int idx = 0; idx < graph.texIndices.size(); idx++)
+			{
+				bool is_selected = (current_item == graph.texIndices[idx].c_str());
+				auto drawList = ImGui::GetWindowDrawList();
+
+				std::string item_name = std::string("     ") + graph.texIndices[idx];
+
+				if (ImGui::Selectable(item_name.c_str(), is_selected)) {
+
+					selected_idx = idx;
+					current_item = std::string("     ") + graph.texIndices[idx];
+
+
+					texid = App->textures[idx].handle;
+
+					/*auto uniform = graph.uniforms.find(node.outputs[0].data_str);
+					if (uniform != graph.uniforms.end())
+					{
+						static_cast<UniformTexture*>(uniform->second)->SetTextureID(App->textures[idx].handle);
+					}*/
+
+				}
+
+				auto rect_min = ImGui::GetItemRectMin();
+				auto rect_max = ImGui::GetItemRectMax();
+				rect_max.x = rect_min.x + 32;
+				drawList->AddImage((ImTextureID)App->textures[idx].handle, rect_min, rect_max, ImVec2(0, 0), ImVec2(1, 1), IM_COL32(255, 255, 255, 255));
+
+				if (is_selected)
+					ImGui::SetItemDefaultFocus();
+			}
+
+			ImGui::EndCombo();
+
+
+		}
+		else
+		{
+			auto rect_min = ImGui::GetItemRectMin();
+			auto rect_max = ImGui::GetItemRectMax();
+			rect_max.x = rect_min.x + 32;
+			auto drawList = ImGui::GetWindowDrawList();
+			drawList->AddImage((ImTextureID)App->textures[selected_idx].handle, rect_min, rect_max, ImVec2(0, 0), ImVec2(1, 1), IM_COL32(255, 255, 255, 255));
+
+		}
+
 	}
 
 }

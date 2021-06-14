@@ -58,7 +58,7 @@ void Vector1Node::InspectorUpdate(ShaderGraph& graph)
 		{
 			InputSocket& input = this->inputs[i];
 
-			input.DisplayInputSocketDetails();
+			input.DisplayInputSocketDetails(graph, *this);
 		}
 	}
 
@@ -114,7 +114,7 @@ void Vector2Node::InspectorUpdate(ShaderGraph& graph)
 		{
 			InputSocket& input = this->inputs[i];
 
-			input.DisplayInputSocketDetails();
+			input.DisplayInputSocketDetails(graph, *this);
 		}
 	}
 
@@ -170,7 +170,7 @@ void Vector3Node::InspectorUpdate(ShaderGraph& graph)
 		{
 			InputSocket& input = this->inputs[i];
 
-			input.DisplayInputSocketDetails();
+			input.DisplayInputSocketDetails(graph, *this);
 		}
 	}
 
@@ -228,7 +228,7 @@ void Vector4Node::InspectorUpdate(ShaderGraph& graph)
 		{
 			InputSocket& input = this->inputs[i];
 
-			input.DisplayInputSocketDetails();
+			input.DisplayInputSocketDetails(graph, *this);
 		}
 	}
 

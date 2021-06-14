@@ -36,15 +36,6 @@ protected:
 };
 
 
-enum class NODE_MENU_TYPE
-{
-	PARAMETER = 0,
-	TEXTURE,
-	MASTER,
-
-
-	TOTAL_SIZE
-};
 
 class PanelShaderEditor : public Panel
 {
@@ -68,7 +59,7 @@ public:
 	void NodeOption(bool& open_menu, const char* name, NODE_TYPE type, float2 position, ResourceShader* shader, ShaderGraph* graph, ShaderNode* (ShaderGraph::*p)(const char* n, int t, float2 p));
 
 	void NodeOption(const char* name, NODE_TYPE type, ResourceShader* shader, ShaderGraph* graph, bool& open_menu);
-	void CreateNodeOption(const char* name, NODE_TYPE type, float2 position, ResourceShader* shader, ShaderGraph* graph, bool& open_menu);
+	void CreateNodeOption(const char* name, NODE_TYPE type, float2 position, ResourceShader* shader, ShaderGraph* graph);
 	ShaderGraph* GetGraph();
 
 	void Scrolling();
@@ -84,10 +75,7 @@ private:
 	bool creating_shader = false;
 	bool selecting_shader = false;
 
-	std::vector<std::string> menu_nodes;
-	bool selecting_menu_nodes[(int)NODE_MENU_TYPE::TOTAL_SIZE];
-	bool selecting_menu = false;
-	bool open_menu = false;
+	
 
 	Canvas canvas;
 	ImVec2 hit_pos;

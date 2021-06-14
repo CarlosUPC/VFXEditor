@@ -55,7 +55,10 @@ void TextureSamplerNode::Update(ShaderGraph& graph)
 	inputs[1].data_str = std::string(name) + std::to_string(UID);
 
 	//Check For Ins Variables
-	CheckNodeConnections(this);
+	CheckNodeConnections(this, graph);
+
+	//Reassign the same data name because a uniform (TODO: improve that)
+	inputs[1].data_str = std::string(name) + std::to_string(UID);
 
 	//Variable definition (need inputs)
 	this->GLSL_Definition = SetGLSLDefinition(outputs[0].data_str, inputs[1].data_str, inputs[0].data_str);
@@ -64,7 +67,17 @@ void TextureSamplerNode::Update(ShaderGraph& graph)
 
 void TextureSamplerNode::InspectorUpdate(ShaderGraph& graph)
 {
-	
+
+	//If node has inputs from other nodes, priorize their output values
+	for (unsigned int i = 0; i < inputs.size(); i++)
+	{
+		InputSocket& input = this->inputs[i];
+
+		if (input.isLinked)
+			return;
+	}
+
+
 	std::string item_name = std::string("     ") + graph.texIndices[0];
 	static std::string current_item = item_name;
 
@@ -132,3 +145,68 @@ std::string TextureSamplerNode::SetGLSLDefinition(const std::string& out_name, c
 {
 	return "vec4 " + out_name  + " = " + "texture(" + param1 + ", " + param2 + ");\n";
 }
+
+
+
+
+
+TextureNode::TextureNode()
+{
+}
+
+TextureNode::TextureNode(const char* name, NODE_TYPE type, float2 position)
+	: ShaderNode(name, type, position)
+{
+	inputs.push_back(InputSocket("tex", VALUE_TYPE::TEXTURE2D, App->textures[0].handle, CONTEXT_TYPE::PARAMETER));
+	outputs.push_back(OutputSocket(VALUE_TYPE::TEXTURE2D));
+
+	//temp hardcoded
+	inputs_size = 3;
+	outputs_size = 1;
+
+	
+}
+
+void TextureNode::Update(ShaderGraph& graph)
+{
+	//Variable declaration
+	this->GLSL_Declaration = SetGLSLDeclaration(std::string(name) + std::to_string(UID));
+
+	//Out Variable
+	outputs[0].data_str = std::string(name) + std::to_string(UID);
+	outputs[0].type_str = ShaderCompiler::SetOutputType(outputs[0].type);
+	
+	this->GLSL_Definition = "";
+
+
+	//Ins Variable
+	//inputs[0].values_str[0] = std::to_string(inputs[0].texid);
+
+}
+
+void TextureNode::InspectorUpdate(ShaderGraph& graph)
+{
+
+	if (ImGui::CollapsingHeader("Node Configuration", ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		for (unsigned int i = 0; i < inputs.size(); i++)
+		{
+			InputSocket& input = this->inputs[i];
+
+			input.DisplayInputSocketDetails(graph, *this);
+		}
+	}
+
+	if (ImGui::CollapsingHeader("GLSL Abstraction", ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		ImGui::Text(GLSL_Declaration.c_str());
+
+	}
+
+}
+
+std::string TextureNode::SetGLSLDeclaration(const std::string& out_name)
+{
+	return "uniform sampler2D " + out_name + ";\n";
+}
+

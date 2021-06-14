@@ -12,18 +12,6 @@ PanelShaderEditor::PanelShaderEditor(const char* name)
 {
 	flags = ImGuiWindowFlags_::ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollWithMouse;
 
-
-	for (int i = 0; i < (int)NODE_MENU_TYPE::TOTAL_SIZE; i++)
-	{
-		selecting_menu_nodes[i] = false;
-	}
-
-	menu_nodes.push_back(std::string("Parameter"));
-	menu_nodes.push_back(std::string("Texture"));
-	menu_nodes.push_back(std::string("Master"));
-	//menu_nodes.push_back(std::string("Texture"));
-	//menu_nodes.push_back(std::string("Math"));
-
 }
 
 PanelShaderEditor::~PanelShaderEditor()
@@ -269,15 +257,11 @@ void PanelShaderEditor::LoadShaderContext()
 void PanelShaderEditor::AddNewNodePopUp()
 {
 	
-	if (open_menu)
-	{
-		ImGui::OpenPopup("NewNode");
-
 		ImGui::SetNextWindowPos(hit_pos);
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(12, 16));
 		
 
-		if (ImGui::BeginPopup("NewNode"))
+		if (ImGui::BeginPopup("NewNode", ImGuiWindowFlags_AlwaysVerticalScrollbar))
 		{
 			
 			ImGui::PushItemWidth(100.0f);
@@ -293,30 +277,51 @@ void PanelShaderEditor::AddNewNodePopUp()
 			ImGui::TextColored(ImVec4(1.f, 0.f, 1.f, 1.f), "CREATE NODE");
 			ImGui::Separator();
 
-			for (int i = 0; i < (int)NODE_MENU_TYPE::TOTAL_SIZE; i++)
+
+			if (ImGui::TreeNodeEx("Parameter"))
 			{
-				if (ImGui::MenuItem(menu_nodes[i].c_str()))
-				{
-					selecting_menu_nodes[i] = true;
-					open_menu = false;
-					
-					ImGui::EndPopup();
-					ImGui::PopStyleVar();
-					return;
-				}
+				ImVec2 node_pos;
+				node_pos.x = hit_pos.x - canvas.m_Scroll.x;
+				node_pos.y = hit_pos.y - canvas.m_Scroll.y;
+
+				CreateNodeOption("Vector1", NODE_TYPE::VECTOR1, float2(node_pos.x, node_pos.y), current_shader, current_shader->graph);
+				CreateNodeOption("Vector2", NODE_TYPE::VECTOR2, float2(node_pos.x, node_pos.y), current_shader, current_shader->graph);
+				CreateNodeOption("Vector3", NODE_TYPE::VECTOR3, float2(node_pos.x, node_pos.y), current_shader, current_shader->graph);
+				CreateNodeOption("Vector4", NODE_TYPE::VECTOR4, float2(node_pos.x, node_pos.y), current_shader, current_shader->graph);
+
+				ImGui::TreePop();
 			}
+			if (ImGui::TreeNode("Texture"))
+			{
+				ImVec2 node_pos;
+				node_pos.x = hit_pos.x - canvas.m_Scroll.x;
+				node_pos.y = hit_pos.y - canvas.m_Scroll.y;
+
+				CreateNodeOption("TextureSampler2D", NODE_TYPE::TEXTURE_SAMPLER, float2(node_pos.x, node_pos.y), current_shader, current_shader->graph);
+				CreateNodeOption("Texture2D", NODE_TYPE::TEXTURE, float2(node_pos.x, node_pos.y), current_shader, current_shader->graph);
+
+				ImGui::TreePop();
+			}
+			if (ImGui::TreeNode("Master"))
+			{
+				ImVec2 node_pos;
+				node_pos.x = hit_pos.x - canvas.m_Scroll.x;
+				node_pos.y = hit_pos.y - canvas.m_Scroll.y;
+
+				CreateNodeOption("PBR", NODE_TYPE::PBR, float2(node_pos.x, node_pos.y), current_shader, current_shader->graph);
+
+				ImGui::TreePop();
+			}
+						
+
 
 			ImGui::Separator();
-			if (ImGui::MenuItem("Close"))
-			{
-				open_menu = false;
-			}
-
+		
 			ImGui::EndPopup();
 		}
 		
 		ImGui::PopStyleVar();
-	}
+	
 
 }
 
@@ -351,7 +356,7 @@ void PanelShaderEditor::NodeOption(const char* name, NODE_TYPE type, ResourceSha
 	}
 }
 
-void PanelShaderEditor::CreateNodeOption(const char* name, NODE_TYPE type, float2 position, ResourceShader* shader, ShaderGraph* graph, bool& open_menu)
+void PanelShaderEditor::CreateNodeOption(const char* name, NODE_TYPE type, float2 position, ResourceShader* shader, ShaderGraph* graph)
 {
 	std::string node_name = name;
 
@@ -362,7 +367,7 @@ void PanelShaderEditor::CreateNodeOption(const char* name, NODE_TYPE type, float
 	{
 		ShaderNode* new_node = graph->CreateNode(name, type, position);
 		AddNode(*shader->graph, new_node);
-		open_menu = false;
+		
 
 		//ImGui::CloseCurrentPopup();
 	}
@@ -412,198 +417,14 @@ void PanelShaderEditor::NodeContext()
 		{
 			current_shader->graph->node_hovered = current_shader->graph->node_selected = nullptr;
 			hit_pos = ImGui::GetIO().MousePos;
-			open_menu = true;
-			selecting_menu = true;
+		
+			ImGui::OpenPopup("NewNode");
 
 		}
 		
 	}
 
 	AddNewNodePopUp();
-
-
-	if (selecting_menu)
-	{
-
-		if (selecting_menu_nodes[(int)NODE_MENU_TYPE::PARAMETER])
-		{
-			
-
-			ImGui::SetNextWindowPos(hit_pos);
-			ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(12, 16));
-			
-			
-			ImGui::OpenPopup("ParameterMenu");
-			if (ImGui::BeginPopup("ParameterMenu"))
-			{
-				ImGui::PushItemWidth(100.0f);
-				ImGui::InputText("##filter", node_filter, 64);
-				ImGui::PopItemWidth();
-				ImGui::SameLine();
-
-				if (ImGui::Selectable("X", false, ImGuiSelectableFlags_DontClosePopups, { 8,13 }))
-				{
-					memcpy(&node_filter, "\0", 1);
-				}
-
-
-				ImGui::TextColored(ImVec4(1.f, 0.f, 1.f, 1.f), "PARAMETER");
-				ImGui::Separator();
-
-				
-				if (ImGui::MenuItem("<-"))
-				{
-					selecting_menu_nodes[(int)NODE_MENU_TYPE::PARAMETER] = false;
-					open_menu = true;
-				}
-			
-				
-				//Menu
-				ImVec2 node_pos;
-				node_pos.x = hit_pos.x - canvas.m_Scroll.x;
-				node_pos.y = hit_pos.y - canvas.m_Scroll.y;
-
-				
-				CreateNodeOption("Vector1", NODE_TYPE::VECTOR1, float2(node_pos.x, node_pos.y), current_shader, current_shader->graph, selecting_menu_nodes[(int)NODE_MENU_TYPE::PARAMETER]);
-				CreateNodeOption("Vector2", NODE_TYPE::VECTOR2, float2(node_pos.x, node_pos.y), current_shader, current_shader->graph, selecting_menu_nodes[(int)NODE_MENU_TYPE::PARAMETER]);
-				CreateNodeOption("Vector3", NODE_TYPE::VECTOR3, float2(node_pos.x, node_pos.y), current_shader, current_shader->graph, selecting_menu_nodes[(int)NODE_MENU_TYPE::PARAMETER]);
-				CreateNodeOption("Vector4", NODE_TYPE::VECTOR4, float2(node_pos.x, node_pos.y), current_shader, current_shader->graph, selecting_menu_nodes[(int)NODE_MENU_TYPE::PARAMETER]);
-
-
-				ImGui::Separator();
-				
-				if (ImGui::MenuItem("Close"))
-				{
-					selecting_menu_nodes[(int)NODE_MENU_TYPE::PARAMETER] = false;
-				}
-
-
-			ImGui::EndPopup();
-			}
-			
-			ImGui::PopStyleVar();
-			
-		}
-
-		if (selecting_menu_nodes[(int)NODE_MENU_TYPE::TEXTURE])
-		{
-			ImGui::SetNextWindowPos(hit_pos);
-			ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(12, 16));
-
-
-			ImGui::OpenPopup("TextureMenu");
-			if (ImGui::BeginPopup("TextureMenu"))
-			{
-
-				ImGui::PushItemWidth(100.0f);
-				ImGui::InputText("##filter", node_filter, 64);
-				ImGui::PopItemWidth();
-				ImGui::SameLine();
-
-				if (ImGui::Selectable("X", false, ImGuiSelectableFlags_DontClosePopups, { 8,13 }))
-				{
-					memcpy(&node_filter, "\0", 1);
-				}
-
-
-				ImGui::TextColored(ImVec4(1.f, 0.f, 1.f, 1.f), "TEXTURE");
-				ImGui::Separator();
-
-
-				if (ImGui::MenuItem("<-"))
-				{
-					selecting_menu_nodes[(int)NODE_MENU_TYPE::TEXTURE] = false;
-					open_menu = true;
-
-				}
-
-
-				//Menu
-				ImVec2 node_pos;
-				node_pos.x = hit_pos.x - canvas.m_Scroll.x;
-				node_pos.y = hit_pos.y - canvas.m_Scroll.y;
-
-
-				CreateNodeOption("SampleTexture2D", NODE_TYPE::TEXTURE, float2(node_pos.x, node_pos.y), current_shader, current_shader->graph, selecting_menu_nodes[(int)NODE_MENU_TYPE::TEXTURE]);
-
-
-
-				ImGui::Separator();
-
-				if (ImGui::MenuItem("Close"))
-				{
-					selecting_menu_nodes[(int)NODE_MENU_TYPE::TEXTURE] = false;
-				}
-
-
-				ImGui::EndPopup();
-			}
-
-			ImGui::PopStyleVar();
-		}
-
-		if (selecting_menu_nodes[(int)NODE_MENU_TYPE::MASTER])
-		{
-
-			ImGui::SetNextWindowPos(hit_pos);
-			ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(12, 16));
-
-
-			ImGui::OpenPopup("MasterMenu");
-			if (ImGui::BeginPopup("MasterMenu"))
-			{
-
-				ImGui::PushItemWidth(100.0f);
-				ImGui::InputText("##filter", node_filter, 64);
-				ImGui::PopItemWidth();
-				ImGui::SameLine();
-
-				if (ImGui::Selectable("X", false, ImGuiSelectableFlags_DontClosePopups, { 8,13 }))
-				{
-					memcpy(&node_filter, "\0", 1);
-				}
-
-
-				ImGui::TextColored(ImVec4(1.f, 0.f, 1.f, 1.f), "MASTER");
-				ImGui::Separator();
-
-
-				if (ImGui::MenuItem("<-"))
-				{
-					selecting_menu_nodes[(int)NODE_MENU_TYPE::MASTER] = false;
-					open_menu = true;
-					
-				}
-
-				
-				//Menu
-				ImVec2 node_pos;
-				node_pos.x = hit_pos.x - canvas.m_Scroll.x;
-				node_pos.y = hit_pos.y - canvas.m_Scroll.y;
-
-
-				CreateNodeOption("PBR", NODE_TYPE::PBR, float2(node_pos.x, node_pos.y), current_shader, current_shader->graph, selecting_menu_nodes[(int)NODE_MENU_TYPE::MASTER]);
-				
-
-
-				ImGui::Separator();
-
-				if (ImGui::MenuItem("Close"))
-				{
-					selecting_menu_nodes[(int)NODE_MENU_TYPE::MASTER] = false;
-				}
-
-
-				ImGui::EndPopup();
-			}
-
-			ImGui::PopStyleVar();
-
-
-
-		}
-
-	}
 }
 
 

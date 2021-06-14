@@ -20,6 +20,7 @@ enum  NODE_TYPE
 	VECTOR2,
 	VECTOR3,
 	VECTOR4,
+	TEXTURE_SAMPLER,
 	TEXTURE,
 	PBR,
 
@@ -94,6 +95,7 @@ struct InputSocket
 
 	union
 	{
+		uint texid;
 		float value1;
 		float2 value2;
 		float3 value3;
@@ -116,6 +118,14 @@ struct InputSocket
 		 this->context_type = context;
 
 		 value1 = 5.f;
+	 }
+
+	 InputSocket(const char* name, VALUE_TYPE type, uint val, CONTEXT_TYPE context)
+	 {
+		 this->type = type;
+		 this->name = name;
+		 this->context_type = context;
+		 this->texid = val;
 	 }
 
 	 InputSocket(const char* name, VALUE_TYPE type, float val, CONTEXT_TYPE context)
@@ -162,7 +172,7 @@ struct InputSocket
 		 this->values_str.push_back("");
 	 }
 
-	 void DisplayInputSocketDetails();
+	 void DisplayInputSocketDetails(ShaderGraph& graph, ShaderNode& node);
 
 };
 
@@ -236,7 +246,7 @@ public:
 	bool IsDeclared() const { return isVariableDeclared; }
 	void SetDeclared(bool declared) { isVariableDeclared = declared; }
 
-	void CheckNodeConnections(ShaderNode* current_node);
+	void CheckNodeConnections(ShaderNode* current_node, ShaderGraph& graph);
 public:
 	//core info
 	NODE_TYPE type;
