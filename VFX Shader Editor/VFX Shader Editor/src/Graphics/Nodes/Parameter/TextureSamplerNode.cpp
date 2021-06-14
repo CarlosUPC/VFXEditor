@@ -12,12 +12,17 @@ TextureSamplerNode::TextureSamplerNode(const char* name, NODE_TYPE type, float2 
 {
 	inputs.push_back(InputSocket("UV", VALUE_TYPE::FLOAT2));
 	inputs.push_back(InputSocket("Texture", VALUE_TYPE::TEXTURE2D));
-	outputs.push_back(OutputSocket(VALUE_TYPE::FLOAT4));
+
+	outputs.push_back(OutputSocket("RGBA", VALUE_TYPE::FLOAT4));
+	outputs.push_back(OutputSocket("R", VALUE_TYPE::FLOAT1));
+	outputs.push_back(OutputSocket("G", VALUE_TYPE::FLOAT1));
+	outputs.push_back(OutputSocket("B", VALUE_TYPE::FLOAT1));
+	outputs.push_back(OutputSocket("A", VALUE_TYPE::FLOAT1));
 
 
 	//temp hardcoded
 	inputs_size = 5;
-	outputs_size = 1;
+	outputs_size = 5;
 
 	isUniform = true;
 }
@@ -31,6 +36,19 @@ void TextureSamplerNode::Update(ShaderGraph& graph)
 	//Out Variable
 	outputs[0].data_str = std::string(name) + std::to_string(UID) + "_sampler";
 	outputs[0].type_str = ShaderCompiler::SetOutputType(outputs[0].type);
+	
+	outputs[1].data_str = std::string(name) + std::to_string(UID) + "_sampler.x";
+	outputs[1].type_str = ShaderCompiler::SetOutputType(outputs[1].type);
+	
+	outputs[2].data_str = std::string(name) + std::to_string(UID) + "_sampler.y";
+	outputs[2].type_str = ShaderCompiler::SetOutputType(outputs[2].type);
+	
+	outputs[3].data_str = std::string(name) + std::to_string(UID) + "_sampler.z";
+	outputs[3].type_str = ShaderCompiler::SetOutputType(outputs[3].type);
+	
+	outputs[4].data_str = std::string(name) + std::to_string(UID) + "_sampler.w";
+	outputs[4].type_str = ShaderCompiler::SetOutputType(outputs[4].type);
+
 
 	//In Default Variable
 	inputs[0].data_str = "TexCoord";

@@ -216,7 +216,7 @@ float2 ShaderNode::CalcNodeSize(ShaderGraph& graph, ShaderNode* node)
 	float width;
 
 	if (node->type == NODE_TYPE::PBR) width = 200.0f;
-	else if (node->type == NODE_TYPE::TEXTURE) width = 180.0f;
+	else if (node->type == NODE_TYPE::TEXTURE) width = 200.0f;
 	else width = 55.0f * 1.5f;
 
 	return float2(width, 55.0f * node->inputs_size);
@@ -383,7 +383,7 @@ void ShaderNode::DrawOutputs(ShaderGraph& graph, unsigned int numOutputs, unsign
 		OutputSocket& output = this->outputs[i];
 
 		//if(output.type != ValueType::NONE)
-		DrawOutputConnector(graph, output);
+		DrawOutputConnector(graph, output, i);
 	}
 }
 
@@ -449,13 +449,13 @@ void ShaderNode::DrawOutputConnector(ShaderGraph& graph, OutputSocket& output, u
 {
 
 	
-	output.position = graph.scrolling + float2(this->position.x + this->size.x - 10.0f,
+	output.position = graph.scrolling + float2(this->position.x + this->size.x - 15.0f,
 								               this->position.y + this->size.y * (static_cast<float>(index) + 1) / (static_cast<float>(outputs_size) + 1));
 
-	output.position.y += 15.0f;
+	output.position.y += 5.0f;
 
-
-	ImGui::SetCursorScreenPos(ImVec2(output.position.x - 60.0f, output.position.y - 8.0f));
+	ImVec2 text_size = ImGui::CalcTextSize(output.name.c_str());
+	ImGui::SetCursorScreenPos(ImVec2(output.position.x - text_size.x - 15, output.position.y - 8.0f));
 	ImGui::TextColored(ImVec4(255,255,255,255), "%s", output.name.c_str());
 	
 	
