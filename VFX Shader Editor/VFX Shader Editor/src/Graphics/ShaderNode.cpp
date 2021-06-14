@@ -698,13 +698,37 @@ InputSocket ShaderNode::GetInputSocketbyName(const std::string& inputName)
 	
 }
 
+std::string ShaderNode::GetOutputDefinition(ShaderCompiler& compiler)
+{
+	std::string finalOutput = "";
+
+
+	for (int i = 0; i < inputs.size(); i++)
+	{
+		InputSocket& input = inputs[i];
+
+		if (input.isLinked && input.context_type != CONTEXT_TYPE::PARAMETER)
+		{
+			input.link_ref->output_node->GetOutputDefinition(compiler);
+		}
+
+	}
+
+	std::string variableDefinition = compiler.OutputLine(this->GLSL_Definition);
+
+
+
+
+	return (finalOutput + variableDefinition);
+}
+
 std::string ShaderNode::GetOutputDeclaration(ShaderCompiler& compiler)
 {
 	std::string finalOutput = "";
 
 	
-	if (IsDeclared())
-		return finalOutput;
+	//if (IsDeclared())
+	//	return finalOutput;
 
 	for (int i=0; i < inputs.size(); i++)
 	{
@@ -712,8 +736,8 @@ std::string ShaderNode::GetOutputDeclaration(ShaderCompiler& compiler)
 
 		if (input.isLinked && input.context_type != CONTEXT_TYPE::PARAMETER)
 		{
-			if(!input.link_ref->output_node->IsDeclared())
-				input.link_ref->output_node->GetOutputDeclaration(compiler);
+			/*if(!input.link_ref->output_node->IsDeclared())*/
+			input.link_ref->output_node->GetOutputDeclaration(compiler);
 
 		}
 

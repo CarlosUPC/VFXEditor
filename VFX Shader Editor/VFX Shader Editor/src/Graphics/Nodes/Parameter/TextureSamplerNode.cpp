@@ -30,7 +30,7 @@ void TextureSamplerNode::Update(ShaderGraph& graph)
 
 	//Out Variable
 	outputs[0].data_str = std::string(name) + std::to_string(UID) + "_sampler";
-
+	outputs[0].type_str = ShaderCompiler::SetOutputType(outputs[0].type);
 
 	//In Default Variable
 	inputs[0].data_str = "TexCoord";
@@ -48,7 +48,7 @@ void TextureSamplerNode::InspectorUpdate(ShaderGraph& graph)
 {
 	
 	std::string item_name = std::string("     ") + graph.texIndices[0];
-	static const char* current_item = item_name.c_str();
+	static std::string current_item = item_name;
 
 	ImGuiStyle& style = ImGui::GetStyle();
 	style.FrameRounding = 2.0f;
@@ -56,7 +56,7 @@ void TextureSamplerNode::InspectorUpdate(ShaderGraph& graph)
 
 	static uint selected_idx = 0;
 
-	if (ImGui::BeginCombo("##combo", current_item)) // The second parameter is the label previewed before opening the combo.
+	if (ImGui::BeginCombo("##combo", current_item.c_str())) // The second parameter is the label previewed before opening the combo.
 	{
 		for (int idx = 0; idx < graph.texIndices.size(); idx++)
 		{
@@ -68,7 +68,7 @@ void TextureSamplerNode::InspectorUpdate(ShaderGraph& graph)
 			if (ImGui::Selectable(item_name.c_str(), is_selected)) {
 				
 				selected_idx = idx;
-				current_item = graph.texIndices[idx].c_str();
+				current_item = std::string("     ") + graph.texIndices[idx];
 
 
 				auto uniform = graph.uniforms.find(std::string(name) + std::to_string(UID));

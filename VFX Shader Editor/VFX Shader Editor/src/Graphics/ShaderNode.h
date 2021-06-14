@@ -230,7 +230,7 @@ public:
 
 	InputSocket GetInputSocketbyName(const std::string& inputName);
 
-	std::string GetOutputDefinition() { return code_str; }
+	std::string GetOutputDefinition(ShaderCompiler& compiler);
 	std::string GetOutputDeclaration(ShaderCompiler& compiler);
 
 	bool IsDeclared() const { return isVariableDeclared; }

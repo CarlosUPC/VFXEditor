@@ -165,10 +165,10 @@ update_state ModuleRenderer::PostUpdate(float dt)
 		current_shader->SetUniformMat4f("u_Projection", App->camera->getProjectionMatrix());
 		current_shader->SetUniformMat4f("u_View", App->camera->getViewMatrix());
 
-		/*for (auto it = current_shader->graph->uniforms.begin(); it != current_shader->graph->uniforms.end(); ++it)
+		for (auto it = current_shader->graph->uniforms.begin(); it != current_shader->graph->uniforms.end(); ++it)
 		{
 			it->second->Bind(current_shader);
-		}*/
+		}
 	}
 
 	//Draw data

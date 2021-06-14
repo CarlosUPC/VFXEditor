@@ -522,17 +522,17 @@ std::string ShaderCompiler::OutputFragment()
 	std::string code = "";
 	
 	
-	//Update Diffuse
+	//Definitions
 	InputSocket inputDiffuse = graph.mainNode->GetInputSocketbyName("Albedo");
-	
-	//if it has a link
 	if (inputDiffuse.isLinked)
 	{
 		ShaderNode* out_node = inputDiffuse.link_ref->output_node;
 
-		std::string varDefinition = out_node->GetOutputDefinition();
+		std::string varDefinition = out_node->GetOutputDefinition(*this);
 		code += varDefinition;
 
+
+		//Final Output
 		if (out_node)
 		{
 			//Output code variable
