@@ -271,6 +271,7 @@ public:
 	bool isItemActive = false;
 	bool isSocketHovered = false;
 	bool to_delete = false;
+	bool isError = false;
 
 	//temp
 	float inputs_size = 0;

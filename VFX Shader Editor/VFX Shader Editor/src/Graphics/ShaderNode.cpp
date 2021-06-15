@@ -279,8 +279,8 @@ void ShaderNode::DrawTitle(ShaderGraph& g)
 
 void ShaderNode::DrawTitle(ImDrawList* draw_list, float2 pos, float2 size)
 {
-	draw_list->AddRectFilled(ImVec2(pos.x, pos.y), ImVec2(pos.x + size.x, pos.y + 15.0f /** graph.scale*/), ImColor(255, 0, 0), 5.0f);
-	draw_list->AddRectFilled(ImVec2(pos.x, pos.y + 10.0f /** graph.scale*/), ImVec2(pos.x + size.x, pos.y + 25.0f /** graph.scale*/), ImColor(255, 0, 0));
+	draw_list->AddRectFilled(ImVec2(pos.x, pos.y), ImVec2(pos.x + size.x, pos.y + 15.0f /** graph.scale*/), ImColor(120, 120, 120), 5.0f);
+	draw_list->AddRectFilled(ImVec2(pos.x, pos.y + 10.0f /** graph.scale*/), ImVec2(pos.x + size.x, pos.y + 25.0f /** graph.scale*/), ImColor(120, 120, 120));
 	ImGui::SetCursorScreenPos(ImVec2(pos.x + 10.0f, pos.y + 5.0f));
 	//ImGui::BeginGroup();
 	ImGui::TextColored(ImVec4(255,255,255,255), "%s", name.c_str());
@@ -295,16 +295,40 @@ void ShaderNode::DrawBody(ImDrawList* draw_list, float2 pos, float2 size)
 	if (this->isHovered && !this->isSelected)
 	{
 		float border = 1.5f;
-		draw_list->AddRect(ImVec2(pos.x - border, pos.y - border), ImVec2(pos.x + size.x + border, pos.y + size.y + border), ImColor(255, 150, 0),5.0f);
+		if (this->isError)
+		{
+			draw_list->AddRect(ImVec2(pos.x - border, pos.y - border), ImVec2(pos.x + size.x + border, pos.y + size.y + border + 15.0f), ImColor(255, 150, 0), 5.0f);
+		}
+		else
+			draw_list->AddRect(ImVec2(pos.x - border, pos.y - border), ImVec2(pos.x + size.x + border, pos.y + size.y + border), ImColor(255, 150, 0),5.0f);
+
 	}
 	else if (this->isSelected)
 	{
 		float border = 0.5f;
-		draw_list->AddRect(ImVec2(pos.x - border, pos.y - border), ImVec2(pos.x + size.x + border, pos.y + size.y + border), ImColor(255, 0, 0), 5.0f, 15.0f, 5.0f);
+
+		if (this->isError)
+		{
+			draw_list->AddRect(ImVec2(pos.x - border, pos.y - border), ImVec2(pos.x + size.x + border, pos.y + size.y + border + 15.0f), ImColor(255, 0, 0), 5.0f, 15.0f, 5.0f);
+		}
+		else
+		{
+			draw_list->AddRect(ImVec2(pos.x - border, pos.y - border), ImVec2(pos.x + size.x + border, pos.y + size.y + border), ImColor(255, 0, 0), 5.0f, 15.0f, 5.0f);
+		}
 	}
 
 
 	draw_list->AddRectFilled(ImVec2(pos.x, pos.y), ImVec2(pos.x + size.x, pos.y + size.y), ImColor(20, 20, 20, 180), 5.0f);
+
+
+	if (this->isError)
+	{
+		draw_list->AddRectFilled(ImVec2(pos.x, pos.y + size.y), ImVec2(pos.x + size.x, pos.y + size.y + 15.0f ), ImColor(255, 0, 0), 5.0f);
+		draw_list->AddRectFilled(ImVec2(pos.x, pos.y + size.y - 10.0f), ImVec2(pos.x + size.x, pos.y + size.y + 10.0f), ImColor(255, 0, 0));
+		ImGui::SetCursorScreenPos(ImVec2(pos.x + (size.x / 2) - 20.0f , pos.y + size.y - 5.0f));
+		
+		ImGui::TextColored(ImVec4(255, 255, 255, 255), "ERROR!");
+	}
 	
 }
 

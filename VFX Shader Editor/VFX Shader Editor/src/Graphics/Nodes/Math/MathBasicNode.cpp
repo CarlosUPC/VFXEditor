@@ -23,6 +23,20 @@ MultiplyNode::MultiplyNode(const char* name, NODE_TYPE type, float2 position)
 void MultiplyNode::Update(ShaderGraph& graph)
 {
 
+	for (unsigned int i = 0; i < inputs.size(); i++)
+	{
+		InputSocket& input = this->inputs[i];
+
+		if (!input.isLinked)
+		{
+			input.type = VALUE_TYPE::FLOAT1;
+		}
+
+		this->isError = false;
+			
+	}
+
+
 	//Out Variable
 	outputs[0].data_str = std::string(name) + std::to_string(UID) + "_multiply";
 	outputs[0].type_str = ShaderCompiler::SetOutputType(outputs[0].type);
@@ -72,8 +86,10 @@ void MultiplyNode::Update(ShaderGraph& graph)
 	}
 	else
 	{
-		std::string log_text = std::string("[ERROR]: Arithmetic between type " + ShaderCompiler::SetOutputType(inputs[0].type) + " and " + ShaderCompiler::SetOutputType(inputs[1].type));
+		this->isError = true;
 
+		std::string log_text = std::string("[ERROR]: Arithmetic between type " + ShaderCompiler::SetOutputType(inputs[0].type) + " and " + ShaderCompiler::SetOutputType(inputs[1].type));
+			
 		LOG(log_text.c_str());
 	}
 
