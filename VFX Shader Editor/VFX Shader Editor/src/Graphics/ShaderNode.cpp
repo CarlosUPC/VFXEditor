@@ -219,7 +219,7 @@ float2 ShaderNode::CalcNodeSize(ShaderGraph& graph, ShaderNode* node)
 	if (node->type == NODE_TYPE::PBR) width = 200.0f;
 	else if (node->type == NODE_TYPE::TEXTURE_SAMPLER) width = 200.0f;
 	else if (node->type == NODE_TYPE::TEXTURE) width = 150.0f;
-	else if (node->type == NODE_TYPE::MULTIPLY) width = 150.0f;
+	else if (node->type == NODE_TYPE::MULTIPLY || node->type == NODE_TYPE::ADD || node->type == NODE_TYPE::DIVIDE || node->type == NODE_TYPE::SUBTRACT) width = 150.0f;
 	else width = 55.0f * 1.5f;
 
 	return float2(width, 55.0f * node->inputs_size);
@@ -448,8 +448,8 @@ void ShaderNode::DrawInputConnector(ShaderGraph& graph, InputSocket& input, unsi
 			else if (input.type == VALUE_TYPE::TEXTURE2D) ImGui::TextColored(ImVec4(255, 255, 255, 255), "(T2)");
 
 			auto draw_list = ImGui::GetCurrentWindow()->DrawList;
-			ImU32 fillColor = IM_COL32(100, 100, 105, 255);
-			ImU32 outlineColor = IM_COL32(0, 200, 0, 255);
+			ImU32 fillColor = IM_COL32(50, 50, 50, 255);
+			ImU32 outlineColor = IM_COL32(230, 230, 230, 255);
 			draw_list->AddCircleFilled(ImVec2(input.position.x, input.position.y), 10.0f, fillColor, 16);
 			draw_list->AddCircle(ImVec2(input.position.x, input.position.y), 10.0f, outlineColor);
 
@@ -458,12 +458,12 @@ void ShaderNode::DrawInputConnector(ShaderGraph& graph, InputSocket& input, unsi
 			if (SocketHovering(input.position, float2(ImGui::GetIO().MousePos.x, ImGui::GetIO().MousePos.y), 10.0f, 2.0f))
 			{
 				//draw_list->AddCircleFilled(ImVec2(input.position.x, input.position.y), 5.0f - 2.0f, outlineColor);
-				draw_list->AddCircle(ImVec2(input.position.x, input.position.y), 10.0f, ImColor(255, 150, 0));
+				draw_list->AddCircle(ImVec2(input.position.x, input.position.y), 10.0f, ImColor(230, 230, 230));
 
 			}
 			if (input.isLinked)
 			{
-				draw_list->AddCircleFilled(ImVec2(input.position.x, input.position.y), 10.0f - 3.0f, IM_COL32(0, 200, 0, 255));
+				draw_list->AddCircleFilled(ImVec2(input.position.x, input.position.y), 10.0f - 3.0f, IM_COL32(230, 230, 230, 255));
 			}
 		}
 		else
@@ -498,8 +498,8 @@ void ShaderNode::DrawOutputConnector(ShaderGraph& graph, OutputSocket& output, u
 	
 	
 	auto draw_list = ImGui::GetCurrentWindow()->DrawList;
-	ImU32 fillColor = IM_COL32(100, 100, 105, 255);
-	ImU32 outlineColor = IM_COL32(0, 200, 0, 255);
+	ImU32 fillColor = IM_COL32(50, 50, 50, 255);
+	ImU32 outlineColor = IM_COL32(230, 230, 230, 255);
 	draw_list->AddCircleFilled(ImVec2(output.position.x, output.position.y), 10.0f, fillColor, 16);
 	draw_list->AddCircle(ImVec2(output.position.x, output.position.y), 10.0f, outlineColor);
 
@@ -507,12 +507,12 @@ void ShaderNode::DrawOutputConnector(ShaderGraph& graph, OutputSocket& output, u
 
 	if (SocketHovering(output.position, float2(ImGui::GetIO().MousePos.x, ImGui::GetIO().MousePos.y), 10.0f, 2.0f))
 	{
-		draw_list->AddCircle(ImVec2(output.position.x, output.position.y), 10.0f, ImColor(255, 150, 0));
+		draw_list->AddCircle(ImVec2(output.position.x, output.position.y), 10.0f, ImColor(230, 230, 230));
 
 	}
 	if (output.isLinked)
 	{
-		draw_list->AddCircleFilled(ImVec2(output.position.x, output.position.y), 10.0f - 3.0f, IM_COL32(0, 200, 0, 255));
+		draw_list->AddCircleFilled(ImVec2(output.position.x, output.position.y), 10.0f - 3.0f, IM_COL32(230, 230, 230, 255));
 	}
 
 

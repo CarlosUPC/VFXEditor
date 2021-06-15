@@ -31,7 +31,7 @@ void Vector1Node::Update(ShaderGraph& graph)
 	//this->code_str = GLSLAbstactVarFloat(inputs[0].value_str, outputs[0].data_str);
 
 	this->GLSL_Declaration = "";
-	this->GLSL_Definition = SetGLSLDefinition(outputs[0].data_str, inputs[0].values_str[0]);
+	this->GLSL_Definition = SetGLSLDefinition(outputs[0].data_str, inputs[0].value_str);
 
 
 	/*for (unsigned int i = 0; i < inputs.size(); i++)
@@ -67,7 +67,7 @@ void Vector1Node::InspectorUpdate(ShaderGraph& graph)
 
 	if (ImGui::CollapsingHeader("GLSL Abstraction", ImGuiTreeNodeFlags_DefaultOpen))
 	{
-		ImGui::Text(code_str.c_str());
+		ImGui::Text(GLSL_Definition.c_str());
 
 	}
 }
@@ -128,7 +128,7 @@ void Vector2Node::InspectorUpdate(ShaderGraph& graph)
 
 	if (ImGui::CollapsingHeader("GLSL Abstraction", ImGuiTreeNodeFlags_DefaultOpen))
 	{
-		ImGui::Text(code_str.c_str());
+		ImGui::Text(GLSL_Definition.c_str());
 
 	}
 }
@@ -189,7 +189,7 @@ void Vector3Node::InspectorUpdate(ShaderGraph& graph)
 
 	if (ImGui::CollapsingHeader("GLSL Abstraction", ImGuiTreeNodeFlags_DefaultOpen))
 	{
-		ImGui::Text(code_str.c_str());
+		ImGui::Text(GLSL_Definition.c_str());
 
 	}
 }
@@ -256,7 +256,7 @@ void Vector4Node::InspectorUpdate(ShaderGraph& graph)
 
 	if (ImGui::CollapsingHeader("GLSL Abstraction", ImGuiTreeNodeFlags_DefaultOpen))
 	{
-		ImGui::Text(code_str.c_str());
+		ImGui::Text(GLSL_Definition.c_str());
 
 	}
 }

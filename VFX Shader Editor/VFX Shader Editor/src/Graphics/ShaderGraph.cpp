@@ -193,11 +193,18 @@ ShaderNode* ShaderGraph::CreateNode(const char* name, int type, float2 position)
 	case NODE_TYPE::TEXTURE:
 		node = new TextureNode(name, (NODE_TYPE)type, position);
 		break;
+	case NODE_TYPE::ADD:
+		node = new AddNode(name, (NODE_TYPE)type, position);
+		break;
+	case NODE_TYPE::SUBTRACT:
+		node = new SubtractNode(name, (NODE_TYPE)type, position);
+		break;
 	case NODE_TYPE::MULTIPLY:
 		node = new MultiplyNode(name, (NODE_TYPE)type, position);
 		break;
-	
-
+	case NODE_TYPE::DIVIDE:
+		node = new DivideNode(name, (NODE_TYPE)type, position);
+		break;
 	}
 
 	if (node->isUniform)

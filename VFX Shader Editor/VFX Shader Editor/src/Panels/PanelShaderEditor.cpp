@@ -308,7 +308,10 @@ void PanelShaderEditor::AddNewNodePopUp()
 				node_pos.x = hit_pos.x - canvas.m_Scroll.x;
 				node_pos.y = hit_pos.y - canvas.m_Scroll.y;
 
+				CreateNodeOption("Add", NODE_TYPE::ADD, float2(node_pos.x, node_pos.y), current_shader, current_shader->graph);
+				CreateNodeOption("Subtract", NODE_TYPE::SUBTRACT, float2(node_pos.x, node_pos.y), current_shader, current_shader->graph);
 				CreateNodeOption("Multiply", NODE_TYPE::MULTIPLY, float2(node_pos.x, node_pos.y), current_shader, current_shader->graph);
+				CreateNodeOption("Divide", NODE_TYPE::DIVIDE, float2(node_pos.x, node_pos.y), current_shader, current_shader->graph);
 
 				ImGui::TreePop();
 			}
