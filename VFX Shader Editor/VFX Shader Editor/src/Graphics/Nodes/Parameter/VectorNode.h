@@ -13,6 +13,9 @@ public:
 	void InspectorUpdate(ShaderGraph& graph) override;
 	std::string GLSLAbstactVarFloat(const std::string& value, const std::string& name);
 
+	std::string SetGLSLDeclaration(const std::string& out_name);
+	std::string SetGLSLDefinition(const std::string& out_name, const std::string& value_x);
+
 private:
 	float output;
 	std::vector<std::string> input_code;
@@ -30,7 +33,8 @@ public:
 	void InspectorUpdate(ShaderGraph& graph) override;
 	std::string GLSLAbstactVarVec2(const std::string& value_x, const std::string& value_y, const std::string& name);
 	
-
+	std::string SetGLSLDeclaration(const std::string& out_name);
+	std::string SetGLSLDefinition(const std::string& out_name, const std::string& value_x, const std::string& value_y);
 	
 private:
 	
@@ -47,6 +51,10 @@ public:
 	void InspectorUpdate(ShaderGraph& graph) override;
 	std::string GLSLAbstactVarVec3(const std::string& value_x, const std::string& value_y, const std::string& value_z, const std::string& name);
 
+	std::string SetGLSLDeclaration(const std::string& out_name);
+	std::string SetGLSLDefinition(const std::string& out_name, const std::string& value_x, const std::string& value_y, const std::string& value_z);
+
+
 private:
 
 };
@@ -61,6 +69,9 @@ public:
 	void InspectorUpdate(ShaderGraph& graph) override;
 	
 	std::string GLSLAbstactVarVec4(const std::string& value_x, const std::string& value_y, const std::string& value_z, const std::string& value_w, const std::string& name);
+
+	std::string SetGLSLDeclaration(const std::string& out_name);
+	std::string SetGLSLDefinition(const std::string& out_name, const std::string& value_x, const std::string& value_y, const std::string& value_z, const std::string& value_w);
 
 private:
 

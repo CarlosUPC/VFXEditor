@@ -22,6 +22,7 @@ enum  NODE_TYPE
 	VECTOR4,
 	TEXTURE_SAMPLER,
 	TEXTURE,
+	MULTIPLY,
 	PBR,
 
 	UNKNOWN
@@ -247,6 +248,10 @@ public:
 	void SetDeclared(bool declared) { isVariableDeclared = declared; }
 
 	void CheckNodeConnections(ShaderNode* current_node, ShaderGraph& graph);
+	void SetValuesByType(float4& value, std::string& finalOutput, VALUE_TYPE type);
+	void SetValuesByType(InputSocket& input, std::string& finalOutput, VALUE_TYPE type);
+	std::string SetType(VALUE_TYPE type);
+
 public:
 	//core info
 	NODE_TYPE type;

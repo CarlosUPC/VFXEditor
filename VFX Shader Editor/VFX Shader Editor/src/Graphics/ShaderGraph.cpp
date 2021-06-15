@@ -7,6 +7,7 @@
 #include "Nodes/PBRNode.h"
 #include "Nodes/Parameter/VectorNode.h"
 #include "Nodes/Parameter/TextureSamplerNode.h"
+#include "Nodes/Math/MathBasicNode.h"
 
 #include "ShaderUniform.h"
 #include "Texture.h"
@@ -191,6 +192,9 @@ ShaderNode* ShaderGraph::CreateNode(const char* name, int type, float2 position)
 		break;
 	case NODE_TYPE::TEXTURE:
 		node = new TextureNode(name, (NODE_TYPE)type, position);
+		break;
+	case NODE_TYPE::MULTIPLY:
+		node = new MultiplyNode(name, (NODE_TYPE)type, position);
 		break;
 	
 

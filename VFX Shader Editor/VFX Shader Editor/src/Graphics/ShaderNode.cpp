@@ -219,6 +219,7 @@ float2 ShaderNode::CalcNodeSize(ShaderGraph& graph, ShaderNode* node)
 	if (node->type == NODE_TYPE::PBR) width = 200.0f;
 	else if (node->type == NODE_TYPE::TEXTURE_SAMPLER) width = 200.0f;
 	else if (node->type == NODE_TYPE::TEXTURE) width = 150.0f;
+	else if (node->type == NODE_TYPE::MULTIPLY) width = 150.0f;
 	else width = 55.0f * 1.5f;
 
 	return float2(width, 55.0f * node->inputs_size);
@@ -722,7 +723,7 @@ std::string ShaderNode::GetOutputDefinition(ShaderCompiler& compiler)
 
 		if (input.isLinked && input.context_type != CONTEXT_TYPE::PARAMETER)
 		{
-			input.link_ref->output_node->GetOutputDefinition(compiler);
+			finalOutput += input.link_ref->output_node->GetOutputDefinition(compiler);
 		}
 
 	}
@@ -750,7 +751,7 @@ std::string ShaderNode::GetOutputDeclaration(ShaderCompiler& compiler)
 		if (input.isLinked && input.context_type != CONTEXT_TYPE::PARAMETER)
 		{
 			/*if(!input.link_ref->output_node->IsDeclared())*/
-			input.link_ref->output_node->GetOutputDeclaration(compiler);
+			finalOutput += input.link_ref->output_node->GetOutputDeclaration(compiler);
 
 		}
 
@@ -777,6 +778,29 @@ void ShaderNode::CheckNodeConnections(ShaderNode* current_node, ShaderGraph& gra
 			std::string outVariable = input.link_ref->output_node->outputs[input.link_ref->output_socket].data_str;
 			input.data_str = outVariable;
 
+			//Update Input Node type
+			//std::string outType = SetType(input.link_ref->output_node->outputs[input.link_ref->output_socket].type);
+
+			if (input.type != input.link_ref->output_node->outputs[input.link_ref->output_socket].type)
+			{
+				switch (input.type)
+				{
+				case VALUE_TYPE::FLOAT1:
+					input.type = input.link_ref->output_node->outputs[input.link_ref->output_socket].type;
+					break;
+				case VALUE_TYPE::FLOAT2:
+					input.type = input.link_ref->output_node->outputs[input.link_ref->output_socket].type;
+					break;
+				case VALUE_TYPE::FLOAT3:
+					input.type = input.link_ref->output_node->outputs[input.link_ref->output_socket].type;
+					break;
+				case VALUE_TYPE::FLOAT4:
+					input.type = input.link_ref->output_node->outputs[input.link_ref->output_socket].type;
+					break;
+				}
+			}
+
+
 			//Update Uniform value
 			if (input.link_ref->output_node->outputs[input.link_ref->output_socket].type == VALUE_TYPE::TEXTURE2D)
 			{
@@ -788,6 +812,8 @@ void ShaderNode::CheckNodeConnections(ShaderNode* current_node, ShaderGraph& gra
 					static_cast<UniformTexture*>(uniform->second)->SetTextureID(textureID);
 				}
 			}
+
+			
 		}
 		else
 		{
@@ -796,6 +822,56 @@ void ShaderNode::CheckNodeConnections(ShaderNode* current_node, ShaderGraph& gra
 	}
 
 
+}
+
+void ShaderNode::SetValuesByType(float4& value, std::string& finalOutput, VALUE_TYPE type)
+{
+
+	switch (type)
+	{
+	case VALUE_TYPE::FLOAT1:	finalOutput = std::to_string(value.x); break;
+	case VALUE_TYPE::FLOAT2:	finalOutput =   "vec2(" + std::to_string(value.x) + ", " + std::to_string(value.y) + ")"; break;
+	case VALUE_TYPE::FLOAT3:	finalOutput =  "vec3(" + std::to_string(value.x) + ", " + std::to_string(value.y) + ", " + std::to_string(value.z) + ")"; break;
+	case VALUE_TYPE::FLOAT4:	finalOutput =  "vec4(" + std::to_string(value.x) + ", " + std::to_string(value.y) + ", " + std::to_string(value.z) + ", " + std::to_string(value.w) + ")"; break;
+	}
+
+}
+
+void ShaderNode::SetValuesByType(InputSocket& input, std::string& finalOutput, VALUE_TYPE type)
+{
+	switch (type)
+	{
+	case VALUE_TYPE::FLOAT1:	
+		finalOutput = std::to_string(input.value4.x);
+		input.value1 = input.value4.x;
+		break;
+	case VALUE_TYPE::FLOAT2:	
+		finalOutput = "vec2(" + std::to_string(input.value4.x) + ", " + std::to_string(input.value4.y) + ")"; 
+		input.value2 = float2(input.value4.x, input.value4.y);
+		break;
+	case VALUE_TYPE::FLOAT3:	
+		finalOutput = "vec3(" + std::to_string(input.value4.x) + ", " + std::to_string(input.value4.y) + ", " + std::to_string(input.value4.z) + ")";
+		input.value3 = float3(input.value4.x, input.value4.y, input.value4.z);
+		break;
+	case VALUE_TYPE::FLOAT4:	
+		finalOutput = "vec4(" + std::to_string(input.value4.x) + ", " + std::to_string(input.value4.y) + ", " + std::to_string(input.value4.z) + ", " + std::to_string(input.value4.w) + ")";
+		input.value4 = input.value4;
+		break;
+	}
+}
+
+std::string ShaderNode::SetType(VALUE_TYPE type)
+{
+	std::string	finalOutput = "";
+	switch (type)
+	{
+	case VALUE_TYPE::FLOAT1:	finalOutput = "float ";	break;
+	case VALUE_TYPE::FLOAT2:	finalOutput = "vec2 ";	break;
+	case VALUE_TYPE::FLOAT3:	finalOutput = "vec3 ";	break;
+	case VALUE_TYPE::FLOAT4:	finalOutput = "vec4 ";	break;
+	}
+
+	return finalOutput;
 }
 
 
