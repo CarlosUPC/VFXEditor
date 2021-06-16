@@ -20,6 +20,7 @@ enum  NODE_TYPE
 	VECTOR2,
 	VECTOR3,
 	VECTOR4,
+	COLOR,
 	TEXTURE_SAMPLER,
 	TEXTURE,
 	ADD,
@@ -38,6 +39,7 @@ enum VALUE_TYPE
 	FLOAT3,
 	FLOAT4,
 	TEXTURE2D,
+	COLOR3,
 	NONE
 };
 
@@ -284,6 +286,7 @@ public:
 	u32 uniformLocation = 0;
 
 	bool isVariableDeclared = false;
+	bool open_picker = false;
 
 protected:
 	std::string code_str;

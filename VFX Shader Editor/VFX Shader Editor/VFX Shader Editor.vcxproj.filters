@@ -210,6 +210,9 @@
     <ClCompile Include="src\Graphics\Nodes\Math\MathBasicNode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Utilities\CorlorPicker.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Dependencies\ImGui\imconfig.h">
@@ -498,6 +501,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Graphics\Nodes\Math\MathBasicNode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Utilities\CorlorPicker.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

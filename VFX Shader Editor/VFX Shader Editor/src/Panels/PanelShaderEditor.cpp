@@ -288,6 +288,7 @@ void PanelShaderEditor::AddNewNodePopUp()
 				CreateNodeOption("Vector2", NODE_TYPE::VECTOR2, float2(node_pos.x, node_pos.y), current_shader, current_shader->graph);
 				CreateNodeOption("Vector3", NODE_TYPE::VECTOR3, float2(node_pos.x, node_pos.y), current_shader, current_shader->graph);
 				CreateNodeOption("Vector4", NODE_TYPE::VECTOR4, float2(node_pos.x, node_pos.y), current_shader, current_shader->graph);
+				CreateNodeOption("Color", NODE_TYPE::COLOR, float2(node_pos.x, node_pos.y), current_shader, current_shader->graph);
 
 				ImGui::TreePop();
 			}

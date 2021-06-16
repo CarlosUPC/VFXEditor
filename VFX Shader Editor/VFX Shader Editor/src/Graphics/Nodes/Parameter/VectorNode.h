@@ -2,6 +2,7 @@
 
 
 #include "ShaderNode.h"
+#include "CorlorPicker.h"
 
 class Vector1Node : public ShaderNode
 {
@@ -59,6 +60,7 @@ private:
 
 };
 
+
 class Vector4Node : public ShaderNode
 {
 public:
@@ -74,5 +76,26 @@ public:
 	std::string SetGLSLDefinition(const std::string& out_name, const std::string& value_x, const std::string& value_y, const std::string& value_z, const std::string& value_w);
 
 private:
+
+};
+
+
+
+class ColorNode : public ShaderNode
+{
+public:
+	ColorNode();
+	ColorNode(const char* name, NODE_TYPE type, float2 position);
+
+	void Update(ShaderGraph& graph) override;
+	void InspectorUpdate(ShaderGraph& graph) override;
+
+	std::string SetGLSLDeclaration(const std::string& out_name);
+	std::string SetGLSLDefinition(const std::string& out_name, const std::string& value);
+
+public:
+	ColorPicker picker;
+	bool open = false;
+	ImGuiColorEditFlags m_edit_flags;
 
 };

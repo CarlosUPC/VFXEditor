@@ -62,6 +62,7 @@ void ShaderGraph::Draw()
 	{
 		ImGui::PushID((*it)->UID);
 
+		
 		//Draw stuff -------
 		(*it)->DrawLines(*this);
 		(*it)->DrawNode(*this);
@@ -96,10 +97,13 @@ void ShaderGraph::Input()
 
 		ImGui::PushID((*it)->UID);
 
+		
+
 		//Mouse Input stuff ------
 		(*it)->InputNode(*this);
 		(*it)->InputSocketInputs(*this, (*it)->inputs.size());
 		(*it)->InputSocketOutputs(*this, (*it)->outputs.size());
+
 
 		ImGui::PopID();
 	}
@@ -186,6 +190,9 @@ ShaderNode* ShaderGraph::CreateNode(const char* name, int type, float2 position)
 		break;
 	case NODE_TYPE::VECTOR4:
 		node = new Vector4Node(name, (NODE_TYPE)type, position);
+		break;
+	case NODE_TYPE::COLOR:
+		node = new ColorNode(name, (NODE_TYPE)type, position);
 		break;
 	case NODE_TYPE::TEXTURE_SAMPLER:
 		node = new TextureSamplerNode(name, (NODE_TYPE)type, position);

@@ -221,6 +221,7 @@
     <ClCompile Include="src\Resources\ResourceShader.cpp" />
     <ClCompile Include="src\Tools\Timer.cpp" />
     <ClCompile Include="src\Utilities\Color.cpp" />
+    <ClCompile Include="src\Utilities\CorlorPicker.cpp" />
     <ClCompile Include="src\Utilities\log.cpp" />
     <ClCompile Include="src\Utilities\Primitive.cpp" />
     <ClCompile Include="src\Utilities\Texture.cpp" />
@@ -320,6 +321,7 @@
     <ClInclude Include="src\Resources\ResourceShader.h" />
     <ClInclude Include="src\Tools\Timer.h" />
     <ClInclude Include="src\Utilities\Color.h" />
+    <ClInclude Include="src\Utilities\CorlorPicker.h" />
     <ClInclude Include="src\Utilities\Primitive.h" />
     <ClInclude Include="src\Utilities\Texture.h" />
   </ItemGroup>

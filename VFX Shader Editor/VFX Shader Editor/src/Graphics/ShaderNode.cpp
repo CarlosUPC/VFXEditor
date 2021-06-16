@@ -3,6 +3,9 @@
 #include "Random.h"
 #include "ShaderUniform.h"
 #include "Application.h"
+#include "Nodes/Parameter/VectorNode.h"
+#include "CorlorPicker.h"
+
 
 ShaderNode::ShaderNode()
 {
@@ -219,6 +222,7 @@ float2 ShaderNode::CalcNodeSize(ShaderGraph& graph, ShaderNode* node)
 	if (node->type == NODE_TYPE::PBR) width = 200.0f;
 	else if (node->type == NODE_TYPE::TEXTURE_SAMPLER) width = 200.0f;
 	else if (node->type == NODE_TYPE::TEXTURE) width = 150.0f;
+	else if (node->type == NODE_TYPE::COLOR) width = 180.0f;
 	else if (node->type == NODE_TYPE::MULTIPLY || node->type == NODE_TYPE::ADD || node->type == NODE_TYPE::DIVIDE || node->type == NODE_TYPE::SUBTRACT) width = 150.0f;
 	else width = 55.0f * 1.5f;
 
@@ -358,11 +362,11 @@ void ShaderNode::DrawInputs(ShaderGraph& graph, unsigned int numInputs, unsigned
 				ImGui::Image((ImTextureID)input.texid, ImVec2(110, 110));
 			}
 
-			//float num = 2.0f;
-			//ImGui::InputFloat(input.name.c_str(), &num);
-			//ImGui::SetNextItemWidth(400 * graph.scale);
-			//ImGui::SameLine(50.0f);
-			//ImGui::Text(input.name.c_str());
+		}
+		else if (input.type == VALUE_TYPE::COLOR3)
+		{
+			ColorNode* colorNode = static_cast<ColorNode*>(this);
+			colorNode->picker.DisplayColorPicker(ImVec2(input.position.x, input.position.y), input.value3);
 		}
 
 		//ImGui::PushID(this->UID);
@@ -1213,5 +1217,41 @@ void InputSocket::DisplayInputSocketDetails(ShaderGraph& graph, ShaderNode& node
 		}
 
 	}
+	else if (type == VALUE_TYPE::COLOR3)
+	{
+		
+		/*static ImVec4 m_backup_color;
+		static ImVec4 m_color;
 
+		m_backup_color.x = value3.x;
+		m_backup_color.y = value3.y;
+		m_backup_color.z = value3.z;
+		m_backup_color.w = 1.0;*/
+
+		ColorNode* colNode = static_cast<ColorNode*>(&node);
+
+		/*colNode->m_edit_flags |= ImGuiColorEditFlags_AlphaBar;
+		colNode->m_edit_flags |= ImGuiColorEditFlags_NoSidePreview;
+		colNode->m_edit_flags |= ImGuiColorEditFlags_PickerHueBar;
+		colNode->m_edit_flags |= ImGuiColorEditFlags_Float;*/
+
+
+		colNode->picker.DisplayInspector(colNode->open, value3);
+
+	/*	ImGui::Text("ColorPicker");
+		ImGui::Separator();
+		ImGui::ColorPicker4("##myPicker", (float*)&m_color, colNode->m_edit_flags);
+		ImGui::SameLine();
+
+		ImGui::BeginGroup();
+		ImGui::Text("Current");
+		m_color = ImVec4(value3.x, value3.y, value3.z, 1.0f);
+		ImGui::ColorButton("##currentColor", m_color, ImGuiColorEditFlags_NoPicker | ImGuiColorEditFlags_AlphaPreviewHalf, ImVec2(60, 40));
+		ImGui::Text("Previous");
+		if (ImGui::ColorButton("##prevColor", m_backup_color, ImGuiColorEditFlags_NoPicker | ImGuiColorEditFlags_AlphaPreviewHalf, ImVec2(60, 40)))
+			value3 = float3(m_backup_color.x, m_backup_color.y, m_backup_color.z);
+		
+		ImGui::EndGroup();*/
+		
+	}
 }

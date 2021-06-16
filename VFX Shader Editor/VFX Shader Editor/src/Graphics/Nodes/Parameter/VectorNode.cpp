@@ -271,3 +271,60 @@ std::string Vector4Node::SetGLSLDefinition(const std::string& out_name, const st
 {
 	return std::string("	vec4 " + out_name + " = " + "vec4(" + value_x + "," + value_y + "," + value_z + "," + value_w + ");\n");
 }
+
+
+
+ColorNode::ColorNode()
+{
+}
+
+ColorNode::ColorNode(const char* name, NODE_TYPE type, float2 position)
+	: ShaderNode(name, type, position)
+{
+
+	inputs.push_back(InputSocket("In", VALUE_TYPE::COLOR3, float3(0.0f), CONTEXT_TYPE::PARAMETER));
+	outputs.push_back(OutputSocket(VALUE_TYPE::FLOAT3));
+
+	//temp hardcoded
+	inputs_size = 1.5;
+	outputs_size = 1;
+
+}
+
+void ColorNode::Update(ShaderGraph& graph)
+{
+	//Out Variable
+	outputs[0].data_str = std::string(name) + std::to_string(UID);
+	//Out Type
+	outputs[0].type_str = ShaderCompiler::SetOutputType(outputs[0].type);
+
+	//Ins
+	inputs[0].value_str = std::to_string(inputs[0].value3.x) + "," + std::to_string(inputs[0].value3.y) + "," + std::to_string(inputs[0].value3.z);
+
+
+	this->GLSL_Definition = SetGLSLDefinition(outputs[0].data_str, inputs[0].value_str);
+}
+
+void ColorNode::InspectorUpdate(ShaderGraph& graph)
+{
+	if (ImGui::CollapsingHeader("Node Configuration", ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		for (unsigned int i = 0; i < inputs.size(); i++)
+		{
+			InputSocket& input = this->inputs[i];
+
+			input.DisplayInputSocketDetails(graph, *this);
+		}
+	}
+
+	if (ImGui::CollapsingHeader("GLSL Abstraction", ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		ImGui::Text(GLSL_Definition.c_str());
+
+	}
+}
+
+std::string ColorNode::SetGLSLDefinition(const std::string& out_name, const std::string& value)
+{
+	return std::string("	vec3 " + out_name + " = " + "vec3(" + value + ");\n");
+}
