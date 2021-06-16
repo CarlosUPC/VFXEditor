@@ -310,6 +310,7 @@ void PanelShaderEditor::AddNewNodePopUp()
 				node_pos.y = hit_pos.y - canvas.m_Scroll.y;
 
 				CreateNodeOption("UV", NODE_TYPE::UV, float2(node_pos.x, node_pos.y), current_shader, current_shader->graph);
+				CreateNodeOption("Tiling And Offset", NODE_TYPE::TILING_OFFSET, float2(node_pos.x, node_pos.y), current_shader, current_shader->graph);
 				
 
 				ImGui::TreePop();

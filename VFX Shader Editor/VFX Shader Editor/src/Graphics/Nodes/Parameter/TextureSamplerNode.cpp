@@ -67,70 +67,78 @@ void TextureSamplerNode::Update(ShaderGraph& graph)
 
 void TextureSamplerNode::InspectorUpdate(ShaderGraph& graph)
 {
-
-	//If node has inputs from other nodes, priorize their output values
-	for (unsigned int i = 0; i < inputs.size(); i++)
+	if (ImGui::CollapsingHeader("Node Configuration", ImGuiTreeNodeFlags_DefaultOpen))
 	{
-		InputSocket& input = this->inputs[i];
-
-		if (input.isLinked && input.type == VALUE_TYPE::TEXTURE2D)
-			return;
-	}
-
-
-	std::string item_name = std::string("     ") + graph.texIndices[0];
-	static std::string current_item = item_name;
-
-	ImGuiStyle& style = ImGui::GetStyle();
-	style.FrameRounding = 2.0f;
-	style.FrameBorderSize = 1.0f;
-
-	static uint selected_idx = 0;
-
-	if (ImGui::BeginCombo("##combo", current_item.c_str())) // The second parameter is the label previewed before opening the combo.
-	{
-		for (int idx = 0; idx < graph.texIndices.size(); idx++)
+		//If node has inputs from other nodes, priorize their output values
+		for (unsigned int i = 0; i < inputs.size(); i++)
 		{
-			bool is_selected = (current_item == graph.texIndices[idx].c_str());
-			auto drawList = ImGui::GetWindowDrawList();
+			InputSocket& input = this->inputs[i];
 
-			std::string item_name = std::string("     ") + graph.texIndices[idx];
-
-			if (ImGui::Selectable(item_name.c_str(), is_selected)) {
-				
-				selected_idx = idx;
-				current_item = std::string("     ") + graph.texIndices[idx];
+			if (input.isLinked && input.type == VALUE_TYPE::TEXTURE2D)
+				return;
+		}
 
 
-				auto uniform = graph.uniforms.find(std::string(name) + std::to_string(UID));
-				if (uniform != graph.uniforms.end())
-				{
-					static_cast<UniformTexture*>(uniform->second)->SetTextureID(App->textures[idx].handle);
+		std::string item_name = std::string("     ") + graph.texIndices[0];
+		static std::string current_item = item_name;
+
+		ImGuiStyle& style = ImGui::GetStyle();
+		style.FrameRounding = 2.0f;
+		style.FrameBorderSize = 1.0f;
+
+		static uint selected_idx = 0;
+
+		if (ImGui::BeginCombo("##combo", current_item.c_str())) // The second parameter is the label previewed before opening the combo.
+		{
+			for (int idx = 0; idx < graph.texIndices.size(); idx++)
+			{
+				bool is_selected = (current_item == graph.texIndices[idx].c_str());
+				auto drawList = ImGui::GetWindowDrawList();
+
+				std::string item_name = std::string("     ") + graph.texIndices[idx];
+
+				if (ImGui::Selectable(item_name.c_str(), is_selected)) {
+
+					selected_idx = idx;
+					current_item = std::string("     ") + graph.texIndices[idx];
+
+
+					auto uniform = graph.uniforms.find(std::string(name) + std::to_string(UID));
+					if (uniform != graph.uniforms.end())
+					{
+						static_cast<UniformTexture*>(uniform->second)->SetTextureID(App->textures[idx].handle);
+					}
+
 				}
 
+				auto rect_min = ImGui::GetItemRectMin();
+				auto rect_max = ImGui::GetItemRectMax();
+				rect_max.x = rect_min.x + 32;
+				drawList->AddImage((ImTextureID)App->textures[idx].handle, rect_min, rect_max, ImVec2(0, 0), ImVec2(1, 1), IM_COL32(255, 255, 255, 255));
+
+				if (is_selected)
+					ImGui::SetItemDefaultFocus();
 			}
 
+			ImGui::EndCombo();
+
+
+		}
+		else
+		{
 			auto rect_min = ImGui::GetItemRectMin();
 			auto rect_max = ImGui::GetItemRectMax();
 			rect_max.x = rect_min.x + 32;
-			drawList->AddImage((ImTextureID)App->textures[idx].handle, rect_min, rect_max, ImVec2(0, 0), ImVec2(1, 1), IM_COL32(255, 255, 255, 255));
+			auto drawList = ImGui::GetWindowDrawList();
+			drawList->AddImage((ImTextureID)App->textures[selected_idx].handle, rect_min, rect_max, ImVec2(0, 0), ImVec2(1, 1), IM_COL32(255, 255, 255, 255));
 
-			if (is_selected)
-				ImGui::SetItemDefaultFocus();
 		}
 
-		ImGui::EndCombo();
-
-		
 	}
-	else
-	{
-		auto rect_min = ImGui::GetItemRectMin();
-		auto rect_max = ImGui::GetItemRectMax();
-		rect_max.x = rect_min.x + 32;
-		auto drawList = ImGui::GetWindowDrawList();
-		drawList->AddImage((ImTextureID)App->textures[selected_idx].handle, rect_min, rect_max, ImVec2(0, 0), ImVec2(1, 1), IM_COL32(255, 255, 255, 255));
 
+	if (ImGui::CollapsingHeader("GLSL Abstraction", ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		ImGui::Text(GLSL_Definition.c_str());
 	}
 
 

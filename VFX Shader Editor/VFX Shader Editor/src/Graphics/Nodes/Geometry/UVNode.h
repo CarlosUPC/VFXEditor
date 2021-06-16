@@ -22,3 +22,21 @@ private:
 	
 
 };
+
+class TilingOffsetNode : public ShaderNode
+{
+public:
+	TilingOffsetNode();
+	TilingOffsetNode(const char* name, NODE_TYPE type, float2 position);
+
+	void Update(ShaderGraph& graph) override;
+	void InspectorUpdate(ShaderGraph& graph) override;
+
+	std::string SetGLSLDeclaration(const std::string& out_name);
+	std::string SetGLSLDefinition(const std::string& out_name, const std::string& uv, const std::string& tiling, const std::string& offset);
+
+private:
+	
+
+
+};

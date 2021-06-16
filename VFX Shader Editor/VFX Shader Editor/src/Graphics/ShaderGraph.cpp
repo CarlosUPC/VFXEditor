@@ -204,6 +204,9 @@ ShaderNode* ShaderGraph::CreateNode(const char* name, int type, float2 position)
 	case NODE_TYPE::UV:
 		node = new UVNode(name, (NODE_TYPE)type, position);
 		break;
+	case NODE_TYPE::TILING_OFFSET:
+		node = new TilingOffsetNode(name, (NODE_TYPE)type, position);
+		break;
 	case NODE_TYPE::ADD:
 		node = new AddNode(name, (NODE_TYPE)type, position);
 		break;

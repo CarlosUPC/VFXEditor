@@ -117,7 +117,7 @@ struct InputSocket
 		 this->type = type;
 		 this->name = name;
 		 
-		 value1 = 5.f;
+		 value4 = float4(0.f, 0.f, 0.f, 0.f);
 	 }
 
 	 InputSocket(const char* name, VALUE_TYPE type, CONTEXT_TYPE context)
