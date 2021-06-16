@@ -223,7 +223,7 @@ float2 ShaderNode::CalcNodeSize(ShaderGraph& graph, ShaderNode* node)
 	else if (node->type == NODE_TYPE::TEXTURE_SAMPLER) width = 200.0f;
 	else if (node->type == NODE_TYPE::TEXTURE) width = 150.0f;
 	else if (node->type == NODE_TYPE::UV) width = 120.0f;
-	else if (node->type == NODE_TYPE::TILING_OFFSET) width = 220.0f;
+	else if (node->type == NODE_TYPE::TILING_OFFSET || node->type == NODE_TYPE::PANNER) width = 200.0f;
 	else if (node->type == NODE_TYPE::COLOR) width = 180.0f;
 	else if (node->type == NODE_TYPE::MULTIPLY || node->type == NODE_TYPE::ADD || node->type == NODE_TYPE::DIVIDE || node->type == NODE_TYPE::SUBTRACT) width = 150.0f;
 	else width = 55.0f * 1.5f;

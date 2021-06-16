@@ -178,3 +178,87 @@ std::string TilingOffsetNode::SetGLSLDefinition(const std::string& out_name, con
 {
 	return std::string("	vec2 " + out_name + " = " + uv + " * " + tiling + " + " + offset + ";\n");
 }
+
+
+
+
+
+PannerNode::PannerNode()
+{
+}
+
+PannerNode::PannerNode(const char* name, NODE_TYPE type, float2 position)
+	: ShaderNode(name, type, position)
+{
+	inputs.push_back(InputSocket("UV", VALUE_TYPE::FLOAT2));
+	inputs.push_back(InputSocket("Time", VALUE_TYPE::FLOAT1));
+	inputs.push_back(InputSocket("Speed", VALUE_TYPE::FLOAT2));
+	outputs.push_back(OutputSocket(VALUE_TYPE::FLOAT2));
+
+	//temp hardcoded
+	inputs_size = 3;
+	outputs_size = 1;
+
+
+}
+
+void PannerNode::Update(ShaderGraph& graph)
+{
+	//Outs
+	outputs[0].data_str = name + std::to_string(UID);
+	outputs[0].type_str = ShaderCompiler::SetOutputType(outputs[0].type);
+
+	//Ins
+	inputs[0].data_str = "TexCoord";
+	inputs[1].data_str = "Time";
+	inputs[2].data_str = "vec2(" + std::to_string(inputs[2].value2.x) + " , " + std::to_string(inputs[2].value2.y) + ")";
+
+	//Check For Ins Variables
+	CheckNodeConnections(this, graph);
+
+	//GLSL Abstraction
+	this->GLSL_Declaration = SetGLSLDeclaration(outputs[0].data_str);
+	this->GLSL_Definition = SetGLSLDefinition(outputs[0].data_str, inputs[0].data_str, inputs[1].data_str, inputs[2].data_str);
+
+}
+
+void PannerNode::InspectorUpdate(ShaderGraph& graph)
+{
+	if (ImGui::CollapsingHeader("Node Configuration", ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		//Speed ------------
+
+		if (!inputs[2].isLinked)
+		{
+			ImGui::PushID("##X");
+			ImGui::Text("Speed X: "); ImGui::SameLine();
+			ImGui::DragFloat("##speedx", &inputs[2].value2.x, 0.1f, -9999999.0f, 9999999.0f, "%.2f");
+			ImGui::PopID();
+
+			ImGui::PushID("##Y");
+			ImGui::Text("Speed Y: "); ImGui::SameLine();
+			ImGui::DragFloat("##speedy", &inputs[2].value2.y, 0.1f, -9999999.0f, 9999999.0f, "%.2f");
+			ImGui::PopID();
+		}
+
+
+	}
+
+	if (ImGui::CollapsingHeader("GLSL Abstraction", ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		ImGui::Text(GLSL_Definition.c_str());
+	}
+
+
+
+}
+
+std::string PannerNode::SetGLSLDeclaration(const std::string& out_name)
+{
+	return std::string();
+}
+
+std::string PannerNode::SetGLSLDefinition(const std::string& out_name, const std::string& uv, const std::string& time, const std::string& speed)
+{
+	return std::string("	vec2 " + out_name + " = " + uv + " + " + speed + " * " + time + ";\n");
+}

@@ -40,3 +40,21 @@ private:
 
 
 };
+
+class PannerNode : public ShaderNode
+{
+public:
+	PannerNode();
+	PannerNode(const char* name, NODE_TYPE type, float2 position);
+
+	void Update(ShaderGraph& graph) override;
+	void InspectorUpdate(ShaderGraph& graph) override;
+
+	std::string SetGLSLDeclaration(const std::string& out_name);
+	std::string SetGLSLDefinition(const std::string& out_name, const std::string& uv, const std::string& time, const std::string& speed);
+
+private:
+
+
+
+};
