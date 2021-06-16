@@ -82,6 +82,7 @@ void PanelShaderEditor::Draw()
 	ImGui::SameLine();
 	if (ImGui::Button("Compile")) {
 		current_shader->graph->CompileShader(current_shader);
+		current_shader->graph->startup_time.Start();
 	}
 
 
@@ -289,6 +290,7 @@ void PanelShaderEditor::AddNewNodePopUp()
 				CreateNodeOption("Vector3", NODE_TYPE::VECTOR3, float2(node_pos.x, node_pos.y), current_shader, current_shader->graph);
 				CreateNodeOption("Vector4", NODE_TYPE::VECTOR4, float2(node_pos.x, node_pos.y), current_shader, current_shader->graph);
 				CreateNodeOption("Color", NODE_TYPE::COLOR, float2(node_pos.x, node_pos.y), current_shader, current_shader->graph);
+				CreateNodeOption("Time", NODE_TYPE::TIME, float2(node_pos.x, node_pos.y), current_shader, current_shader->graph);
 
 				ImGui::TreePop();
 			}

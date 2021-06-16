@@ -27,6 +27,7 @@ public:
 	void CalcFrameTime();
 	update_state Update();
 	bool CleanUp();
+
 private:
 	void AddModule(Module* module);
 
@@ -44,6 +45,7 @@ public:
 private:
 	std::list<Module*> modules;
 	Timer timer;
+	
 	float dt;
 };
 

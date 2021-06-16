@@ -222,6 +222,9 @@ ShaderNode* ShaderGraph::CreateNode(const char* name, int type, float2 position)
 	case NODE_TYPE::DIVIDE:
 		node = new DivideNode(name, (NODE_TYPE)type, position);
 		break;
+	case NODE_TYPE::TIME:
+		node = new TimeNode(name, (NODE_TYPE)type, position);
+		break;
 	}
 
 	if (node->isUniform)
@@ -234,6 +237,18 @@ ShaderNode* ShaderGraph::CreateNode(const char* name, int type, float2 position)
 				std::string uName = std::string(node->name) + std::to_string(node->UID);
 				node->uniformLocation = this->textureSamplerLocation++;
 				UniformTexture* uniform = new UniformTexture(uName, App->textures[defaultTexIdx].handle, node->uniformLocation);
+				if (uniform)
+				{
+					this->uniforms[uniform->GetName()] = uniform;
+				}
+
+				break;
+			}
+			case NODE_TYPE::TIME:
+			{
+				std::string uName = std::string(node->name) + std::to_string(node->UID);
+				node->uniformLocation = this->textureSamplerLocation++;
+				UniformFloat* uniform = new UniformFloat(uName, GetTimeSinceLastCompilation(), node->uniformLocation);
 				if (uniform)
 				{
 					this->uniforms[uniform->GetName()] = uniform;
@@ -269,6 +284,11 @@ void ShaderGraph::CompileShader(ResourceShader* shader)
 void ShaderGraph::SetScrollOffset(float2& offset)
 {
 	this->scrolling = offset;
+}
+
+float ShaderGraph::GetTimeSinceLastCompilation()
+{
+	return (float)startup_time.ReadTime() / 1000.f;
 }
 
 ShaderCompiler::ShaderCompiler( ShaderGraph& g)

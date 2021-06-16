@@ -52,6 +52,7 @@ bool Application::Init()
 
 	Random::StartRNGSeed();
 
+	
 	return ret;
 }
 

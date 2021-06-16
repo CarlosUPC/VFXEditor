@@ -25,6 +25,7 @@ public:
 	void SetUniformMat4f(const char* name, float* value) const;
 
 	void BindTexture(const char* name, const u32& texID, const u32 index);
+	void SetUniform1f(const char* name, const float val);
 
 private:
 

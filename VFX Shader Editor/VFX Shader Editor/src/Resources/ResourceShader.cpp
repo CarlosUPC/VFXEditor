@@ -125,6 +125,15 @@ void ResourceShader::BindTexture(const char* name, const u32& texID, const u32 i
 
 }
 
+void ResourceShader::SetUniform1f(const char* name, const float val)
+{
+	auto location = graph->locations.find(name);
+	if (location != graph->locations.end())
+	{
+		glUniform1f(location->second, val);
+	}
+}
+
 
 uint ResourceShader::CompileShader(const char* shaderSource, GLenum shaderType)
 {

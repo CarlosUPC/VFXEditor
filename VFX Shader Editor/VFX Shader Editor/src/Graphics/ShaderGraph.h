@@ -4,6 +4,7 @@
 #include "ResourceShader.h"
 #include <list>
 #include <unordered_map>
+#include "Timer.h"
 
 class ShaderGraph;
 class ShaderNode;
@@ -110,6 +111,8 @@ public:
 	std::string GetName() const { return m_Name; }
 
 	void SetScrollOffset(float2& offset);
+
+	float GetTimeSinceLastCompilation();
 private:
 	std::string m_Name;
 public:
@@ -136,4 +139,6 @@ public:
 
 	u32 currentTexIdx;
 	std::vector<std::string> texIndices;
+
+	Timer startup_time;
 };

@@ -1,6 +1,7 @@
 #include "VectorNode.h"
 #include <string>
 #include "ShaderGraph.h"
+#include "ShaderUniform.h"
 //#include "MathGeoLib/Math/float4.h"
 
 Vector1Node::Vector1Node()
@@ -327,4 +328,71 @@ void ColorNode::InspectorUpdate(ShaderGraph& graph)
 std::string ColorNode::SetGLSLDefinition(const std::string& out_name, const std::string& value)
 {
 	return std::string("	vec3 " + out_name + " = " + "vec3(" + value + ");\n");
+}
+
+TimeNode::TimeNode()
+{
+}
+
+TimeNode::TimeNode(const char* name, NODE_TYPE type, float2 position)
+	: ShaderNode(name, type, position)
+{
+	inputs.push_back(InputSocket("Time", VALUE_TYPE::FLOAT1, CONTEXT_TYPE::PARAMETER));
+	outputs.push_back(OutputSocket(VALUE_TYPE::FLOAT1));
+
+	//temp hardcoded
+	inputs_size = 1.35;
+	outputs_size = 1;
+
+	isUniform = true;
+}
+
+void TimeNode::Update(ShaderGraph& graph)
+{
+	//Outs
+	outputs[0].data_str = std::string(name) + std::to_string(UID);
+	outputs[0].type_str = ShaderCompiler::SetOutputType(outputs[0].type);
+
+	//Ins
+	inputs[0].data_str = std::to_string(graph.GetTimeSinceLastCompilation());
+
+
+	//Update input value (time)
+	auto uniform = graph.uniforms.find(outputs[0].data_str);
+	if (uniform != graph.uniforms.end())
+	{
+		static_cast<UniformFloat*>(uniform->second)->SetValue(graph.GetTimeSinceLastCompilation());
+	}
+
+
+	this->GLSL_Declaration = SetGLSLDeclaration(outputs[0].data_str);
+	this->GLSL_Definition = SetGLSLDefinition(outputs[0].data_str, inputs[0].data_str);
+}
+
+void TimeNode::InspectorUpdate(ShaderGraph& graph)
+{
+	if (ImGui::CollapsingHeader("Node Configuration", ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		float timer;
+
+		auto uniform = graph.uniforms.find(outputs[0].data_str);
+		if (uniform != graph.uniforms.end())
+		{
+			timer = static_cast<UniformFloat*>(uniform->second)->GetValue();
+			ImGui::InputFloat("Time", &timer, 0.0f, 0.0f, "%.3f", ImGuiInputTextFlags_ReadOnly);
+		}
+	}
+
+
+
+}
+
+std::string TimeNode::SetGLSLDeclaration(const std::string& out_name)
+{
+	return "uniform float " + out_name + ";\n";
+}
+
+std::string TimeNode::SetGLSLDefinition(const std::string& out_name, const std::string& value)
+{
+	return std::string();
 }
