@@ -8,6 +8,7 @@
 #include "Nodes/Parameter/VectorNode.h"
 #include "Nodes/Parameter/TextureSamplerNode.h"
 #include "Nodes/Math/MathBasicNode.h"
+#include "Nodes/Geometry/UVNode.h"
 
 #include "ShaderUniform.h"
 #include "Texture.h"
@@ -199,6 +200,9 @@ ShaderNode* ShaderGraph::CreateNode(const char* name, int type, float2 position)
 		break;
 	case NODE_TYPE::TEXTURE:
 		node = new TextureNode(name, (NODE_TYPE)type, position);
+		break;
+	case NODE_TYPE::UV:
+		node = new UVNode(name, (NODE_TYPE)type, position);
 		break;
 	case NODE_TYPE::ADD:
 		node = new AddNode(name, (NODE_TYPE)type, position);

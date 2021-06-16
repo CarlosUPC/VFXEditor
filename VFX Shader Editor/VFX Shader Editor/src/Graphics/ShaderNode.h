@@ -23,6 +23,9 @@ enum  NODE_TYPE
 	COLOR,
 	TEXTURE_SAMPLER,
 	TEXTURE,
+	UV,
+	TILING_OFFSET,
+	PANNER,
 	ADD,
 	SUBTRACT,
 	MULTIPLY,
@@ -277,6 +280,7 @@ public:
 	bool isSocketHovered = false;
 	bool to_delete = false;
 	bool isError = false;
+	bool hideConfig = false;
 
 	//temp
 	float inputs_size = 0;

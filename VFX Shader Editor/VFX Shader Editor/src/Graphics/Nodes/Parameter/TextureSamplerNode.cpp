@@ -73,7 +73,7 @@ void TextureSamplerNode::InspectorUpdate(ShaderGraph& graph)
 	{
 		InputSocket& input = this->inputs[i];
 
-		if (input.isLinked)
+		if (input.isLinked && input.type == VALUE_TYPE::TEXTURE2D)
 			return;
 	}
 
