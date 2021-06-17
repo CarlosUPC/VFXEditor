@@ -200,6 +200,7 @@
     <ClCompile Include="Dependencies\pcg\extras\entropy.c" />
     <ClCompile Include="src\Core\Application.cpp" />
     <ClCompile Include="src\Core\Main.cpp" />
+    <ClCompile Include="src\Graphics\Nodes\Geometry\ParallaxOclusionNode.cpp" />
     <ClCompile Include="src\Graphics\Nodes\Geometry\UVNode.cpp" />
     <ClCompile Include="src\Graphics\Nodes\Math\MathBasicNode.cpp" />
     <ClCompile Include="src\Graphics\Nodes\Parameter\TextureSamplerNode.cpp" />
@@ -299,6 +300,7 @@
     <ClInclude Include="Dependencies\pcg\include\pcg_variants.h" />
     <ClInclude Include="src\Core\Application.h" />
     <ClInclude Include="src\Core\Globals.h" />
+    <ClInclude Include="src\Graphics\Nodes\Geometry\ParallaxOclusionNode.h" />
     <ClInclude Include="src\Graphics\Nodes\Geometry\UVNode.h" />
     <ClInclude Include="src\Graphics\Nodes\Math\MathBasicNode.h" />
     <ClInclude Include="src\Graphics\Nodes\Parameter\TextureSamplerNode.h" />

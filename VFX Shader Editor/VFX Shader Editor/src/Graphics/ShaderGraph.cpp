@@ -9,6 +9,7 @@
 #include "Nodes/Parameter/TextureSamplerNode.h"
 #include "Nodes/Math/MathBasicNode.h"
 #include "Nodes/Geometry/UVNode.h"
+#include "Nodes/Geometry/ParallaxOclusionNode.h"
 
 #include "ShaderUniform.h"
 #include "Texture.h"
@@ -210,6 +211,9 @@ ShaderNode* ShaderGraph::CreateNode(const char* name, int type, float2 position)
 	case NODE_TYPE::PANNER:
 		node = new PannerNode(name, (NODE_TYPE)type, position);
 		break;
+	case NODE_TYPE::PARALLAX_OCLUSION:
+		node = new ParallaxOclusionNode(name, (NODE_TYPE)type, position);
+		break;
 	case NODE_TYPE::ADD:
 		node = new AddNode(name, (NODE_TYPE)type, position);
 		break;
@@ -249,6 +253,18 @@ ShaderNode* ShaderGraph::CreateNode(const char* name, int type, float2 position)
 				std::string uName = std::string(node->name) + std::to_string(node->UID);
 				node->uniformLocation = this->textureSamplerLocation++;
 				UniformFloat* uniform = new UniformFloat(uName, GetTimeSinceLastCompilation(), node->uniformLocation);
+				if (uniform)
+				{
+					this->uniforms[uniform->GetName()] = uniform;
+				}
+
+				break;
+			}
+			case NODE_TYPE::PARALLAX_OCLUSION:
+			{
+				std::string uName = std::string(node->name) + std::to_string(node->UID) + "_depthMap";
+				node->uniformLocation = this->textureSamplerLocation++;
+				UniformTexture* uniform = new UniformTexture(uName, App->textures[defaultTexIdx].handle, node->uniformLocation);
 				if (uniform)
 				{
 					this->uniforms[uniform->GetName()] = uniform;

@@ -223,6 +223,7 @@ float2 ShaderNode::CalcNodeSize(ShaderGraph& graph, ShaderNode* node)
 	else if (node->type == NODE_TYPE::TEXTURE_SAMPLER) width = 200.0f;
 	else if (node->type == NODE_TYPE::TEXTURE) width = 150.0f;
 	else if (node->type == NODE_TYPE::UV) width = 120.0f;
+	else if (node->type == NODE_TYPE::PARALLAX_OCLUSION) width = 350.0f;
 	else if (node->type == NODE_TYPE::TILING_OFFSET || node->type == NODE_TYPE::PANNER) width = 200.0f;
 	else if (node->type == NODE_TYPE::COLOR) width = 180.0f;
 	else if (node->type == NODE_TYPE::MULTIPLY || node->type == NODE_TYPE::ADD || node->type == NODE_TYPE::DIVIDE || node->type == NODE_TYPE::SUBTRACT) width = 150.0f;
@@ -352,10 +353,16 @@ void ShaderNode::DrawInputs(ShaderGraph& graph, unsigned int numInputs, unsigned
 		{
 			//Texture Samplers
 			auto uniform = graph.uniforms.find(name + std::to_string(UID));
+			auto uniform_depth = graph.uniforms.find(name + std::to_string(UID) + "_depthMap");
 			if (uniform != graph.uniforms.end())
 			{
 				ImGui::SetCursorScreenPos(ImVec2(input.position.x - 10, input.position.y + 30));
 				ImGui::Image((ImTextureID)static_cast<UniformTexture*>(uniform->second)->GetTextureID(), ImVec2(140, 130));
+			}
+			else if (uniform_depth != graph.uniforms.end())
+			{
+				ImGui::SetCursorScreenPos(ImVec2(input.position.x - 10, input.position.y + 30));
+				ImGui::Image((ImTextureID)static_cast<UniformTexture*>(uniform_depth->second)->GetTextureID(), ImVec2(140, 130));
 			}
 			//Textures
 			else

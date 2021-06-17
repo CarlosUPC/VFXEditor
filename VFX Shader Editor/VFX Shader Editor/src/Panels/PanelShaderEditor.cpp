@@ -314,6 +314,7 @@ void PanelShaderEditor::AddNewNodePopUp()
 				CreateNodeOption("UV", NODE_TYPE::UV, float2(node_pos.x, node_pos.y), current_shader, current_shader->graph);
 				CreateNodeOption("Tiling And Offset", NODE_TYPE::TILING_OFFSET, float2(node_pos.x, node_pos.y), current_shader, current_shader->graph);
 				CreateNodeOption("Panner", NODE_TYPE::PANNER, float2(node_pos.x, node_pos.y), current_shader, current_shader->graph);
+				CreateNodeOption("Parallax Oclusion", NODE_TYPE::PARALLAX_OCLUSION, float2(node_pos.x, node_pos.y), current_shader, current_shader->graph);
 				
 
 				ImGui::TreePop();
