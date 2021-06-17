@@ -23,9 +23,11 @@ ShaderGraph::ShaderGraph(std::string m_Name)
 	//Load default assets
 	defaultTexIdx = LoadTexture2D(App, "Textures/color_white.png");
 	LoadTexture2D(App, "Textures/bricks2.jpg");
+	LoadTexture2D(App, "Textures/bricks2_disp.jpg");
 
 	texIndices.push_back("default");
 	texIndices.push_back("texture_1");
+	texIndices.push_back("texture_2");
 
 }
 
@@ -483,15 +485,32 @@ std::string ShaderCompiler::OutputVertexHeader()
 	code += OutputLine("#version 330 core\n");
 
 	//Attribute layouts
-	code += OutputLine("layout (location = 0) in vec3 position;");
-	code += OutputLine("layout (location = 1) in vec2 aTexCoord;");
+	code += OutputLine("layout (location = 0) in vec3 aPos;");
+	code += OutputLine("layout (location = 1) in vec3 aNormal;");
+	code += OutputLine("layout (location = 2) in vec2 aTexCoords;");
+	code += OutputLine("layout (location = 3) in vec3 aTangent;");
+	code += OutputLine("layout (location = 4) in vec3 aBitangent;");
 	
 	//Uniforms
 	code += OutputLine("uniform mat4 u_View;");
 	code += OutputLine("uniform mat4 u_Projection;");
+	code += OutputLine("uniform mat4 u_Model;");
+	code += OutputLine("uniform vec3 lightPos;");
+	code += OutputLine("uniform vec3 viewPos;");
+	code += OutputLine("out vec3 light;");
+	code += OutputLine("out vec3 view;");
 
-	//Outs
-	code += OutputLine("out vec2 TexCoord;");
+
+	////Outs
+	code += OutputLine("out VS_OUT{");
+	code += OutputTabbedLine("vec3 FragPos;");
+	code += OutputTabbedLine("vec2 TexCoords;");
+	code += OutputTabbedLine("vec3 TangentLightPos;");
+	code += OutputTabbedLine("vec3 TangentViewPos;");
+	code += OutputTabbedLine("vec3 TangentFragPos;");
+	code += OutputLine("} vs_out;");
+
+	//code += OutputLine("out vec2 TexCoord;");
 
 	return code;
 }
@@ -518,9 +537,26 @@ std::string ShaderCompiler::OutputVertex()
 	std::string code = "";
 
 	//TexCoord
-	code += OutputTabbedLine("TexCoord = vec2(aTexCoord.x, aTexCoord.y);\n");
+	//code += OutputTabbedLine("TexCoord = vec2(aTexCoord.x, aTexCoord.y);\n");
+
+	code += OutputTabbedLine("vs_out.FragPos = vec3(u_Model * vec4(aPos, 1.0));\n");
+	code += OutputTabbedLine("vs_out.TexCoords = aTexCoords;\n");
+
+	code += OutputTabbedLine("vec3 T = normalize(mat3(u_Model) * aTangent);\n");
+	code += OutputTabbedLine("vec3 B = normalize(mat3(u_Model) * aBitangent);\n");
+	code += OutputTabbedLine("vec3 N = normalize(mat3(u_Model) * aNormal);\n");
+	code += OutputTabbedLine("mat3 TBN = transpose(mat3(T, B, N));\n");
+
+	code += OutputTabbedLine("vs_out.TangentLightPos = TBN * lightPos;\n");
+	code += OutputTabbedLine("vs_out.TangentViewPos = TBN * viewPos;\n");
+	code += OutputTabbedLine("vs_out.TangentFragPos = TBN * vs_out.FragPos;\n");
+
+	//code += OutputLine("light = lightPos2;");
+	//code += OutputLine("view = viewPos;");
+
+
 	// Final position output 
-	code += OutputTabbedLine("gl_Position = u_Projection*u_View*vec4(position, 1.0);\n");
+	code += OutputTabbedLine("gl_Position = u_Projection * u_View * u_Model * vec4(aPos, 1.0);\n");
 	return code;
 }
 
@@ -549,12 +585,20 @@ std::string ShaderCompiler::OutputFragmentHeader()
 	// Version number
 	code += OutputLine("#version 330 core\n");
 
-	// FragData layout
+	// Ins
+	code += OutputLine("in VS_OUT{\n");
+	code += OutputTabbedLine("vec3 FragPos;\n");
+	code += OutputTabbedLine("vec2 TexCoords;\n");
+	code += OutputTabbedLine("vec3 TangentLightPos;\n");
+	code += OutputTabbedLine("vec3 TangentViewPos;\n");
+	code += OutputTabbedLine("vec3 TangentFragPos;\n");
+	code += OutputLine("} fs_in;\n");
+
+	// Outs
 	code += OutputLine("layout(location = 0) out vec4 AlbedoColor;\n");
 
-	//Frag Ins
-	code += OutputLine("in vec2 TexCoord;\n");
-
+	//code += OutputLine("in vec3 light;");
+	//code += OutputLine("in vec3 view;");
 
 	//Declarations
 	InputSocket inputDiffuse = graph.mainNode->GetInputSocketbyName("Albedo");
@@ -590,7 +634,11 @@ std::string ShaderCompiler::OutputFragment()
 {
 	std::string code = "";
 	
-	
+	//Setting default variables --------
+	code += OutputTabbedLine("vec3 viewDir = normalize(fs_in.TangentViewPos - fs_in.TangentFragPos);\n");
+	code += OutputTabbedLine("vec2 TexCoord = fs_in.TexCoords;\n");
+
+
 	//Definitions
 	InputSocket inputDiffuse = graph.mainNode->GetInputSocketbyName("Albedo");
 	if (inputDiffuse.isLinked)
@@ -622,7 +670,7 @@ std::string ShaderCompiler::OutputFragment()
 	else
 	{
 		//Set Default Diffuse Color
-		 std::string tmp_color = "vec4(1.0f, 0.0f, 0.0f, 1.0f)";
+		 std::string tmp_color = "vec4(1.0, 0.0, 0.0, 1.0f)";
 		 code += OutputTabbedLine("AlbedoColor = " + tmp_color + ";\n");
 
 	}

@@ -844,9 +844,14 @@ void ShaderNode::CheckNodeConnections(ShaderNode* current_node, ShaderGraph& gra
 				int textureID = input.link_ref->output_node->inputs[0].texid;
 
 				auto uniform = graph.uniforms.find(std::string(name) + std::to_string(UID));
+				auto uniform_depth = graph.uniforms.find(std::string(name) + std::to_string(UID) + "_depthMap");
 				if (uniform != graph.uniforms.end())
 				{
 					static_cast<UniformTexture*>(uniform->second)->SetTextureID(textureID);
+				}
+				else if (uniform_depth != graph.uniforms.end())
+				{
+					static_cast<UniformTexture*>(uniform_depth->second)->SetTextureID(textureID);
 				}
 			}
 

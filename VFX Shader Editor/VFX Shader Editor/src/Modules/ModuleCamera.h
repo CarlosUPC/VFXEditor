@@ -24,6 +24,8 @@ public:
 	float3 getMovementFactor();
 	void setAspectRatio(float aspectRatio);
 
+	float3 GetCameraPosition() { return position; }
+
 private:
 	float3 X = { 1.0f,0.0f,0.0f };
 	float3 Y = { 0.0f,1.0f,0.0f };

@@ -24,6 +24,7 @@ public:
 	void GenerateFrameBuffer(int width, int height);
 
 	void DrawGrid();
+	void renderQuadTangentSpace();
 public:
 
 	GLuint frameBuffer = 0;

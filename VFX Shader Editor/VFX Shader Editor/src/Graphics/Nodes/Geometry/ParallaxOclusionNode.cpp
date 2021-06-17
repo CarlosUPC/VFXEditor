@@ -67,7 +67,7 @@ void ParallaxOclusionNode::InspectorUpdate(ShaderGraph& graph)
 		{
 			ImGui::PushID("##X");
 			ImGui::Text("Min Layers "); ImGui::SameLine();
-			ImGui::DragFloat("##minl", &inputs[2].value1, 1.0f, 0.f, 64.0f, "%.1f");
+			ImGui::DragInt("##minl", (int*)&inputs[2].value1, 1.0f, 0, 64, "%.1f");
 			ImGui::PopID();
 		}
 
@@ -76,7 +76,7 @@ void ParallaxOclusionNode::InspectorUpdate(ShaderGraph& graph)
 		{
 			ImGui::PushID("##X");
 			ImGui::Text("Max Layers "); ImGui::SameLine();
-			ImGui::DragFloat("##maxl", &inputs[3].value1, 1.0f, 0.f, 64.0f, "%.1f");
+			ImGui::DragInt("##maxl", (int*)&inputs[3].value1, 1.0f, 0, 64, "%.1f");
 			ImGui::PopID();
 		}
 
@@ -98,8 +98,8 @@ void ParallaxOclusionNode::InspectorUpdate(ShaderGraph& graph)
 
 std::string ParallaxOclusionNode::SetGLSLDeclaration(const std::string& out_name)
 {
-	return	"uniform sampler2D " + out_name + "_depthMap;\n";
-			"vec2 ParallaxMapping(float2 uv, float3 viewDir, float heightScale, int minLayers, int maxLayers)\n"
+	return	"uniform sampler2D " + out_name + "_depthMap;\n"
+			"vec2 ParallaxMapping(vec2 texCoords, vec3 viewDir, float heightScale, int minLayers, int maxLayers)\n"
 			"{\n"
 			"    float numLayers = mix(maxLayers, minLayers, abs(dot(vec3(0.0, 0.0, 1.0), viewDir)));\n"
 			"    float layerDepth = 1.0 / numLayers;\n"
@@ -127,5 +127,5 @@ std::string ParallaxOclusionNode::SetGLSLDeclaration(const std::string& out_name
 
 std::string ParallaxOclusionNode::SetGLSLDefinition(const std::string& out_name, const std::string& uv,  const std::string& amplitude, const std::string& min_layers, const std::string& max_layers)
 {
-	return "vec2 " + out_name + " = ParallaxMapping(" + uv + ", " + "viewDir" + ", " + amplitude + ", " + min_layers + ", " + max_layers + ");\n";
+	return "vec2 " + out_name + " = ParallaxMapping(" + uv + ", " + "viewDir" + ", " + amplitude + ", " +  "8" + ", " +  "32" + ");\n";
 }

@@ -105,9 +105,18 @@ void ResourceShader::SetUniformMat4f(const char* name, float* value) const
 {
 	int location = glGetUniformLocation(programID, name);
 	if(location == -1)
-		std::cout << "[WARNING]: uniform: " << name << "doesn't exist!" << std::endl;
+		std::cout << "[WARNING]: uniform: " << name << " doesn't exist!" << std::endl;
 
 	glUniformMatrix4fv(location, 1, GL_FALSE, value);
+}
+
+void ResourceShader::SetUniform3f(const char* name, float x, float y, float z) const
+{
+	int location = glGetUniformLocation(programID, name);
+	if (location == -1)
+		std::cout << "[WARNING]: uniform: " << name << " doesn't exist!" << std::endl;
+
+	glUniform3f(location, x, y, z);
 }
 
 void ResourceShader::BindTexture(const char* name, const u32& texID, const u32 index)
