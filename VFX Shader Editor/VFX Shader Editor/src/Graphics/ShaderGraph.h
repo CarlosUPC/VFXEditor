@@ -21,6 +21,12 @@ enum class ShaderType
 	UNKNOWN
 };
 
+enum class ShaderSurface
+{
+	S_OPAQUE,
+	S_TRANSPARENT
+};
+
 struct ShaderCompiler
 {
 
@@ -141,4 +147,7 @@ public:
 	std::vector<std::string> texIndices;
 
 	Timer startup_time;
+
+	ShaderSurface materialSurface = ShaderSurface::S_OPAQUE;
+	bool clip_alpha = false;
 };

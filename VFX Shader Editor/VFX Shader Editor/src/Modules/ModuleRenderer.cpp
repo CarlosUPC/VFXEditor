@@ -6,6 +6,7 @@
 #include "ResourceShader.h"
 #include "ShaderGraph.h"
 #include "ShaderUniform.h"
+#include "Nodes/PBRNode.h"
 
 //TMP
 #include "Primitive.h"
@@ -158,6 +159,20 @@ update_state ModuleRenderer::PostUpdate(float dt)
 
 	if (current_shader != nullptr)
 	{
+
+		//Blend mode
+		if (current_shader->graph->materialSurface == ShaderSurface::S_TRANSPARENT)
+		{
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		}
+		else if (current_shader->graph->materialSurface == ShaderSurface::S_OPAQUE)
+		{
+			glDisable(GL_BLEND);
+		}
+
+
+
 		////Bind shader
 		current_shader->Bind();
 
@@ -254,7 +269,7 @@ void ModuleRenderer::DrawGrid()
 	glLineWidth(1.0f);
 
 	glBegin(GL_LINES);
-	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+	//glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
 	float d = 5.0f;
 

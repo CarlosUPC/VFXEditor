@@ -10,7 +10,7 @@ ParallaxOclusionNode::ParallaxOclusionNode(const char* name, NODE_TYPE type, flo
 {
 
 	inputs.push_back(InputSocket("UV", VALUE_TYPE::FLOAT2));
-	inputs.push_back(InputSocket("Amplitude", VALUE_TYPE::FLOAT1, 0.01f, CONTEXT_TYPE::NONE));
+	inputs.push_back(InputSocket("Amplitude", VALUE_TYPE::FLOAT1, 0.10f, CONTEXT_TYPE::NONE));
 	inputs.push_back(InputSocket("Min Steps", VALUE_TYPE::FLOAT1, 8.0f, CONTEXT_TYPE::NONE));
 	inputs.push_back(InputSocket("Max Steps", VALUE_TYPE::FLOAT1, 32.0f, CONTEXT_TYPE::NONE));
 	inputs.push_back(InputSocket("Heightmap", VALUE_TYPE::TEXTURE2D));
@@ -35,9 +35,9 @@ void ParallaxOclusionNode::Update(ShaderGraph& graph)
 
 	//Ins
 	inputs[0].data_str = "TexCoord";
-	inputs[1].data_str = std::to_string(inputs[1].value1);
-	inputs[2].data_str = std::to_string(inputs[2].value1);
-	inputs[3].data_str = std::to_string(inputs[3].value1);
+	inputs[1].data_str = std::to_string((int)inputs[1].value1);
+	inputs[2].data_str = std::to_string((int)inputs[2].value1);
+	inputs[3].data_str = std::to_string((int)inputs[3].value1);
 	//inputs[4].data_str = name + std::to_string(UID) + "_depthMap";
 
 	//Check For Ins Variables
@@ -67,7 +67,8 @@ void ParallaxOclusionNode::InspectorUpdate(ShaderGraph& graph)
 		{
 			ImGui::PushID("##X");
 			ImGui::Text("Min Layers "); ImGui::SameLine();
-			ImGui::DragInt("##minl", (int*)&inputs[2].value1, 1.0f, 0, 64, "%.1f");
+			int value = (int)inputs[2].value1;
+			ImGui::DragInt("##minl", &value, 1.0f, 0, 64, "%.1f");
 			ImGui::PopID();
 		}
 
@@ -76,7 +77,8 @@ void ParallaxOclusionNode::InspectorUpdate(ShaderGraph& graph)
 		{
 			ImGui::PushID("##X");
 			ImGui::Text("Max Layers "); ImGui::SameLine();
-			ImGui::DragInt("##maxl", (int*)&inputs[3].value1, 1.0f, 0, 64, "%.1f");
+			int value = (int)inputs[3].value1;
+			ImGui::DragInt("##maxl", &value, 1.0f, 0, 64, "%.1f");
 			ImGui::PopID();
 		}
 
@@ -127,5 +129,5 @@ std::string ParallaxOclusionNode::SetGLSLDeclaration(const std::string& out_name
 
 std::string ParallaxOclusionNode::SetGLSLDefinition(const std::string& out_name, const std::string& uv,  const std::string& amplitude, const std::string& min_layers, const std::string& max_layers)
 {
-	return "vec2 " + out_name + " = ParallaxMapping(" + uv + ", " + "viewDir" + ", " + amplitude + ", " +  "8" + ", " +  "32" + ");\n";
+	return "vec2 " + out_name + " = ParallaxMapping(" + uv + ", " + "viewDir" + ", " + amplitude + ", " + min_layers + ", " + max_layers + ");\n";
 }

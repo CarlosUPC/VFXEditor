@@ -219,7 +219,7 @@ float2 ShaderNode::CalcNodeSize(ShaderGraph& graph, ShaderNode* node)
 {
 	float width;
 
-	if (node->type == NODE_TYPE::PBR) width = 200.0f;
+	if (node->type == NODE_TYPE::PBR) width = 230.0f;
 	else if (node->type == NODE_TYPE::TEXTURE_SAMPLER) width = 200.0f;
 	else if (node->type == NODE_TYPE::TEXTURE) width = 150.0f;
 	else if (node->type == NODE_TYPE::UV) width = 120.0f;
