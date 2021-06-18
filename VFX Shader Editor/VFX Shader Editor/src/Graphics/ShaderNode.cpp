@@ -88,7 +88,7 @@ void ShaderNode::InputNode(ShaderGraph& graph)
 	}
 
 	//Remove node -----
-	if (this->isHovered && ImGui::IsMouseClicked(1))
+	if ((this->isHovered || this->isSelected) && ImGui::IsMouseClicked(1))
 	{
 		ImGui::OpenPopup("delete_node");
 	}
@@ -100,6 +100,7 @@ void ShaderNode::InputNode(ShaderGraph& graph)
 		if (ImGui::MenuItem("Delete"))
 		{
 			this->to_delete = true;
+			graph.node_selected = nullptr;
 		}
 		ImGui::EndPopup();
 	}
@@ -1209,7 +1210,7 @@ void InputSocket::DisplayInputSocketDetails(ShaderGraph& graph, ShaderNode& node
 				auto rect_min = ImGui::GetItemRectMin();
 				auto rect_max = ImGui::GetItemRectMax();
 				rect_max.x = rect_min.x + 32;
-				drawList->AddImage((ImTextureID)App->textures[idx].handle, rect_min, rect_max, ImVec2(0, 0), ImVec2(1, 1), IM_COL32(255, 255, 255, 255));
+				drawList->AddImage((ImTextureID)App->textures[idx].handle, rect_min, rect_max, ImVec2(1, 1), ImVec2(0, 0), IM_COL32(255, 255, 255, 255));
 
 				if (is_selected)
 					ImGui::SetItemDefaultFocus();
@@ -1225,7 +1226,7 @@ void InputSocket::DisplayInputSocketDetails(ShaderGraph& graph, ShaderNode& node
 			auto rect_max = ImGui::GetItemRectMax();
 			rect_max.x = rect_min.x + 32;
 			auto drawList = ImGui::GetWindowDrawList();
-			drawList->AddImage((ImTextureID)App->textures[selected_idx].handle, rect_min, rect_max, ImVec2(0, 0), ImVec2(1, 1), IM_COL32(255, 255, 255, 255));
+			drawList->AddImage((ImTextureID)App->textures[selected_idx].handle, rect_min, rect_max, ImVec2(1, 1), ImVec2(0, 0), IM_COL32(255, 255, 255, 255));
 
 		}
 

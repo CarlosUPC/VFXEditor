@@ -114,7 +114,7 @@ void TextureSamplerNode::InspectorUpdate(ShaderGraph& graph)
 				auto rect_min = ImGui::GetItemRectMin();
 				auto rect_max = ImGui::GetItemRectMax();
 				rect_max.x = rect_min.x + 32;
-				drawList->AddImage((ImTextureID)App->textures[idx].handle, rect_min, rect_max, ImVec2(0, 0), ImVec2(1, 1), IM_COL32(255, 255, 255, 255));
+				drawList->AddImage((ImTextureID)App->textures[idx].handle, rect_min, rect_max, ImVec2(1, 1), ImVec2(0, 0), IM_COL32(255, 255, 255, 255));
 
 				if (is_selected)
 					ImGui::SetItemDefaultFocus();
@@ -130,7 +130,7 @@ void TextureSamplerNode::InspectorUpdate(ShaderGraph& graph)
 			auto rect_max = ImGui::GetItemRectMax();
 			rect_max.x = rect_min.x + 32;
 			auto drawList = ImGui::GetWindowDrawList();
-			drawList->AddImage((ImTextureID)App->textures[selected_idx].handle, rect_min, rect_max, ImVec2(0, 0), ImVec2(1, 1), IM_COL32(255, 255, 255, 255));
+			drawList->AddImage((ImTextureID)App->textures[selected_idx].handle, rect_min, rect_max, ImVec2(1, 1), ImVec2(0, 0), IM_COL32(255, 255, 255, 255));
 
 		}
 
