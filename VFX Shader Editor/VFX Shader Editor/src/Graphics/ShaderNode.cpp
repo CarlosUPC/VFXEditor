@@ -357,18 +357,18 @@ void ShaderNode::DrawInputs(ShaderGraph& graph, unsigned int numInputs, unsigned
 			if (uniform != graph.uniforms.end())
 			{
 				ImGui::SetCursorScreenPos(ImVec2(input.position.x - 10, input.position.y + 30));
-				ImGui::Image((ImTextureID)static_cast<UniformTexture*>(uniform->second)->GetTextureID(), ImVec2(140, 130));
+				ImGui::Image((ImTextureID)static_cast<UniformTexture*>(uniform->second)->GetTextureID(), ImVec2(140, 130), ImVec2(1,1), ImVec2(0,0));
 			}
 			else if (uniform_depth != graph.uniforms.end())
 			{
 				ImGui::SetCursorScreenPos(ImVec2(input.position.x - 10, input.position.y + 30));
-				ImGui::Image((ImTextureID)static_cast<UniformTexture*>(uniform_depth->second)->GetTextureID(), ImVec2(140, 130));
+				ImGui::Image((ImTextureID)static_cast<UniformTexture*>(uniform_depth->second)->GetTextureID(), ImVec2(140, 130), ImVec2(1, 1), ImVec2(0, 0));
 			}
 			//Textures
 			else
 			{
 				ImGui::SetCursorScreenPos(ImVec2(input.position.x - 10, input.position.y - 15));
-				ImGui::Image((ImTextureID)input.texid, ImVec2(110, 110));
+				ImGui::Image((ImTextureID)input.texid, ImVec2(110, 110), ImVec2(1, 1), ImVec2(0, 0));
 			}
 
 		}
