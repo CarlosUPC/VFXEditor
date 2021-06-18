@@ -128,7 +128,7 @@ void ShaderGraph::PostUpdate(float dt)
 		//Delete stuff
 		if ((*it)->to_delete == true)
 		{
-
+			//delete uniform element from node
 			auto uniform = uniforms.find(std::string((*it)->name) + std::to_string((*it)->UID));
 			auto uniform_depth = uniforms.find(std::string((*it)->name) + std::to_string((*it)->UID) + "_depthMap");
 			
@@ -329,6 +329,22 @@ float ShaderGraph::GetTimeSinceLastCompilation()
 	return (float)startup_time.ReadTime() / 1000.f;
 }
 
+void ShaderGraph::ResetNodeDeclarations()
+{
+	for (std::list<ShaderNode*>::iterator it = nodes.begin(); it != nodes.end(); ++it)
+	{
+		(*it)->SetDeclared(false);
+	}
+}
+
+void ShaderGraph::ResetNodeDefinitions()
+{
+	for (std::list<ShaderNode*>::iterator it = nodes.begin(); it != nodes.end(); ++it)
+	{
+		(*it)->SetDefined(false);
+	}
+}
+
 ShaderCompiler::ShaderCompiler( ShaderGraph& g)
 	: graph(g)
 {
@@ -338,6 +354,13 @@ ShaderCompiler::ShaderCompiler( ShaderGraph& g)
 void ShaderCompiler::Generate()
 {
 	//Compile and modify the shadergraph reference
+	
+	//Reset time
+	graph.startup_time.Start();
+
+	//Reset declarations and definitions
+	graph.ResetNodeDeclarations();
+	graph.ResetNodeDefinitions();
 
 	//Vertex Shader Output
 	source += OutputVertexHeader();

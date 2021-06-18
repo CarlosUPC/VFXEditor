@@ -82,7 +82,6 @@ void PanelShaderEditor::Draw()
 	ImGui::SameLine();
 	if (ImGui::Button("Compile")) {
 		current_shader->graph->CompileShader(current_shader);
-		current_shader->graph->startup_time.Start();
 	}
 
 	

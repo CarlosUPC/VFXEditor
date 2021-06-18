@@ -753,6 +753,8 @@ std::string ShaderNode::GetOutputDefinition(ShaderCompiler& compiler)
 {
 	std::string finalOutput = "";
 
+	if (IsDefined())
+		return finalOutput;
 
 	for (int i = 0; i < inputs.size(); i++)
 	{
@@ -760,14 +762,15 @@ std::string ShaderNode::GetOutputDefinition(ShaderCompiler& compiler)
 
 		if (input.isLinked && input.context_type != CONTEXT_TYPE::PARAMETER)
 		{
-			finalOutput += input.link_ref->output_node->GetOutputDefinition(compiler);
+			if (!input.link_ref->output_node->IsDefined())
+				finalOutput += input.link_ref->output_node->GetOutputDefinition(compiler);
 		}
 
 	}
 
 	std::string variableDefinition = compiler.OutputLine(this->GLSL_Definition);
 
-
+	SetDefined(true);
 
 
 	return (finalOutput + variableDefinition);
@@ -778,8 +781,8 @@ std::string ShaderNode::GetOutputDeclaration(ShaderCompiler& compiler)
 	std::string finalOutput = "";
 
 	
-	//if (IsDeclared())
-	//	return finalOutput;
+	if (IsDeclared())
+		return finalOutput;
 
 	for (int i=0; i < inputs.size(); i++)
 	{
@@ -787,8 +790,8 @@ std::string ShaderNode::GetOutputDeclaration(ShaderCompiler& compiler)
 
 		if (input.isLinked && input.context_type != CONTEXT_TYPE::PARAMETER)
 		{
-			/*if(!input.link_ref->output_node->IsDeclared())*/
-			finalOutput += input.link_ref->output_node->GetOutputDeclaration(compiler);
+			if(!input.link_ref->output_node->IsDeclared())
+				finalOutput += input.link_ref->output_node->GetOutputDeclaration(compiler);
 
 		}
 

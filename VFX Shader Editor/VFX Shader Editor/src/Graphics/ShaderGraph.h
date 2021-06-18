@@ -119,6 +119,8 @@ public:
 	void SetScrollOffset(float2& offset);
 
 	float GetTimeSinceLastCompilation();
+	void ResetNodeDeclarations();
+	void ResetNodeDefinitions();
 private:
 	std::string m_Name;
 public:

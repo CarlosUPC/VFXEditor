@@ -257,6 +257,9 @@ public:
 	bool IsDeclared() const { return isVariableDeclared; }
 	void SetDeclared(bool declared) { isVariableDeclared = declared; }
 
+	bool IsDefined() const { return isVariableDefined; }
+	void SetDefined(bool defined) { isVariableDefined = defined; }
+
 	void CheckNodeConnections(ShaderNode* current_node, ShaderGraph& graph);
 	void CheckTypeConnections(ShaderNode* current_node, ShaderGraph& graph);
 	void SetValuesByType(float4& value, std::string& finalOutput, VALUE_TYPE type);
@@ -293,6 +296,7 @@ public:
 	u32 uniformLocation = 0;
 
 	bool isVariableDeclared = false;
+	bool isVariableDefined = false;
 	bool open_picker = false;
 
 protected:
