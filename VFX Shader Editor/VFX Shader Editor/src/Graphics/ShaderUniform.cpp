@@ -22,6 +22,11 @@ void UniformTexture::Bind(ResourceShader* shader)
 	shader->BindTexture(uName.c_str(), texID, uIndex);
 }
 
+void UniformTexture::Unbind(ResourceShader* shader)
+{
+	shader->UnBindTexture(uName.c_str(), texID, uIndex);
+}
+
 UniformFloat::UniformFloat(const std::string& name, float val, u32 index)
 {
 	this->uIndex = index;

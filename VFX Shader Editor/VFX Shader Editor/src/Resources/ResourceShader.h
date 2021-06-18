@@ -26,6 +26,7 @@ public:
 	void SetUniform3f(const char* name, float x, float y, float z) const;
 
 	void BindTexture(const char* name, const u32& texID, const u32 index);
+	void UnBindTexture(const char* name, const u32& texID, const u32 index);
 	void SetUniform1f(const char* name, const float val);
 
 private:

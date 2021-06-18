@@ -728,7 +728,7 @@ std::string ShaderCompiler::OutputFragment()
 	else
 	{
 		//Set Default Diffuse Color
-		 std::string tmp_color = "vec3(1.0, 0.0, 0.0)";
+		 std::string tmp_color = "vec3(1.0, 1.0, 1.0)";
 		 code += OutputTabbedLine("vec3 AlbedoColor = " + tmp_color + ";\n");
 
 	}

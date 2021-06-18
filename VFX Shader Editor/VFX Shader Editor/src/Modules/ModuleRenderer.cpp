@@ -73,8 +73,8 @@ bool ModuleRenderer::Init()
 		error = glGetError();
 		if (error != GL_NO_ERROR)
 		{
-			//LOG("Error initializing OpenGL! %s\n", gluErrorString(error));
-			//ret = false;
+			LOG("Error initializing OpenGL! %s\n", gluErrorString(error));
+			ret = false;
 		}
 
 		
@@ -204,13 +204,20 @@ update_state ModuleRenderer::PostUpdate(float dt)
 	}
 
 	
-	//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+	
 	glBindVertexArray(0);
 
 	if (current_shader != nullptr)
-		current_shader->Unbind();
+	{
+		for (auto it = current_shader->graph->uniforms.begin(); it != current_shader->graph->uniforms.end(); ++it)
+		{
+			it->second->Unbind(current_shader);
+		}
 
-	glBindTexture(GL_TEXTURE_2D, 0);
+		current_shader->Unbind();
+	}
+
+	
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	
 

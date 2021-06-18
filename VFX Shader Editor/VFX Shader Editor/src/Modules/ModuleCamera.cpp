@@ -8,7 +8,7 @@ ModuleCamera::ModuleCamera(bool start_enabled)
 {
 	frustum.type = math::FrustumType::PerspectiveFrustum;
 
-	position = { 0.0f,0.0f,1.5f };
+	position = { 0.0f,0.3f,1.5f };
 	frustum.pos = position;
 	frustum.front = { 0.0f,0.0f,-1.0f };
 	frustum.up = { 0.0f,1.0f,0.0f };

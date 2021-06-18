@@ -20,6 +20,7 @@ public:
 	~ShaderUniform();
 
 	virtual void Bind(ResourceShader* shader) {};
+	virtual void Unbind(ResourceShader* shader) {};
 	const std::string& GetName() const { return uName; }
 	
 
@@ -35,6 +36,7 @@ class UniformTexture : public ShaderUniform
 public:
 	UniformTexture(const std::string& name, uint texIdx, u32 index);
 	virtual void Bind(ResourceShader* shader) override;
+	virtual void Unbind(ResourceShader* shader) override;
 
 	const uint& GetTextureID() const { return texID; }
 	void SetTextureID(uint id) { texID = id; }

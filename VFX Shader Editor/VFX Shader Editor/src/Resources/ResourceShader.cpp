@@ -134,6 +134,12 @@ void ResourceShader::BindTexture(const char* name, const u32& texID, const u32 i
 
 }
 
+void ResourceShader::UnBindTexture(const char* name, const u32& texID, const u32 index)
+{
+	glActiveTexture(GL_TEXTURE0 + index);
+	glBindTexture(GL_TEXTURE_2D, 0);
+}
+
 void ResourceShader::SetUniform1f(const char* name, const float val)
 {
 	auto location = graph->locations.find(name);
