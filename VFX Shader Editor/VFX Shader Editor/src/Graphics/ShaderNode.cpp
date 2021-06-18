@@ -448,8 +448,8 @@ void ShaderNode::DrawInputConnector(ShaderGraph& graph, InputSocket& input, unsi
 	if (input.context_type != CONTEXT_TYPE::PARAMETER)
 	{
 
-		if (input.context_type != CONTEXT_TYPE::READ_ONLY)
-		{
+			if (input.context_type != CONTEXT_TYPE::READ_ONLY)
+			{
 			ImGui::SetCursorScreenPos(ImVec2(input.position.x + 20.0f, input.position.y - 8.0f));
 			ImGui::TextColored(ImVec4(255, 255, 255, 255), "%s", input.name.c_str());
 			ImGui::SameLine();
@@ -467,24 +467,23 @@ void ShaderNode::DrawInputConnector(ShaderGraph& graph, InputSocket& input, unsi
 			draw_list->AddCircle(ImVec2(input.position.x, input.position.y), 10.0f, outlineColor);
 
 
+				if (SocketHovering(input.position, float2(ImGui::GetIO().MousePos.x, ImGui::GetIO().MousePos.y), 10.0f, 2.0f))
+				{
+					//draw_list->AddCircleFilled(ImVec2(input.position.x, input.position.y), 5.0f - 2.0f, outlineColor);
+					draw_list->AddCircle(ImVec2(input.position.x, input.position.y), 10.0f, ImColor(230, 230, 230));
 
-			if (SocketHovering(input.position, float2(ImGui::GetIO().MousePos.x, ImGui::GetIO().MousePos.y), 10.0f, 2.0f))
+				}
+				if (input.isLinked)
+				{
+					draw_list->AddCircleFilled(ImVec2(input.position.x, input.position.y), 10.0f - 3.0f, IM_COL32(230, 230, 230, 255));
+				}
+			}
+			else
 			{
-				//draw_list->AddCircleFilled(ImVec2(input.position.x, input.position.y), 5.0f - 2.0f, outlineColor);
-				draw_list->AddCircle(ImVec2(input.position.x, input.position.y), 10.0f, ImColor(230, 230, 230));
+				ImGui::SetCursorScreenPos(ImVec2(input.position.x + 15.0f, input.position.y - 8.0f));
+				ImGui::TextDisabled(input.name.c_str());
 
 			}
-			if (input.isLinked)
-			{
-				draw_list->AddCircleFilled(ImVec2(input.position.x, input.position.y), 10.0f - 3.0f, IM_COL32(230, 230, 230, 255));
-			}
-		}
-		else
-		{
-			ImGui::SetCursorScreenPos(ImVec2(input.position.x + 15.0f, input.position.y - 8.0f));
-			ImGui::TextDisabled(input.name.c_str());
-
-		}
 	}
 
 

@@ -24,10 +24,14 @@ ShaderGraph::ShaderGraph(std::string m_Name)
 	defaultTexIdx = LoadTexture2D(App, "Textures/color_white.png");
 	LoadTexture2D(App, "Textures/bricks2.jpg");
 	LoadTexture2D(App, "Textures/bricks2_disp.jpg");
+	LoadTexture2D(App, "Textures/grass.png");
+	LoadTexture2D(App, "Textures/blending.png");
 
 	texIndices.push_back("default");
 	texIndices.push_back("texture_1");
 	texIndices.push_back("texture_2");
+	texIndices.push_back("grass");
+	texIndices.push_back("blending");
 
 }
 
@@ -464,6 +468,44 @@ std::string ShaderCompiler::CheckTypeOutput(const std::string& code, const std::
 			return code;
 		}
 	}
+	else if (requiredType.compare("vec3") == 0)
+	{
+		if (type.compare("float") == 0)
+		{
+			return "vec3(" + code + ", " + code + ", " + code + ")";
+		}
+		else if (type.compare("vec2") == 0)
+		{
+			return "vec3(" + code + ", 1.0)";
+		}
+		else if (type.compare("vec4") == 0)
+		{
+			return code + ".xyz";
+		}
+		else
+		{
+			return code;
+		}
+	}
+	else if (requiredType.compare("float") == 0)
+	{
+		if (type.compare("vec2") == 0)
+		{
+			return code + ".x";
+		}
+		else if (type.compare("vec3") == 0)
+		{
+			return code + ".x";
+		}
+		else if (type.compare("vec4") == 0)
+		{
+			return code + ".x";
+		}
+		else
+		{
+			return code;
+		}
+	}
 
 }
 
@@ -595,7 +637,7 @@ std::string ShaderCompiler::OutputFragmentHeader()
 	code += OutputLine("} fs_in;\n");
 
 	// Outs
-	code += OutputLine("layout(location = 0) out vec4 AlbedoColor;\n");
+	code += OutputLine("layout(location = 0) out vec4 FragColor;\n");
 
 	//code += OutputLine("in vec3 light;");
 	//code += OutputLine("in vec3 view;");
@@ -605,6 +647,22 @@ std::string ShaderCompiler::OutputFragmentHeader()
 	if (inputDiffuse.isLinked)
 	{
 		ShaderNode* out_node = inputDiffuse.link_ref->output_node;
+
+		std::string varDefinition = out_node->GetOutputDeclaration(*this);
+		code += varDefinition;
+	}
+	InputSocket inputOpacity = graph.mainNode->GetInputSocketbyName("Opacity");
+	if (inputOpacity.isLinked)
+	{
+		ShaderNode* out_node = inputOpacity.link_ref->output_node;
+
+		std::string varDefinition = out_node->GetOutputDeclaration(*this);
+		code += varDefinition;
+	}
+	InputSocket inputClipAlpha = graph.mainNode->GetInputSocketbyName("Alpha Clip Threshold");
+	if (inputClipAlpha.isLinked)
+	{
+		ShaderNode* out_node = inputClipAlpha.link_ref->output_node;
 
 		std::string varDefinition = out_node->GetOutputDeclaration(*this);
 		code += varDefinition;
@@ -659,10 +717,10 @@ std::string ShaderCompiler::OutputFragment()
 			std::string type_code = out_node->outputs[inputDiffuse.link_ref->output_socket].type_str;
 
 			//Check and transform typing
-			out_code = CheckTypeOutput(out_code, type_code, "vec4");
+			out_code = CheckTypeOutput(out_code, type_code, "vec3");
 
 			//Update Diffuse Color
-			code += OutputTabbedLine("AlbedoColor = " + out_code + ";\n");
+			code += OutputTabbedLine("vec3 AlbedoColor = " + out_code + ";\n");
 		}
 
 
@@ -670,16 +728,81 @@ std::string ShaderCompiler::OutputFragment()
 	else
 	{
 		//Set Default Diffuse Color
-		 std::string tmp_color = "vec4(1.0, 0.0, 0.0, 1.0f)";
-		 code += OutputTabbedLine("AlbedoColor = " + tmp_color + ";\n");
+		 std::string tmp_color = "vec3(1.0, 0.0, 0.0)";
+		 code += OutputTabbedLine("vec3 AlbedoColor = " + tmp_color + ";\n");
 
 	}
-	
-	
+	InputSocket inputOpacity = graph.mainNode->GetInputSocketbyName("Opacity");
+	if (inputOpacity.isLinked && inputOpacity.context_type != CONTEXT_TYPE::READ_ONLY)
+	{
+		ShaderNode* out_node = inputOpacity.link_ref->output_node;
+
+		std::string varDefinition = out_node->GetOutputDefinition(*this);
+		code += varDefinition;
+
+		//Final Output
+		if (out_node)
+		{
+			//Output code variable
+			std::string out_code = out_node->outputs[inputOpacity.link_ref->output_socket].data_str;
+
+			//Output code type 
+			std::string type_code = out_node->outputs[inputOpacity.link_ref->output_socket].type_str;
+
+			//Check and transform typing
+			//out_code = CheckTypeOutput(out_code, type_code, "float");
+
+			//Update Diffuse Color
+			code += OutputTabbedLine("float Opacity = " + out_code + ".a" + ";\n");
+		}
+
+	}
+	else
+	{
+		std::string tmp_color = "1.0";
+		code += OutputTabbedLine("float Opacity = " + tmp_color + ";\n");
+	}
+
+	InputSocket inputAlphaClip = graph.mainNode->GetInputSocketbyName("Alpha Clip Threshold");
+	if (inputAlphaClip.isLinked && inputOpacity.context_type != CONTEXT_TYPE::READ_ONLY)
+	{
+		ShaderNode* out_node = inputAlphaClip.link_ref->output_node;
+
+		std::string varDefinition = out_node->GetOutputDefinition(*this);
+		code += varDefinition;
+
+		//Final Output
+		if (out_node)
+		{
+			//Output code variable
+			std::string out_code = out_node->outputs[inputAlphaClip.link_ref->output_socket].data_str;
+
+			//Output code type 
+			std::string type_code = out_node->outputs[inputAlphaClip.link_ref->output_socket].type_str;
+
+			//Check and transform typing
+			out_code = CheckTypeOutput(out_code, type_code, "float");
+
+			//Update Diffuse Color
+			code += OutputTabbedLine("float Threshold = " + out_code + ";\n");
+		}
+	}
+	else
+	{
+		std::string tmp_color = "0.5";
+		code += OutputTabbedLine("float Threshold = " + tmp_color + ";\n");
+	}
+
+	if (graph.clip_alpha)
+	{
+		code += OutputTabbedLine("if ( Opacity < Threshold ) discard;");
+	}
+
+	// Final position output 
+	code += OutputTabbedLine("FragColor = vec4(AlbedoColor, Opacity);\n");
 	//more stuff ...
 	//std::string tmp_color = "vec4(1.0f, 0.0f, 0.0f, 1.0f)"; // it should be take it from shadergraph reference
 
-	// Final position output 
 	//code += OutputTabbedLine("FragColor = DiffuseColor;\n");
 	return code;
 }
