@@ -35,7 +35,7 @@ void PBRNode::InspectorUpdate(ShaderGraph& graph)
 		ImGui::Text("Shader Surface");
 		const char* shader_surface_list[] = { "Opaque", "Transparent" };
 		static int item_surface = (int)graph.materialSurface;
-		if (ImGui::Combo("Render Pipeline", &item_surface, shader_surface_list, IM_ARRAYSIZE(shader_surface_list)))
+		if (ImGui::Combo("##surface_mode", &item_surface, shader_surface_list, IM_ARRAYSIZE(shader_surface_list)))
 		{
 			graph.materialSurface = (ShaderSurface)item_surface;
 

@@ -18,6 +18,12 @@ UVNode::UVNode(const char* name, NODE_TYPE type, float2 position)
 
 void UVNode::Update(ShaderGraph& graph)
 {
+	for (unsigned int i = 0; i < inputs.size(); i++)
+	{
+		InputSocket& input = this->inputs[i];
+		if (!input.isLinked) this->isError = false;
+	}
+
 	//Out Variable
 	outputs[0].data_str = std::string(name) + std::to_string(UID);
 	//Out Type
@@ -103,6 +109,12 @@ TilingOffsetNode::TilingOffsetNode(const char* name, NODE_TYPE type, float2 posi
 
 void TilingOffsetNode::Update(ShaderGraph& graph)
 {
+	for (unsigned int i = 0; i < inputs.size(); i++)
+	{
+		InputSocket& input = this->inputs[i];
+		if (!input.isLinked) this->isError = false;
+	}
+
 
 	//Outs
 	outputs[0].data_str = "TilingAndOffset" + std::to_string(UID);
@@ -204,6 +216,13 @@ PannerNode::PannerNode(const char* name, NODE_TYPE type, float2 position)
 
 void PannerNode::Update(ShaderGraph& graph)
 {
+
+	for (unsigned int i = 0; i < inputs.size(); i++)
+	{
+		InputSocket& input = this->inputs[i];
+		if (!input.isLinked) this->isError = false;
+	}
+
 	//Outs
 	outputs[0].data_str = name + std::to_string(UID);
 	outputs[0].type_str = ShaderCompiler::SetOutputType(outputs[0].type);

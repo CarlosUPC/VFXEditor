@@ -8,6 +8,7 @@ class TextureSamplerNode : public ShaderNode
 public:
 	TextureSamplerNode();
 	TextureSamplerNode(const char* name, NODE_TYPE type, float2 position);
+	~TextureSamplerNode();
 
 	void Update(ShaderGraph& graph) override;
 	void InspectorUpdate(ShaderGraph& graph) override;

@@ -34,9 +34,9 @@ void AddNode::Update(ShaderGraph& graph)
 		if (!input.isLinked)
 		{
 			input.type = VALUE_TYPE::FLOAT1;
+			this->isError = false;
 		}
 
-		this->isError = false;
 
 	}
 
@@ -53,6 +53,7 @@ void AddNode::Update(ShaderGraph& graph)
 
 
 	//Update connections
+	CheckTypeConnections(this, graph);
 	CheckNodeConnections(this, graph);
 
 
@@ -155,9 +156,9 @@ void SubtractNode::Update(ShaderGraph& graph)
 		if (!input.isLinked)
 		{
 			input.type = VALUE_TYPE::FLOAT1;
+			this->isError = false;
 		}
 
-		this->isError = false;
 
 	}
 
@@ -174,6 +175,7 @@ void SubtractNode::Update(ShaderGraph& graph)
 
 
 	//Update connections
+	CheckTypeConnections(this, graph);
 	CheckNodeConnections(this, graph);
 
 
@@ -278,9 +280,9 @@ void MultiplyNode::Update(ShaderGraph& graph)
 		if (!input.isLinked)
 		{
 			input.type = VALUE_TYPE::FLOAT1;
+			this->isError = false;
 		}
 
-		this->isError = false;
 
 	}
 
@@ -297,6 +299,7 @@ void MultiplyNode::Update(ShaderGraph& graph)
 
 
 	//Update connections
+	CheckTypeConnections(this, graph);
 	CheckNodeConnections(this, graph);
 
 
@@ -407,9 +410,9 @@ void DivideNode::Update(ShaderGraph& graph)
 		if (!input.isLinked)
 		{
 			input.type = VALUE_TYPE::FLOAT1;
+			this->isError = false;
 		}
 
-		this->isError = false;
 
 	}
 
@@ -426,6 +429,7 @@ void DivideNode::Update(ShaderGraph& graph)
 
 
 	//Update connections
+	CheckTypeConnections(this, graph);
 	CheckNodeConnections(this, graph);
 
 

@@ -85,12 +85,15 @@ void PanelShaderEditor::Draw()
 		current_shader->graph->startup_time.Start();
 	}
 
+	
+	ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(3, 3));
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
+	ImGui::PushStyleColor(ImGuiCol_ChildBg, IM_COL32(45, 45, 50, 255));
+	ImGui::BeginChild("Canvas", ImVec2(0, 0), true, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollWithMouse);
 
 	//INIT CANVAS
 	canvas.Init(ImGui::GetCursorScreenPos(), ImGui::GetWindowSize(), IM_COL32(0, 200, 120, 120));
 
-
-	
 	
 	//Canvas Stuff
 	ImDrawList* draw_list = ImGui::GetWindowDrawList();
@@ -105,7 +108,9 @@ void PanelShaderEditor::Draw()
 	//Graph Stuff
 	current_shader->graph->Update(App->GetDT());
 	
-
+	ImGui::EndChild();
+	ImGui::PopStyleColor();
+	ImGui::PopStyleVar(2);
 	
 	ImGui::End();
 	ImGui::PopStyleColor();

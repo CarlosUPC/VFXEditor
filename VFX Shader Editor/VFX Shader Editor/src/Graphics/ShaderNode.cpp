@@ -88,7 +88,7 @@ void ShaderNode::InputNode(ShaderGraph& graph)
 	}
 
 	//Remove node -----
-	if ((this->isHovered || this->isSelected) && ImGui::IsMouseClicked(1))
+	if ((this->isHovered || this->isSelected) && ImGui::IsMouseClicked(1) &&ImGui::IsWindowHovered())
 	{
 		ImGui::OpenPopup("delete_node");
 	}
@@ -810,29 +810,56 @@ void ShaderNode::CheckNodeConnections(ShaderNode* current_node, ShaderGraph& gra
 
 		if (input.isLinked)
 		{
-
 			//Update Input Node value
 			std::string outVariable = input.link_ref->output_node->outputs[input.link_ref->output_socket].data_str;
 			input.data_str = outVariable;
 
-			//Update Input Node type
-			//std::string outType = SetType(input.link_ref->output_node->outputs[input.link_ref->output_socket].type);
-
+			//Change value from type
 			if (input.type != input.link_ref->output_node->outputs[input.link_ref->output_socket].type)
 			{
+				if (input.link_ref->output_node->outputs[input.link_ref->output_socket].type == VALUE_TYPE::TEXTURE2D)
+				{
+					current_node->isError = true;
+					return;
+				}
+
 				switch (input.type)
 				{
 				case VALUE_TYPE::FLOAT1:
-					input.type = input.link_ref->output_node->outputs[input.link_ref->output_socket].type;
+					switch (input.link_ref->output_node->outputs[input.link_ref->output_socket].type)
+					{
+					case	VALUE_TYPE::FLOAT1:	break;
+					case	VALUE_TYPE::FLOAT2:	input.data_str += ".x"; break;
+					case	VALUE_TYPE::FLOAT3:	input.data_str += ".x"; break;
+					case	VALUE_TYPE::FLOAT4: input.data_str += ".x"; break;
+					}
 					break;
 				case VALUE_TYPE::FLOAT2:
-					input.type = input.link_ref->output_node->outputs[input.link_ref->output_socket].type;
+					switch (input.link_ref->output_node->outputs[input.link_ref->output_socket].type)
+					{
+					case	VALUE_TYPE::FLOAT1:	input.data_str = "vec2(" + input.data_str + "," + input.data_str + ")"; break;
+					case	VALUE_TYPE::FLOAT2:	break;
+					case	VALUE_TYPE::FLOAT3:	input.data_str += ".xy"; break;
+					case	VALUE_TYPE::FLOAT4: input.data_str += ".xy"; break;
+					}
 					break;
 				case VALUE_TYPE::FLOAT3:
-					input.type = input.link_ref->output_node->outputs[input.link_ref->output_socket].type;
+					switch (input.link_ref->output_node->outputs[input.link_ref->output_socket].type)
+					{
+					case	VALUE_TYPE::FLOAT1:	input.data_str = "vec3(" + input.data_str + "," + input.data_str + "," + input.data_str + ")"; break;
+					case	VALUE_TYPE::FLOAT2:	input.data_str = "vec3(" + input.data_str + ", 0.0)"; break;
+					case	VALUE_TYPE::FLOAT3:	break;
+					case	VALUE_TYPE::FLOAT4: input.data_str += ".xyz"; break;
+					}
 					break;
 				case VALUE_TYPE::FLOAT4:
-					input.type = input.link_ref->output_node->outputs[input.link_ref->output_socket].type;
+					switch (input.link_ref->output_node->outputs[input.link_ref->output_socket].type)
+					{
+					case	VALUE_TYPE::FLOAT1:	input.data_str = "vec4(" + input.data_str + "," + input.data_str + "," + input.data_str + input.data_str + ")"; break;
+					case	VALUE_TYPE::FLOAT2:	input.data_str = "vec4(" + input.data_str + ", 0.0, 0.0)"; break;
+					case	VALUE_TYPE::FLOAT3:	input.data_str = "vec4(" + input.data_str + ", 0.0)"; break;
+					case	VALUE_TYPE::FLOAT4: break;
+					}
 					break;
 				}
 			}
@@ -864,6 +891,43 @@ void ShaderNode::CheckNodeConnections(ShaderNode* current_node, ShaderGraph& gra
 	}
 
 
+}
+
+void ShaderNode::CheckTypeConnections(ShaderNode* current_node, ShaderGraph& graph)
+{
+	for (int i = 0; i < current_node->inputs.size(); i++)
+	{
+		InputSocket& input = current_node->inputs[i];
+
+		if (input.isLinked)
+		{
+			if (input.type != input.link_ref->output_node->outputs[input.link_ref->output_socket].type)
+			{
+				if (input.link_ref->output_node->outputs[input.link_ref->output_socket].type == VALUE_TYPE::TEXTURE2D)
+				{
+					current_node->isError = true;
+					return;
+				}
+
+
+				switch (input.type)
+				{
+				case VALUE_TYPE::FLOAT1:
+					input.type = input.link_ref->output_node->outputs[input.link_ref->output_socket].type;
+					break;
+				case VALUE_TYPE::FLOAT2:
+					input.type = input.link_ref->output_node->outputs[input.link_ref->output_socket].type;
+					break;
+				case VALUE_TYPE::FLOAT3:
+					input.type = input.link_ref->output_node->outputs[input.link_ref->output_socket].type;
+					break;
+				case VALUE_TYPE::FLOAT4:
+					input.type = input.link_ref->output_node->outputs[input.link_ref->output_socket].type;
+					break;
+				}
+			}
+		}
+	}
 }
 
 void ShaderNode::SetValuesByType(float4& value, std::string& finalOutput, VALUE_TYPE type)
@@ -1233,39 +1297,7 @@ void InputSocket::DisplayInputSocketDetails(ShaderGraph& graph, ShaderNode& node
 	}
 	else if (type == VALUE_TYPE::COLOR3)
 	{
-		
-		/*static ImVec4 m_backup_color;
-		static ImVec4 m_color;
-
-		m_backup_color.x = value3.x;
-		m_backup_color.y = value3.y;
-		m_backup_color.z = value3.z;
-		m_backup_color.w = 1.0;*/
-
 		ColorNode* colNode = static_cast<ColorNode*>(&node);
-
-		/*colNode->m_edit_flags |= ImGuiColorEditFlags_AlphaBar;
-		colNode->m_edit_flags |= ImGuiColorEditFlags_NoSidePreview;
-		colNode->m_edit_flags |= ImGuiColorEditFlags_PickerHueBar;
-		colNode->m_edit_flags |= ImGuiColorEditFlags_Float;*/
-
-
 		colNode->picker.DisplayInspector(colNode->open, value3);
-
-	/*	ImGui::Text("ColorPicker");
-		ImGui::Separator();
-		ImGui::ColorPicker4("##myPicker", (float*)&m_color, colNode->m_edit_flags);
-		ImGui::SameLine();
-
-		ImGui::BeginGroup();
-		ImGui::Text("Current");
-		m_color = ImVec4(value3.x, value3.y, value3.z, 1.0f);
-		ImGui::ColorButton("##currentColor", m_color, ImGuiColorEditFlags_NoPicker | ImGuiColorEditFlags_AlphaPreviewHalf, ImVec2(60, 40));
-		ImGui::Text("Previous");
-		if (ImGui::ColorButton("##prevColor", m_backup_color, ImGuiColorEditFlags_NoPicker | ImGuiColorEditFlags_AlphaPreviewHalf, ImVec2(60, 40)))
-			value3 = float3(m_backup_color.x, m_backup_color.y, m_backup_color.z);
-		
-		ImGui::EndGroup();*/
-		
 	}
 }

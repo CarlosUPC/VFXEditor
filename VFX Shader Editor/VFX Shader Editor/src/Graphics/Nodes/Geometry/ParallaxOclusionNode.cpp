@@ -29,6 +29,14 @@ ParallaxOclusionNode::ParallaxOclusionNode(const char* name, NODE_TYPE type, flo
 
 void ParallaxOclusionNode::Update(ShaderGraph& graph)
 {
+
+	for (unsigned int i = 0; i < inputs.size(); i++)
+	{
+		InputSocket& input = this->inputs[i];
+		if (!input.isLinked) this->isError = false;
+	}
+
+
 	//Outs
 	outputs[0].data_str = "ParallaxOclusion" + std::to_string(UID);
 	outputs[0].type_str = ShaderCompiler::SetOutputType(outputs[0].type);

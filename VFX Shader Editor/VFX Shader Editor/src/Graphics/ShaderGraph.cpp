@@ -129,6 +129,22 @@ void ShaderGraph::PostUpdate(float dt)
 		if ((*it)->to_delete == true)
 		{
 
+			auto uniform = uniforms.find(std::string((*it)->name) + std::to_string((*it)->UID));
+			auto uniform_depth = uniforms.find(std::string((*it)->name) + std::to_string((*it)->UID) + "_depthMap");
+			
+			if (uniform != uniforms.end())
+			{
+				RELEASE(uniform->second);
+				uniforms.erase(uniform);
+			}
+			if (uniform_depth != uniforms.end())
+			{
+				RELEASE(uniform_depth->second);
+				uniforms.erase(uniform_depth);
+			}
+
+
+
 			//check if node's sockets have links
 			for (auto&& input : (*it)->inputs)
 			{

@@ -27,8 +27,19 @@ TextureSamplerNode::TextureSamplerNode(const char* name, NODE_TYPE type, float2 
 	isUniform = true;
 }
 
+TextureSamplerNode::~TextureSamplerNode()
+{
+	
+}
+
 void TextureSamplerNode::Update(ShaderGraph& graph)
 {
+	for (unsigned int i = 0; i < inputs.size(); i++)
+	{
+		InputSocket& input = this->inputs[i];
+		if (!input.isLinked) this->isError = false;
+	}
+
 
 	//Variable declaration
 	this->GLSL_Declaration = SetGLSLDeclaration(std::string(name) + std::to_string(UID));
@@ -82,10 +93,7 @@ void TextureSamplerNode::InspectorUpdate(ShaderGraph& graph)
 		std::string item_name = std::string("     ") + graph.texIndices[0];
 		static std::string current_item = item_name;
 
-		ImGuiStyle& style = ImGui::GetStyle();
-		style.FrameRounding = 2.0f;
-		style.FrameBorderSize = 1.0f;
-
+		
 		static uint selected_idx = 0;
 
 		if (ImGui::BeginCombo("##combo", current_item.c_str())) // The second parameter is the label previewed before opening the combo.
