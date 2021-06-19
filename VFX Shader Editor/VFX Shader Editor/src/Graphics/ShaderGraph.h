@@ -34,10 +34,12 @@ struct ShaderParser
 public:
 	ShaderParser(const std::string& source, const std::string& name);
 	void Generate();
+	void WriteShaderToFile();
 
 private:
 	std::string name;
-	std::string source;
+	std::string glsl_source;
+	std::string hlsl_source;
 };
 
 

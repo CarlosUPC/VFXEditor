@@ -925,10 +925,103 @@ std::string ShaderCompiler::SetOutputType(VALUE_TYPE type)
 //}
 
 ShaderParser::ShaderParser(const std::string& source, const std::string& name)
-	: source(source), name(name)
+	: glsl_source(source), name(name)
 {
 }
 
 void ShaderParser::Generate()
 {
+
+	hlsl_source = R"(Shader ""Umbra/ShaderName""
+	{
+		Properties{
+		//Properties
+		}
+
+		SubShader
+		{
+		Tags { ""RenderType"" = ""Transparent"" ""Queue"" = ""Transparent"" }
+		
+		Pass
+		{
+			ZWrite Off
+			Blend SrcAlpha OneMinusSrcAlpha
+		
+			CGPROGRAM
+		
+			#pragma vertex vert
+			#pragma fragment frag
+			#include ""UnityCG.cginc""
+		
+			struct VertexInput {
+				float4 vertex : POSITION;
+				float2 uv:TEXCOORD0;
+				float4 tangent : TANGENT;
+				float3 normal : NORMAL;
+		
+				//VertexInput
+			};
+
+			struct VertexOutput {
+				float4 pos : SV_POSITION;
+				float2 uv:TEXCOORD0;
+
+				//VertexOutput
+			};
+		
+			//Variables
+		
+			//Functions
+		
+			VertexOutput vert (VertexInput v)
+			{
+				VertexOutput o;
+				o.pos = UnityObjectToClipPos (v.vertex);
+				o.uv = v.uv;
+
+				//VertexFactory
+
+				return o;
+			}
+
+
+			fixed4 frag(VertexOutput i) : SV_Target
+			{
+
+				//MainImage
+
+			}
+
+			ENDCG
+		}
+	  }
+	}
+	)";
+
+
+	//Change stuff
+
+
+	//Serialize to file
+	WriteShaderToFile();
+
+}
+
+void ShaderParser::WriteShaderToFile()
+{
+	std::string shader_path = std::string("Shaders/ShaderLab");
+	std::string fileName = name + std::string(".shader");
+	
+
+	std::ofstream file;
+	file.open((shader_path + "/" + fileName).c_str());
+
+	if (file)
+	{
+		file.write(hlsl_source.c_str(), hlsl_source.length());
+	}
+
+	file.close();
+
+	
 }

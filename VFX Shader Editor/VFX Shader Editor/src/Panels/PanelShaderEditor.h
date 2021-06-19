@@ -75,7 +75,8 @@ private:
 	bool creating_shader = false;
 	bool selecting_shader = false;
 
-	
+	ImFont* textFont;
+	ImFont* mainFont;
 
 	Canvas canvas;
 	ImVec2 hit_pos;

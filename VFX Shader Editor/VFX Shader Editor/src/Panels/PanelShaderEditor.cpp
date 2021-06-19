@@ -11,7 +11,9 @@ PanelShaderEditor::PanelShaderEditor(const char* name)
 	:Panel(name)
 {
 	flags = ImGuiWindowFlags_::ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollWithMouse;
-
+	ImGuiIO& io = ImGui::GetIO();
+	mainFont = io.Fonts->AddFontDefault();
+	textFont = io.Fonts->AddFontFromFileTTF("Fonts/PixelForce.TTF", 22);
 }
 
 PanelShaderEditor::~PanelShaderEditor()
@@ -42,7 +44,7 @@ void PanelShaderEditor::Draw()
 
 		if (ImGui::MenuItem("Export to Unity"))
 		{
-			if (this->current_shader == nullptr)
+			if (this->current_shader != nullptr)
 				current_shader->graph->ExportShader(current_shader);
 
 		}
@@ -62,8 +64,11 @@ void PanelShaderEditor::Draw()
 	
 	if (this->current_shader == nullptr)
 	{
-		ImGui::Text("Select or create a shader");
-		
+		ImVec2 textSize = ImGui::CalcTextSize("Graph empty. Create a Shader");
+		ImGui::SetCursorScreenPos(ImVec2(ImGui::GetWindowSize().x - (textSize.x), ImGui::GetWindowSize().y/2.0f));
+		ImGui::PushFont(textFont);
+		ImGui::Text("Graph empty. Generate a Shader!");
+		ImGui::PopFont();
 		ImGui::End();
 		ImGui::PopStyleColor();
 		return;
@@ -189,10 +194,12 @@ void PanelShaderEditor::CreateShaderContext()
 		ImGui::InputText("Name", _name, MAX_PATH, ImGuiInputTextFlags_AutoSelectAll | ImGuiInputTextFlags_EnterReturnsTrue);
 		
 		ImGui::Spacing();
-		ImGui::SetCursorPosX(42);
+		ImGui::SetCursorPosX(63);
 		ImGui::Text("Shader will be generated,");
-		ImGui::SetCursorPosX(33);
-		ImGui::Text("just select it to open graph.");
+		ImGui::SetCursorPosX(43);
+		ImGui::Text("Choose a proper name. Otherwise");
+		ImGui::SetCursorPosX(63);
+		ImGui::Text("it won't be created :D");
 		ImGui::Spacing();
 		ImGui::Spacing();
 		ImGui::Spacing();
