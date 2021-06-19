@@ -200,6 +200,7 @@ struct OutputSocket
 
 	//TODO: MAKE IT VECTOR 
 	ShaderLink* link_ref = nullptr;
+	std::vector<ShaderLink*> links_refs;
 
 	OutputSocket(){}
 	OutputSocket(VALUE_TYPE type)

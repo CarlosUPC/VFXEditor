@@ -48,5 +48,6 @@ public:
 	const char* vertex_path;
 	const char* fragment_path;
 	ShaderGraph* graph;
+	std::string source_code;
 };
 #endif // !__SHADER_H__

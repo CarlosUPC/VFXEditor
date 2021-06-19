@@ -156,10 +156,19 @@ void ShaderGraph::PostUpdate(float dt)
 			}
 			for (auto&& output : (*it)->outputs)
 			{
-				if (output.link_ref != nullptr)
+				/*if (output.link_ref != nullptr)
 				{
 					output.link_ref->to_delete = true;
 					output.link_ref->output_node = nullptr;
+				}*/
+
+				for (auto link : output.links_refs)
+				{
+					if (link != nullptr)
+					{
+						link->to_delete = true;
+						link->output_node = nullptr;
+					}
 				}
 			}
 
@@ -185,7 +194,13 @@ void ShaderGraph::PostUpdate(float dt)
 			if ((*it)->output_node != nullptr)
 			{
 				(*it)->output_node->outputs[(*it)->output_socket].isLinked = false;
-				(*it)->output_node->outputs[(*it)->output_socket].link_ref = nullptr;
+				//(*it)->output_node->outputs[(*it)->output_socket].link_ref = nullptr;
+
+				for (auto link : (*it)->output_node->outputs[(*it)->output_socket].links_refs)
+				{
+					if(link == (*it))
+						link = nullptr;
+				}
 			}
 
 			RELEASE((*it));
@@ -284,7 +299,7 @@ ShaderNode* ShaderGraph::CreateNode(const char* name, int type, float2 position)
 			}
 			case NODE_TYPE::PARALLAX_OCLUSION:
 			{
-				std::string uName = std::string(node->name) + std::to_string(node->UID) + "_depthMap";
+				std::string uName = std::string(node->name) + std::to_string(node->UID);
 				node->uniformLocation = this->textureSamplerLocation++;
 				UniformTexture* uniform = new UniformTexture(uName, App->textures[defaultTexIdx].handle, node->uniformLocation);
 				if (uniform)
@@ -317,6 +332,13 @@ void ShaderGraph::CompileShader(ResourceShader* shader)
 	shader->Recompile();
 
 	last_output = std::string(compiler.source);
+	shader->source_code = std::string(compiler.source);
+}
+
+void ShaderGraph::ExportShader(ResourceShader* shader)
+{
+	ShaderParser parser(shader->source_code, shader->name);
+	parser.Generate();
 }
 
 void ShaderGraph::SetScrollOffset(float2& offset)
@@ -901,3 +923,12 @@ std::string ShaderCompiler::SetOutputType(VALUE_TYPE type)
 //{
 //	return std::string("	vec4 " + name + " = " + "vec4(" + value_x + "," + value_y + "," + value_z + "," + value_w  + ");\n");
 //}
+
+ShaderParser::ShaderParser(const std::string& source, const std::string& name)
+	: source(source), name(name)
+{
+}
+
+void ShaderParser::Generate()
+{
+}

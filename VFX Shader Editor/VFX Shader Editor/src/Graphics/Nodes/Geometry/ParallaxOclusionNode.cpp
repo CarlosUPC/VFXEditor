@@ -6,7 +6,7 @@ ParallaxOclusionNode::ParallaxOclusionNode()
 }
 
 ParallaxOclusionNode::ParallaxOclusionNode(const char* name, NODE_TYPE type, float2 position)
-	: ShaderNode(name, type, position)
+	: ShaderNode("Parallax Oclusion", type, position)
 {
 
 	inputs.push_back(InputSocket("UV", VALUE_TYPE::FLOAT2));
@@ -36,14 +36,15 @@ void ParallaxOclusionNode::Update(ShaderGraph& graph)
 		if (!input.isLinked) this->isError = false;
 	}
 
+	this->GLSL_Declaration = SetGLSLDeclaration("ParallaxOclusion" + std::to_string(UID));
 
 	//Outs
-	outputs[0].data_str = "ParallaxOclusion" + std::to_string(UID);
+	outputs[0].data_str = "ParallaxOclusion" + std::to_string(UID) + "_uv";
 	outputs[0].type_str = ShaderCompiler::SetOutputType(outputs[0].type);
 
 	//Ins
 	inputs[0].data_str = "TexCoord";
-	inputs[1].data_str = std::to_string((int)inputs[1].value1);
+	inputs[1].data_str = std::to_string(inputs[1].value1);
 	inputs[2].data_str = std::to_string((int)inputs[2].value1);
 	inputs[3].data_str = std::to_string((int)inputs[3].value1);
 	//inputs[4].data_str = name + std::to_string(UID) + "_depthMap";
@@ -52,7 +53,6 @@ void ParallaxOclusionNode::Update(ShaderGraph& graph)
 	CheckNodeConnections(this, graph);
 
 	//GLSL Abstraction
-	this->GLSL_Declaration = SetGLSLDeclaration(outputs[0].data_str);
 	this->GLSL_Definition = SetGLSLDefinition(outputs[0].data_str, inputs[0].data_str, inputs[1].data_str, inputs[2].data_str, inputs[3].data_str);
 
 }
@@ -108,7 +108,7 @@ void ParallaxOclusionNode::InspectorUpdate(ShaderGraph& graph)
 
 std::string ParallaxOclusionNode::SetGLSLDeclaration(const std::string& out_name)
 {
-	return	"uniform sampler2D " + out_name + "_depthMap;\n"
+	return	"uniform sampler2D " + out_name + ";\n"
 			"vec2 ParallaxMapping(vec2 texCoords, vec3 viewDir, float heightScale, int minLayers, int maxLayers)\n"
 			"{\n"
 			"    float numLayers = mix(maxLayers, minLayers, abs(dot(vec3(0.0, 0.0, 1.0), viewDir)));\n"
@@ -117,18 +117,18 @@ std::string ParallaxOclusionNode::SetGLSLDeclaration(const std::string& out_name
 			"    vec2 P = viewDir.xy / viewDir.z * heightScale;\n"
 			"    vec2 deltaTexCoords = P / numLayers;\n"
 			"    vec2  currentTexCoords = texCoords;\n"
-			"    float currentDepthMapValue = texture(" + out_name + "_depthMap, currentTexCoords).r;\n"
+			"    float currentDepthMapValue = texture(" + out_name + ", currentTexCoords).r;\n"
 			"\n"
 			"    while (currentLayerDepth < currentDepthMapValue)\n"
 			"    {\n"
 			"		currentTexCoords -= deltaTexCoords;\n"
-			"		currentDepthMapValue = texture(" + out_name + "_depthMap, currentTexCoords).r;\n"
+			"		currentDepthMapValue = texture(" + out_name + ", currentTexCoords).r;\n"
 			"		currentLayerDepth += layerDepth;\n"
 			"    }\n"
 			"\n"
 			"    vec2 prevTexCoords = currentTexCoords + deltaTexCoords;\n"
 			"    float afterDepth = currentDepthMapValue - currentLayerDepth;\n"
-			"    float beforeDepth = texture(" + out_name + "_depthMap, prevTexCoords).r - currentLayerDepth + layerDepth;\n"
+			"    float beforeDepth = texture(" + out_name + ", prevTexCoords).r - currentLayerDepth + layerDepth;\n"
 			"    float weight = afterDepth / (afterDepth - beforeDepth);\n"
 			"    vec2 finalTexCoords = prevTexCoords * weight + currentTexCoords * (1.0 - weight);\n"
 			"    return finalTexCoords;\n"

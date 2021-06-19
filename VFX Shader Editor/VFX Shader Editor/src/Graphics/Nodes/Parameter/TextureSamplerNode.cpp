@@ -186,13 +186,13 @@ TextureNode::TextureNode(const char* name, NODE_TYPE type, float2 position)
 void TextureNode::Update(ShaderGraph& graph)
 {
 	//Variable declaration
-	this->GLSL_Declaration = SetGLSLDeclaration(std::string(name) + std::to_string(UID));
+	//this->GLSL_Declaration = SetGLSLDeclaration(std::string(name) + std::to_string(UID));
 
 	//Out Variable
 	outputs[0].data_str = std::string(name) + std::to_string(UID);
 	outputs[0].type_str = ShaderCompiler::SetOutputType(outputs[0].type);
 	
-	this->GLSL_Definition = "";
+	//this->GLSL_Definition = "";
 
 
 	//Ins Variable

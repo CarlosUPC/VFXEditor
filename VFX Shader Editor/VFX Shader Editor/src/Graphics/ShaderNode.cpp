@@ -354,17 +354,17 @@ void ShaderNode::DrawInputs(ShaderGraph& graph, unsigned int numInputs, unsigned
 		{
 			//Texture Samplers
 			auto uniform = graph.uniforms.find(name + std::to_string(UID));
-			auto uniform_depth = graph.uniforms.find(name + std::to_string(UID) + "_depthMap");
+			//auto uniform_depth = graph.uniforms.find(name + std::to_string(UID) + "_depthMap");
 			if (uniform != graph.uniforms.end())
 			{
 				ImGui::SetCursorScreenPos(ImVec2(input.position.x - 10, input.position.y + 30));
 				ImGui::Image((ImTextureID)static_cast<UniformTexture*>(uniform->second)->GetTextureID(), ImVec2(140, 130), ImVec2(1,1), ImVec2(0,0));
 			}
-			else if (uniform_depth != graph.uniforms.end())
+			/*else if (uniform_depth != graph.uniforms.end())
 			{
 				ImGui::SetCursorScreenPos(ImVec2(input.position.x - 10, input.position.y + 30));
 				ImGui::Image((ImTextureID)static_cast<UniformTexture*>(uniform_depth->second)->GetTextureID(), ImVec2(140, 130), ImVec2(1, 1), ImVec2(0, 0));
-			}
+			}*/
 			//Textures
 			else
 			{
@@ -622,8 +622,10 @@ void ShaderNode::InputSocketInputs(ShaderGraph& graph, unsigned int numInputs, u
 					
 					//create link
 					input.link_ref = new ShaderLink(this, i, graph.socket_state.node_selected, graph.socket_state.socked_selected);
-					graph.socket_state.node_selected->outputs[graph.socket_state.socked_selected].link_ref = input.link_ref;
+					//graph.socket_state.node_selected->outputs[graph.socket_state.socked_selected].link_ref = input.link_ref;
+					graph.socket_state.node_selected->outputs[graph.socket_state.socked_selected].links_refs.push_back(input.link_ref);
 					graph.links.push_back(input.link_ref);
+
 					
 
 				}
@@ -669,16 +671,31 @@ void ShaderNode::InputSocketOutputs(ShaderGraph& graph, unsigned int numOutputs,
 
 				if (ImGui::GetIO().KeyAlt)
 				{
-					if (output.isLinked) //TODO: el output si va apoder conectarse con muchos inputs debe tener una array de conexiones y no esto...
+					//if (output.isLinked) //TODO: el output si va apoder conectarse con muchos inputs debe tener una array de conexiones y no esto...
+					//{
+					//	//swap links
+					//	if (output.link_ref != nullptr)
+					//	{
+					//		output.link_ref->to_delete = true;
+					//		//input.isLinked = false;
+					//	}
+
+					//	break;
+					//}
+
+					if (output.isLinked) 
 					{
 						//swap links
-						if (output.link_ref != nullptr)
+						for (auto link : output.links_refs)
 						{
-							output.link_ref->to_delete = true;
-							//input.isLinked = false;
+							if (link != nullptr)
+							{
+								link->to_delete = true;
+							}
 						}
 
 						break;
+
 					}
 
 				}
@@ -715,11 +732,14 @@ void ShaderNode::InputSocketOutputs(ShaderGraph& graph, unsigned int numOutputs,
 				}
 
 				//create link
-				output.link_ref = new ShaderLink(graph.socket_state.node_selected, graph.socket_state.socked_selected, this, i);
+				/*output.link_ref = new ShaderLink(graph.socket_state.node_selected, graph.socket_state.socked_selected, this, i);
 				graph.socket_state.node_selected->inputs[graph.socket_state.socked_selected].link_ref = output.link_ref;
-				graph.links.push_back(output.link_ref);
+				graph.links.push_back(output.link_ref);*/
 
 
+				output.links_refs.push_back(new ShaderLink(graph.socket_state.node_selected, graph.socket_state.socked_selected, this, i));
+				graph.socket_state.node_selected->inputs[graph.socket_state.socked_selected].link_ref = output.links_refs.back();
+				graph.links.push_back(output.links_refs.back());
 			}
 
 			graph.socket_state.node_selected = nullptr;
@@ -1243,9 +1263,9 @@ void InputSocket::DisplayInputSocketDetails(ShaderGraph& graph, ShaderNode& node
 		std::string item_name = std::string("     ") + graph.texIndices[0];
 		static std::string current_item = item_name;
 
-		ImGuiStyle& style = ImGui::GetStyle();
-		style.FrameRounding = 2.0f;
-		style.FrameBorderSize = 1.0f;
+		//ImGuiStyle& style = ImGui::GetStyle();
+		//style.FrameRounding = 2.0f;
+		//style.FrameBorderSize = 1.0f;
 
 		static uint selected_idx = 0;
 

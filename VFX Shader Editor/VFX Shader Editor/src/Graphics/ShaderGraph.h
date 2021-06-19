@@ -27,6 +27,21 @@ enum class ShaderSurface
 	S_TRANSPARENT
 };
 
+
+
+struct ShaderParser
+{
+public:
+	ShaderParser(const std::string& source, const std::string& name);
+	void Generate();
+
+private:
+	std::string name;
+	std::string source;
+};
+
+
+
 struct ShaderCompiler
 {
 
@@ -114,6 +129,7 @@ public:
 	ShaderNode* CreateNode(const char* name, int type, float2 position);
 
 	void CompileShader(ResourceShader* shader);
+	void ExportShader(ResourceShader* shader);
 	std::string GetName() const { return m_Name; }
 
 	void SetScrollOffset(float2& offset);

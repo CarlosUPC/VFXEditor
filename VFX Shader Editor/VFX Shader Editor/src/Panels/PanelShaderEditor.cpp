@@ -36,15 +36,16 @@ void PanelShaderEditor::Draw()
 		{ 
 			creating_shader = true;
 		}
-		if (ImGui::MenuItem("Load Shader"))
-		{
-			//TODO: NEXT RUBRICA
-		}
-		if (ImGui::MenuItem("Save Shader")) 
-		{
-			//TODO: NEXT RUBRICA
-		}
+		ImGui::EndMenu();
+	}
+	if (ImGui::BeginMenu("Export")) {
 
+		if (ImGui::MenuItem("Export to Unity"))
+		{
+			if (this->current_shader == nullptr)
+				current_shader->graph->ExportShader(current_shader);
+
+		}
 		ImGui::EndMenu();
 	}
 	ImGui::EndMenuBar();
@@ -318,7 +319,7 @@ void PanelShaderEditor::AddNewNodePopUp()
 				CreateNodeOption("UV", NODE_TYPE::UV, float2(node_pos.x, node_pos.y), current_shader, current_shader->graph);
 				CreateNodeOption("Tiling And Offset", NODE_TYPE::TILING_OFFSET, float2(node_pos.x, node_pos.y), current_shader, current_shader->graph);
 				CreateNodeOption("Panner", NODE_TYPE::PANNER, float2(node_pos.x, node_pos.y), current_shader, current_shader->graph);
-				CreateNodeOption("Parallax Oclusion", NODE_TYPE::PARALLAX_OCLUSION, float2(node_pos.x, node_pos.y), current_shader, current_shader->graph);
+				CreateNodeOption("ParallaxOclusion", NODE_TYPE::PARALLAX_OCLUSION, float2(node_pos.x, node_pos.y), current_shader, current_shader->graph);
 				
 
 				ImGui::TreePop();
