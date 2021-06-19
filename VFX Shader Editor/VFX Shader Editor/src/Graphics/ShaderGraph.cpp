@@ -130,18 +130,18 @@ void ShaderGraph::PostUpdate(float dt)
 		{
 			//delete uniform element from node
 			auto uniform = uniforms.find(std::string((*it)->name) + std::to_string((*it)->UID));
-			auto uniform_depth = uniforms.find(std::string((*it)->name) + std::to_string((*it)->UID) + "_depthMap");
+			//auto uniform_depth = uniforms.find(std::string((*it)->name) + std::to_string((*it)->UID) + "_depthMap");
 			
 			if (uniform != uniforms.end())
 			{
 				RELEASE(uniform->second);
 				uniforms.erase(uniform);
 			}
-			if (uniform_depth != uniforms.end())
+			/*if (uniform_depth != uniforms.end())
 			{
 				RELEASE(uniform_depth->second);
 				uniforms.erase(uniform_depth);
-			}
+			}*/
 
 
 

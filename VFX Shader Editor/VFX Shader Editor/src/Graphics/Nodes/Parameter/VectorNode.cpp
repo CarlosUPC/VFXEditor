@@ -284,7 +284,7 @@ ColorNode::ColorNode(const char* name, NODE_TYPE type, float2 position)
 {
 
 	inputs.push_back(InputSocket("In", VALUE_TYPE::COLOR3, float3(0.0f), CONTEXT_TYPE::PARAMETER));
-	outputs.push_back(OutputSocket(VALUE_TYPE::FLOAT3));
+	outputs.push_back(OutputSocket(VALUE_TYPE::FLOAT4));
 
 	//temp hardcoded
 	inputs_size = 1.5;
@@ -327,7 +327,7 @@ void ColorNode::InspectorUpdate(ShaderGraph& graph)
 
 std::string ColorNode::SetGLSLDefinition(const std::string& out_name, const std::string& value)
 {
-	return std::string("	vec3 " + out_name + " = " + "vec3(" + value + ");\n");
+	return std::string("	vec4 " + out_name + " = " + "vec4(" + value + ", 1.0);\n");
 }
 
 TimeNode::TimeNode()
