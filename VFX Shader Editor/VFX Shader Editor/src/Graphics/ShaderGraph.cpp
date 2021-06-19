@@ -3,6 +3,7 @@
 #include <fstream>
 //#include <sstream> 
 #include <iostream>
+#include <regex>
 #include "ShaderNode.h"
 #include "Nodes/PBRNode.h"
 #include "Nodes/Parameter/VectorNode.h"
@@ -337,8 +338,8 @@ void ShaderGraph::CompileShader(ResourceShader* shader)
 
 void ShaderGraph::ExportShader(ResourceShader* shader)
 {
-	ShaderParser parser(shader->source_code, shader->name);
-	parser.Generate();
+	ShaderCompiler compiler(*(shader->graph), shader->source_code, shader->name);
+	compiler.GenerateHLSL();
 }
 
 void ShaderGraph::SetScrollOffset(float2& offset)
@@ -371,6 +372,139 @@ ShaderCompiler::ShaderCompiler( ShaderGraph& g)
 	: graph(g)
 {
 	source = "";
+}
+
+ShaderCompiler::ShaderCompiler(ShaderGraph& g, const std::string& source, const std::string& name)
+	: graph(g), glsl_source(source), shaderName(name)
+{
+	
+}
+
+void ShaderCompiler::GenerateHLSL()
+{
+	hlsl_source = R"(Shader "Umbra/ShaderName"
+	{
+		Properties{
+		//Properties
+		}
+
+		SubShader
+		{
+		Tags { "RenderType" = "Transparent" "Queue" = "Transparent" }
+		
+		Pass
+		{
+			ZWrite Off
+			Blend SrcAlpha OneMinusSrcAlpha
+		
+			CGPROGRAM
+		
+			#pragma vertex vert
+			#pragma fragment frag
+			#include ""UnityCG.cginc""
+		
+			struct VertexInput {
+				float4 vertex : POSITION;
+				float2 uv:TEXCOORD0;
+				float4 tangent : TANGENT;
+				float3 normal : NORMAL;
+		
+				//VertexInput
+			};
+
+			struct VertexOutput {
+				float4 pos : SV_POSITION;
+				float2 uv:TEXCOORD0;
+
+				//VertexOutput
+			};
+		
+			//Variables
+		
+			//Functions
+		
+			VertexOutput vert (VertexInput v)
+			{
+				VertexOutput o;
+				o.pos = UnityObjectToClipPos (v.vertex);
+				o.uv = v.uv;
+
+				//VertexFactory
+
+				return o;
+			}
+
+
+			fixed4 frag(VertexOutput i) : SV_Target
+			{
+
+				//MainImage
+
+			}
+
+			ENDCG
+		}
+	  }
+	}
+	)";
+
+	std::string vertexCode = ParseFromTo(BeginVertexHeader(), EndVertexHeader(), glsl_source);
+	std::string fragmentCode = ParseFromTo(BeginFragmentHeader(), EndFragmentHeader(), glsl_source);
+
+
+	int beginBracket = fragmentCode.find("//////// FRAG_MAIN_BEGIN ////////");
+	beginBracket += std::string("//////// FRAG_MAIN_BEGIN ////////").length();
+	int endBracket = fragmentCode.find("//////// FRAG_MAIN_END ////////");
+	std::size_t length = endBracket - beginBracket;
+
+	std::string fragData = fragmentCode.substr(beginBracket, length);
+	
+	//Change stuff
+	ReplaceString(hlsl_source, "ShaderName", shaderName);
+	ReplaceString(hlsl_source, "//MainImage", fragData);
+
+	
+
+	//Serialize to file
+	WriteHLSLToFile();
+}
+
+void ShaderCompiler::WriteHLSLToFile()
+{
+	std::string shader_path = std::string("Shaders/ShaderLab");
+	std::string fileName = shaderName + std::string(".shader");
+
+
+	std::ofstream file;
+	file.open((shader_path + "/" + fileName).c_str());
+
+	if (file)
+	{
+		file.write(hlsl_source.c_str(), hlsl_source.length());
+	}
+
+	file.close();
+}
+
+bool ShaderCompiler::ReplaceString(std::string& str, const std::string& from, const std::string& to)
+{
+	size_t start_pos = str.find(from);
+	if (start_pos == std::string::npos)
+		return false;
+	str.replace(start_pos, from.length(), to);
+
+	return true;
+}
+
+void ShaderCompiler::ReplaceStringAll(std::string& str, const std::string& from, const std::string& to)
+{
+	if (from.empty())
+		return;
+	size_t start_pos = 0;
+	while ((start_pos = str.find(from, start_pos)) != std::string::npos) {
+		str.replace(start_pos, from.length(), to);
+		start_pos += to.length(); // In case 'to' contains 'from', like replacing 'x' with 'yx'
+	}
 }
 
 void ShaderCompiler::Generate()
@@ -639,6 +773,7 @@ std::string ShaderCompiler::OutputVertex()
 	//more stuff ...
 	std::string code = "";
 
+	
 	//TexCoord
 	//code += OutputTabbedLine("TexCoord = vec2(aTexCoord.x, aTexCoord.y);\n");
 
@@ -660,6 +795,8 @@ std::string ShaderCompiler::OutputVertex()
 
 	// Final position output 
 	code += OutputTabbedLine("gl_Position = u_Projection * u_View * u_Model * vec4(aPos, 1.0);\n");
+
+	
 	return code;
 }
 
@@ -753,6 +890,8 @@ std::string ShaderCompiler::OutputFragment()
 {
 	std::string code = "";
 	
+	code += OutputLine("//////// FRAG_MAIN_BEGIN ////////");
+
 	//Setting default variables --------
 	code += OutputTabbedLine("vec3 viewDir = normalize(fs_in.TangentViewPos - fs_in.TangentFragPos);\n");
 	code += OutputTabbedLine("vec2 TexCoord = fs_in.TexCoords;\n");
@@ -861,6 +1000,8 @@ std::string ShaderCompiler::OutputFragment()
 
 	// Final position output 
 	code += OutputTabbedLine("FragColor = vec4(AlbedoColor, Opacity);\n");
+
+	code += OutputLine("//////// FRAG_MAIN_END ////////");
 	//more stuff ...
 	//std::string tmp_color = "vec4(1.0f, 0.0f, 0.0f, 1.0f)"; // it should be take it from shadergraph reference
 
@@ -904,124 +1045,8 @@ std::string ShaderCompiler::SetOutputType(VALUE_TYPE type)
 	return out_type;
 }
 
-//std::string ShaderCompiler::GLSLAbstractVarFloat(const std::string& value, const std::string& name)
-//{
-//	return  std::string("	float " + name + " = " + value + ";\n");
-//}
-//
-//std::string ShaderCompiler::SetOutputVarVector2(const std::string& value1, const std::string& value2, const std::string& name)
-//{
-//	return std::string("	vec2 " + name + " = " + "vec2(" + value1 + "," + value2 + ");\n");
-//}
-//
-//std::string ShaderCompiler::SetOutputVarVector3(const std::string& value_x, const std::string& value_y, const std::string& value_z, const std::string& name)
-//{
-//	return std::string("	vec3 " + name + " = " + "vec3(" + value_x + "," + value_y + "," + value_z + ");\n");
-//}
-//
-//std::string ShaderCompiler::SetOutputVarVector4(const std::string& value_x, const std::string& value_y, const std::string& value_z, const std::string& value_w, const std::string& name)
-//{
-//	return std::string("	vec4 " + name + " = " + "vec4(" + value_x + "," + value_y + "," + value_z + "," + value_w  + ");\n");
-//}
-
-ShaderParser::ShaderParser(const std::string& source, const std::string& name)
-	: glsl_source(source), name(name)
-{
-}
-
-void ShaderParser::Generate()
-{
-
-	hlsl_source = R"(Shader ""Umbra/ShaderName""
-	{
-		Properties{
-		//Properties
-		}
-
-		SubShader
-		{
-		Tags { ""RenderType"" = ""Transparent"" ""Queue"" = ""Transparent"" }
-		
-		Pass
-		{
-			ZWrite Off
-			Blend SrcAlpha OneMinusSrcAlpha
-		
-			CGPROGRAM
-		
-			#pragma vertex vert
-			#pragma fragment frag
-			#include ""UnityCG.cginc""
-		
-			struct VertexInput {
-				float4 vertex : POSITION;
-				float2 uv:TEXCOORD0;
-				float4 tangent : TANGENT;
-				float3 normal : NORMAL;
-		
-				//VertexInput
-			};
-
-			struct VertexOutput {
-				float4 pos : SV_POSITION;
-				float2 uv:TEXCOORD0;
-
-				//VertexOutput
-			};
-		
-			//Variables
-		
-			//Functions
-		
-			VertexOutput vert (VertexInput v)
-			{
-				VertexOutput o;
-				o.pos = UnityObjectToClipPos (v.vertex);
-				o.uv = v.uv;
-
-				//VertexFactory
-
-				return o;
-			}
 
 
-			fixed4 frag(VertexOutput i) : SV_Target
-			{
-
-				//MainImage
-
-			}
-
-			ENDCG
-		}
-	  }
-	}
-	)";
 
 
-	//Change stuff
 
-
-	//Serialize to file
-	WriteShaderToFile();
-
-}
-
-void ShaderParser::WriteShaderToFile()
-{
-	std::string shader_path = std::string("Shaders/ShaderLab");
-	std::string fileName = name + std::string(".shader");
-	
-
-	std::ofstream file;
-	file.open((shader_path + "/" + fileName).c_str());
-
-	if (file)
-	{
-		file.write(hlsl_source.c_str(), hlsl_source.length());
-	}
-
-	file.close();
-
-	
-}

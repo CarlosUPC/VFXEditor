@@ -29,32 +29,28 @@ enum class ShaderSurface
 
 
 
-struct ShaderParser
-{
-public:
-	ShaderParser(const std::string& source, const std::string& name);
-	void Generate();
-	void WriteShaderToFile();
-
-private:
-	std::string name;
-	std::string glsl_source;
-	std::string hlsl_source;
-};
-
-
-
 struct ShaderCompiler
 {
 
 public:
 	ShaderCompiler(ShaderGraph& g);
-		
+	ShaderCompiler(ShaderGraph& g, const std::string& source, const std::string& name);
 
+	//HLSL Parser
+	void GenerateHLSL();
+	void WriteHLSLToFile();
+	bool ReplaceString(std::string& str, const std::string& from, const std::string& to);
+	void ReplaceStringAll(std::string& str, const std::string& from, const std::string& to);
+
+
+
+	//GLSL Parser
 	void Generate();
 	void WriteShaderToFile();
 	std::string SplitShaderSource(ShaderType type);
 	std::string ParseFromTo(const std::string& begin, const std::string& end, const std::string& source);
+	
+	
 	//Lines
 	std::string OutputLine(const std::string& line);
 	std::string OutputTabbedLine(const std::string& line);
@@ -94,6 +90,10 @@ public:
 	std::string source;
 	std::string vertexCode;
 	std::string fragmentCode;
+
+	std::string shaderName;
+	std::string glsl_source;
+	std::string hlsl_source;
 
 };
 
