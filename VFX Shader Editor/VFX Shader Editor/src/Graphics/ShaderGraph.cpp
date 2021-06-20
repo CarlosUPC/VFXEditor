@@ -403,6 +403,11 @@ void ShaderCompiler::GenerateHLSL()
 			#pragma fragment frag
 			#include ""UnityCG.cginc""
 		
+			//Variables
+		
+			//Functions
+
+
 			struct VertexInput {
 				float4 vertex : POSITION;
 				float2 uv:TEXCOORD0;
@@ -419,9 +424,6 @@ void ShaderCompiler::GenerateHLSL()
 				//VertexOutput
 			};
 		
-			//Variables
-		
-			//Functions
 		
 			VertexOutput vert (VertexInput v)
 			{
@@ -445,25 +447,118 @@ void ShaderCompiler::GenerateHLSL()
 			ENDCG
 		}
 	  }
+	Fallback "Mobile/VertexLit"
 	}
 	)";
 
 	std::string vertexCode = ParseFromTo(BeginVertexHeader(), EndVertexHeader(), glsl_source);
 	std::string fragmentCode = ParseFromTo(BeginFragmentHeader(), EndFragmentHeader(), glsl_source);
 
+	ReplaceString(hlsl_source, "ShaderName", shaderName);
 
+	
+
+
+	
+
+	int beginVars = fragmentCode.find("//////// FRAG_VARIABLES_BEGIN ////////");
+	beginVars += std::string("//////// FRAG_VARIABLES_BEGIN ////////").length();
+	int endVars = fragmentCode.find("//////// FRAG_VARIABLES_END ////////");
+	std::size_t lengthVars = endVars - beginVars;
+
+	std::string fragVars = fragmentCode.substr(beginVars, lengthVars);
+	ReplaceString(hlsl_source, "//Variables", fragVars);
+
+
+	
+	
 	int beginBracket = fragmentCode.find("//////// FRAG_MAIN_BEGIN ////////");
 	beginBracket += std::string("//////// FRAG_MAIN_BEGIN ////////").length();
 	int endBracket = fragmentCode.find("//////// FRAG_MAIN_END ////////");
 	std::size_t length = endBracket - beginBracket;
 
 	std::string fragData = fragmentCode.substr(beginBracket, length);
-	
-	//Change stuff
-	ReplaceString(hlsl_source, "ShaderName", shaderName);
 	ReplaceString(hlsl_source, "//MainImage", fragData);
 
 	
+	ReplaceStringAll(hlsl_source, "vec", "fixed");
+	ReplaceStringAll(hlsl_source, "half", "fixed");
+	ReplaceStringAll(hlsl_source, "float", "fixed");
+	ReplaceStringAll(hlsl_source, "mat2", "fixed2x2");
+	ReplaceStringAll(hlsl_source, "mat3", "fixed3x3");
+	ReplaceStringAll(hlsl_source, "mat4", "fixed4x4");
+
+	ReplaceStringAll(hlsl_source, "fs_in", "i");
+	ReplaceStringAll(hlsl_source, "TexCoords", "uv");
+
+	
+	ReplaceStringAll(hlsl_source, "texture", "tex2D");
+	ReplaceStringAll(hlsl_source, "FragColor =", "return");
+
+
+
+
+	int texture_count = 1;
+	for (std::list<ShaderNode*>::iterator it = graph.nodes.begin(); it != graph.nodes.end(); ++it)
+	{
+		std::string nodeName = (*it)->name + std::to_string((*it)->UID);
+
+		if ((*it)->type == NODE_TYPE::TEXTURE_SAMPLER && texture_count == 1)
+		{
+			ReplaceStringAll(hlsl_source, nodeName, "_MainTex");
+			texture_count++;
+			
+		}
+		else if ((*it)->type == NODE_TYPE::TEXTURE_SAMPLER && texture_count == 2)
+		{
+			ReplaceStringAll(hlsl_source, nodeName, "_SecondTex");
+			texture_count++;
+			
+		}
+		else if ((*it)->type == NODE_TYPE::TEXTURE_SAMPLER && texture_count == 3)
+		{
+			ReplaceStringAll(hlsl_source, nodeName, "_ThirdTex");
+			texture_count++;
+			
+		}
+		else if ((*it)->type == NODE_TYPE::TEXTURE_SAMPLER && texture_count == 4)
+		{
+			ReplaceStringAll(hlsl_source, nodeName, "_FourthTex");
+			break;
+		}
+
+	}
+
+
+
+	std::string properties = "";
+	size_t start_pos = hlsl_source.find("_MainTex");
+	if (start_pos != std::string::npos)
+	{
+		properties += PlacePropertyVariable("MainTex", PROPERTY_TYPES::Texture);
+	}
+	start_pos = hlsl_source.find("_SecondTex");
+	if (start_pos != std::string::npos)
+	{
+		properties += PlacePropertyVariable("SecondTex", PROPERTY_TYPES::Texture);
+	}
+	start_pos = hlsl_source.find("_ThirdTex");
+	if (start_pos != std::string::npos)
+	{
+		properties += PlacePropertyVariable("ThirdTex", PROPERTY_TYPES::Texture);
+	}
+	start_pos = hlsl_source.find("_FourthTex");
+	if (start_pos != std::string::npos)
+	{
+		properties += PlacePropertyVariable("FourthTex", PROPERTY_TYPES::Texture);
+	}
+	start_pos = hlsl_source.find("_Color");
+	if (start_pos != std::string::npos)
+	{
+		properties += PlacePropertyVariable("Color", PROPERTY_TYPES::Color);
+	}
+
+	ReplaceString(hlsl_source, "//Properties", properties);
 
 	//Serialize to file
 	WriteHLSLToFile();
@@ -505,6 +600,73 @@ void ShaderCompiler::ReplaceStringAll(std::string& str, const std::string& from,
 		str.replace(start_pos, from.length(), to);
 		start_pos += to.length(); // In case 'to' contains 'from', like replacing 'x' with 'yx'
 	}
+}
+
+void ShaderCompiler::ReplaceProperty(std::string& str, const std::string& from, const std::string& to)
+{
+	std::string tex;
+	size_t start_pos = str.find(from);
+	if (start_pos == std::string::npos)
+		return;
+	
+	//tex.append(from, from.length()+9);
+	//tex.substr();
+
+
+	str.replace(start_pos, from.length()+9, to);
+
+}
+
+std::string ShaderCompiler::PlacePropertyVariable(std::string name, PROPERTY_TYPES type)
+{
+	
+	std::string VariableType = "";
+	std::string Initialize = "";
+	std::string CorrespondingVariable = "";
+
+	switch (type) {
+	case PROPERTY_TYPES::Int:
+		VariableType = "int";
+		CorrespondingVariable = "int";
+		Initialize = "0";
+		break;
+	case PROPERTY_TYPES::Float:
+		VariableType = "float";
+		CorrespondingVariable = "float";
+		Initialize = "0";
+		break;
+	case PROPERTY_TYPES::Texture:
+		VariableType = "2D";
+		CorrespondingVariable = "sampler2D";
+		Initialize = "\"white\"{}";
+
+			break;
+	case PROPERTY_TYPES::Color:
+		VariableType = "Color";
+		CorrespondingVariable = "float4";
+		Initialize = "(0,0,0,0)";
+		break;
+	case PROPERTY_TYPES::Vector:
+		VariableType = "Vector";
+		CorrespondingVariable = "float4";
+		Initialize = "(0,0,0,1)";
+		break;
+	default:
+		VariableType = "int";
+		CorrespondingVariable = "int";
+		Initialize = "0";
+		break;
+	}
+	//CorrespondingVariable += " _" + name + ";";//for example sampler2D _MainTex;
+
+	std::string Properties = "_name (\"" + name + "\", type) = initialize";
+	ReplaceString(Properties, "name", name);
+	ReplaceString(Properties, "type", VariableType);
+	ReplaceString(Properties, "initialize", Initialize);
+	
+	//ReplaceString("//Properties", Properties);
+	//BaseReplace("//Variables", "$0\n" + CorrespondingVariable);
+	return Properties + "\n";
 }
 
 void ShaderCompiler::Generate()
@@ -840,6 +1002,7 @@ std::string ShaderCompiler::OutputFragmentHeader()
 	//code += OutputLine("in vec3 light;");
 	//code += OutputLine("in vec3 view;");
 
+	code += OutputLine("//////// FRAG_VARIABLES_BEGIN ////////");
 	//Declarations
 	InputSocket inputDiffuse = graph.mainNode->GetInputSocketbyName("Albedo");
 	if (inputDiffuse.isLinked)
@@ -865,7 +1028,7 @@ std::string ShaderCompiler::OutputFragmentHeader()
 		std::string varDefinition = out_node->GetOutputDeclaration(*this);
 		code += varDefinition;
 	}
-
+	code += OutputLine("//////// FRAG_VARIABLES_END ////////");
 
 	return code;
 }

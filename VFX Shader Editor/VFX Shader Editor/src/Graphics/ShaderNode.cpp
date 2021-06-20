@@ -15,6 +15,15 @@ ShaderNode::ShaderNode(const char* name, NODE_TYPE type, float2 position)
 	: name(name), type(type), position(position)
 {
 	UID = Random::GenerateUUID();
+
+
+	std::string uid = std::to_string(UID);
+	if (uid.length() > 9) {
+		uid.pop_back();
+		UID = std::stoi(uid);
+	}
+
+
 	ImVec2 textSize = ImGui::CalcTextSize(name);
 	title_size = { textSize.x, textSize.y };
 }

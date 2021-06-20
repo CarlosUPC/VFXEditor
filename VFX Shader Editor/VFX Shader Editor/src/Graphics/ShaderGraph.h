@@ -33,6 +33,17 @@ struct ShaderCompiler
 {
 
 public:
+	enum class PROPERTY_TYPES
+	{
+		Texture = 0,
+		Int,
+		Float,
+		Vector,
+		Color,
+
+		None
+	};
+
 	ShaderCompiler(ShaderGraph& g);
 	ShaderCompiler(ShaderGraph& g, const std::string& source, const std::string& name);
 
@@ -41,7 +52,8 @@ public:
 	void WriteHLSLToFile();
 	bool ReplaceString(std::string& str, const std::string& from, const std::string& to);
 	void ReplaceStringAll(std::string& str, const std::string& from, const std::string& to);
-
+	void ReplaceProperty(std::string& str, const std::string& from, const std::string& to);
+	std::string PlacePropertyVariable(std::string str, PROPERTY_TYPES type);
 
 
 	//GLSL Parser
@@ -86,6 +98,7 @@ public:
 private:
 
 	ShaderGraph& graph;
+	PROPERTY_TYPES type = PROPERTY_TYPES::None;
 public:
 	std::string source;
 	std::string vertexCode;

@@ -302,7 +302,7 @@ void ColorNode::Update(ShaderGraph& graph)
 	//Ins
 	inputs[0].value_str = std::to_string(inputs[0].value3.x) + "," + std::to_string(inputs[0].value3.y) + "," + std::to_string(inputs[0].value3.z);
 
-
+	this->GLSL_Declaration = SetGLSLDeclaration(outputs[0].data_str);
 	this->GLSL_Definition = SetGLSLDefinition(outputs[0].data_str, inputs[0].value_str);
 }
 
@@ -323,6 +323,11 @@ void ColorNode::InspectorUpdate(ShaderGraph& graph)
 		ImGui::Text(GLSL_Definition.c_str());
 
 	}
+}
+
+std::string ColorNode::SetGLSLDeclaration(const std::string& out_name)
+{
+	return std::string();
 }
 
 std::string ColorNode::SetGLSLDefinition(const std::string& out_name, const std::string& value)
