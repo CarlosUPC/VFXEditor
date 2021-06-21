@@ -10,7 +10,7 @@
 PanelShaderEditor::PanelShaderEditor(const char* name)
 	:Panel(name)
 {
-	flags = ImGuiWindowFlags_::ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollWithMouse;
+	flags = ImGuiWindowFlags_::ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoScrollbar  | ImGuiWindowFlags_NoScrollWithMouse;
 	ImGuiIO& io = ImGui::GetIO();
 	mainFont = io.Fonts->AddFontDefault();
 	textFont = io.Fonts->AddFontFromFileTTF("Fonts/PixelForce.TTF", 22);
@@ -65,7 +65,7 @@ void PanelShaderEditor::Draw()
 	if (this->current_shader == nullptr)
 	{
 		ImVec2 textSize = ImGui::CalcTextSize("Graph empty. Create a Shader");
-		ImGui::SetCursorScreenPos(ImVec2(ImGui::GetWindowSize().x - (textSize.x), ImGui::GetWindowSize().y/2.0f));
+		ImGui::SetCursorScreenPos(ImVec2(ImGui::GetWindowSize().x - (textSize.x) - 120.0f, ImGui::GetWindowSize().y/2.0f));
 		ImGui::PushFont(textFont);
 		ImGui::Text("Graph empty. Generate a Shader!");
 		ImGui::PopFont();

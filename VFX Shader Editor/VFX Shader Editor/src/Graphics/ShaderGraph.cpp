@@ -547,7 +547,7 @@ void ShaderCompiler::GenerateHLSL()
 			properties += PlacePropertyVariable(nodeName, PROPERTY_TYPES::Color);
 			
 		}
-		if ((*it)->type == NODE_TYPE::TEXTURE_SAMPLER || (*it)->type == NODE_TYPE::PARALLAX_OCLUSION)
+		if ((*it)->type == NODE_TYPE::TEXTURE_SAMPLER)
 		{
 			ReplaceStringAll(hlsl_source, nodeName, "_" + nodeName);
 			properties += PlacePropertyVariable(nodeName, PROPERTY_TYPES::Texture);
@@ -557,6 +557,12 @@ void ShaderCompiler::GenerateHLSL()
 		{
 			ReplaceString(hlsl_source, (*it)->GetDeclaration(), "");
 			ReplaceStringAll(hlsl_source, nodeName, "_Time");
+		}
+		if ((*it)->type == NODE_TYPE::PARALLAX_OCLUSION)
+		{
+			ReplaceStringAll(hlsl_source, nodeName, "_" + nodeName);
+			ReplaceString(hlsl_source, "while", "[unroll(1024)]while"); //This is for posible Shader Model 2.0 error in Unity
+			properties += PlacePropertyVariable(nodeName, PROPERTY_TYPES::Texture);
 		}
 	}
 
