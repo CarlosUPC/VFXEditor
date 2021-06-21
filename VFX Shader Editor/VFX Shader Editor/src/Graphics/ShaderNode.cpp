@@ -893,6 +893,10 @@ void ShaderNode::CheckNodeConnections(ShaderNode* current_node, ShaderGraph& gra
 					case	VALUE_TYPE::FLOAT4: break;
 					}
 					break;
+				case VALUE_TYPE::TEXTURE2D:
+					current_node->isError = true;
+					break;
+				
 				}
 			}
 
@@ -900,6 +904,9 @@ void ShaderNode::CheckNodeConnections(ShaderNode* current_node, ShaderGraph& gra
 			//Update Uniform value
 			if (input.link_ref->output_node->outputs[input.link_ref->output_socket].type == VALUE_TYPE::TEXTURE2D)
 			{
+
+
+
 				int textureID = input.link_ref->output_node->inputs[0].texid;
 
 				auto uniform = graph.uniforms.find(std::string(name) + std::to_string(UID));
@@ -914,14 +921,8 @@ void ShaderNode::CheckNodeConnections(ShaderNode* current_node, ShaderGraph& gra
 				}*/
 			}
 
-			
-		}
-		else
-		{
-			//TODO: Change input values to defaults ?
 		}
 	}
-
 
 }
 

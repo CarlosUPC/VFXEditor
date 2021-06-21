@@ -153,6 +153,8 @@ void ShaderGraph::PostUpdate(float dt)
 				{
 					input.link_ref->to_delete = true;
 					input.link_ref->input_node = nullptr;
+					//input.isLinked = false;
+					//input.link_ref = nullptr;
 				}
 			}
 			for (auto&& output : (*it)->outputs)
@@ -163,12 +165,15 @@ void ShaderGraph::PostUpdate(float dt)
 					output.link_ref->output_node = nullptr;
 				}*/
 
+				//output.isLinked = false;
+
 				for (auto link : output.links_refs)
 				{
 					if (link != nullptr)
 					{
 						link->to_delete = true;
 						link->output_node = nullptr;
+						//link = nullptr;
 					}
 				}
 			}
@@ -407,7 +412,7 @@ void ShaderCompiler::GenerateHLSL()
 		
 			#pragma vertex vert
 			#pragma fragment frag
-			#include ""UnityCG.cginc""
+			#include "UnityCG.cginc"
 		
 			//Declarations
 		
@@ -483,8 +488,8 @@ void ShaderCompiler::GenerateHLSL()
 	// ================  REPLACE BLENDING  ================
 	if (graph.materialSurface == ShaderSurface::S_TRANSPARENT)
 	{
-		ReplaceString(hlsl_source, "BlendEnable", "ZWrite Off");
-		ReplaceString(hlsl_source, "BlendEquation", "Blend SrcAlpha OneMinusSrcAlpha");
+		ReplaceString(hlsl_source, "//BlendEnable", "ZWrite Off");
+		ReplaceString(hlsl_source, "//BlendEquation", "Blend SrcAlpha OneMinusSrcAlpha");
 
 		ReplaceString(hlsl_source, "Opaque", "Transparent");
 		ReplaceString(hlsl_source, "Geometry", "Transparent");
@@ -512,22 +517,7 @@ void ShaderCompiler::GenerateHLSL()
 
 
 	
-	// ================  REPLACE TYPES  ================
-	ReplaceStringAll(hlsl_source, "vec", "fixed");
-	ReplaceStringAll(hlsl_source, "half", "fixed");
-	ReplaceStringAll(hlsl_source, "float", "fixed");
-	ReplaceStringAll(hlsl_source, "mat2", "fixed2x2");
-	ReplaceStringAll(hlsl_source, "mat3", "fixed3x3");
-	ReplaceStringAll(hlsl_source, "mat4", "fixed4x4");
-
 	
-	
-	// ================  REPLACE ESPECIFICS  ================
-	ReplaceStringAll(hlsl_source, "fs_in", "i");
-	ReplaceStringAll(hlsl_source, "normalize(i.TangentViewPos - i.TangentFragPos)", "i.tSpace0.xyz * worldViewDir.x + i.tSpace1.xyz * worldViewDir.y  + i.tSpace2.xyz * worldViewDir.z");
-	ReplaceStringAll(hlsl_source, "TexCoords", "uv");
-	ReplaceStringAll(hlsl_source, "texture", "tex2D");
-	ReplaceStringAll(hlsl_source, "FragColor =", "return");
 
 
 
@@ -540,18 +530,22 @@ void ShaderCompiler::GenerateHLSL()
 
 		if ((*it)->type == NODE_TYPE::VECTOR1)
 		{
+			ReplaceString(hlsl_source, (*it)->GetDefinition(), " ");
+			ReplaceStringAll(hlsl_source, nodeName, "_" + nodeName);
 			properties += PlacePropertyVariable(nodeName, PROPERTY_TYPES::Float);
-			ReplaceString(hlsl_source, (*it)->GetDefinition(), "");
 		}
 		if ((*it)->type == NODE_TYPE::VECTOR4)
 		{
+			ReplaceString(hlsl_source, (*it)->GetDefinition(), " ");
+			ReplaceStringAll(hlsl_source, nodeName, "_" + nodeName);
 			properties += PlacePropertyVariable(nodeName, PROPERTY_TYPES::Vector);
-			ReplaceString(hlsl_source, (*it)->GetDefinition(), "");
 		}
 		if ((*it)->type == NODE_TYPE::COLOR)
 		{
+			ReplaceString(hlsl_source, (*it)->GetDefinition(), " ");
+			ReplaceStringAll(hlsl_source, nodeName, "_" + nodeName);
 			properties += PlacePropertyVariable(nodeName, PROPERTY_TYPES::Color);
-			ReplaceString(hlsl_source, (*it)->GetDefinition(), "");
+			
 		}
 		if ((*it)->type == NODE_TYPE::TEXTURE_SAMPLER || (*it)->type == NODE_TYPE::PARALLAX_OCLUSION)
 		{
@@ -568,6 +562,24 @@ void ShaderCompiler::GenerateHLSL()
 
 	ReplaceString(hlsl_source, "//Properties", properties);
 
+
+	// ================  REPLACE TYPES  ================
+	ReplaceStringAll(hlsl_source, "vec", "fixed");
+	ReplaceStringAll(hlsl_source, "half", "fixed");
+	ReplaceStringAll(hlsl_source, "float", "fixed");
+	ReplaceStringAll(hlsl_source, "mat2", "fixed2x2");
+	ReplaceStringAll(hlsl_source, "mat3", "fixed3x3");
+	ReplaceStringAll(hlsl_source, "mat4", "fixed4x4");
+	ReplaceStringAll(hlsl_source, "mix", "lerp");
+
+
+
+	// ================  REPLACE ESPECIFICS  ================
+	ReplaceStringAll(hlsl_source, "fs_in", "i");
+	ReplaceStringAll(hlsl_source, "normalize(i.TangentViewPos - i.TangentFragPos)", "i.tSpace0.xyz * worldViewDir.x + i.tSpace1.xyz * worldViewDir.y  + i.tSpace2.xyz * worldViewDir.z");
+	ReplaceStringAll(hlsl_source, "TexCoords", "uv");
+	ReplaceStringAll(hlsl_source, "texture", "tex2D");
+	ReplaceStringAll(hlsl_source, "FragColor =", "return");
 
 
 
@@ -701,12 +713,12 @@ std::string ShaderCompiler::PlacePropertyVariable(std::string name, PROPERTY_TYP
 
 	switch (type) {
 	case PROPERTY_TYPES::Int:
-		VariableType = "int";
+		VariableType = "Int";
 		CorrespondingVariable = "int";
 		Initialize = "0";
 		break;
 	case PROPERTY_TYPES::Float:
-		VariableType = "float";
+		VariableType = "Float";
 		CorrespondingVariable = "float";
 		Initialize = "0";
 		break;
@@ -727,7 +739,7 @@ std::string ShaderCompiler::PlacePropertyVariable(std::string name, PROPERTY_TYP
 		Initialize = "(0,0,0,1)";
 		break;
 	default:
-		VariableType = "int";
+		VariableType = "Int";
 		CorrespondingVariable = "int";
 		Initialize = "0";
 		break;

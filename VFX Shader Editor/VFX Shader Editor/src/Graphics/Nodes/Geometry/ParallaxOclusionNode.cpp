@@ -6,7 +6,7 @@ ParallaxOclusionNode::ParallaxOclusionNode()
 }
 
 ParallaxOclusionNode::ParallaxOclusionNode(const char* name, NODE_TYPE type, float2 position)
-	: ShaderNode("Parallax Oclusion", type, position)
+	: ShaderNode("ParallaxOclusion", type, position)
 {
 
 	inputs.push_back(InputSocket("UV", VALUE_TYPE::FLOAT2));
@@ -36,10 +36,10 @@ void ParallaxOclusionNode::Update(ShaderGraph& graph)
 		if (!input.isLinked) this->isError = false;
 	}
 
-	this->GLSL_Declaration = SetGLSLDeclaration("ParallaxOclusion" + std::to_string(UID));
+	this->GLSL_Declaration = SetGLSLDeclaration(name + std::to_string(UID));
 
 	//Outs
-	outputs[0].data_str = "ParallaxOclusion" + std::to_string(UID) + "_uv";
+	outputs[0].data_str = name + std::to_string(UID) + "_uv";
 	outputs[0].type_str = ShaderCompiler::SetOutputType(outputs[0].type);
 
 	//Ins
