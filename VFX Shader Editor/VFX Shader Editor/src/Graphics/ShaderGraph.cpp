@@ -382,20 +382,26 @@ ShaderCompiler::ShaderCompiler(ShaderGraph& g, const std::string& source, const 
 
 void ShaderCompiler::GenerateHLSL()
 {
+	// ================  SHADERLAB DEFAULT TEMPLATE  ================
+
 	hlsl_source = R"(Shader "Umbra/ShaderName"
 	{
 		Properties{
-		//Properties
+			//Properties
 		}
 
 		SubShader
 		{
-		Tags { "RenderType" = "Transparent" "Queue" = "Transparent" }
+		Tags 
+		{ 
+			"RenderType" = "Opaque" 
+			"Queue" = "Geometry" 
+		}
 		
 		Pass
 		{
-			ZWrite Off
-			Blend SrcAlpha OneMinusSrcAlpha
+			//BlendEnable 
+			//BlendEquation
 		
 			CGPROGRAM
 		
@@ -403,25 +409,25 @@ void ShaderCompiler::GenerateHLSL()
 			#pragma fragment frag
 			#include ""UnityCG.cginc""
 		
-			//Variables
+			//Declarations
 		
-			//Functions
-
-
+		
 			struct VertexInput {
 				float4 vertex : POSITION;
 				float2 uv:TEXCOORD0;
 				float4 tangent : TANGENT;
 				float3 normal : NORMAL;
-		
-				//VertexInput
 			};
 
 			struct VertexOutput {
 				float4 pos : SV_POSITION;
 				float2 uv:TEXCOORD0;
-
-				//VertexOutput
+				float4 posWorld: TEXCOORD1;
+				float3 tSpace0 : TEXCOORD2;
+				float3 tSpace1 : TEXCOORD3;
+				float3 tSpace2 : TEXCOORD4;
+				float3 normal  : TEXCOORD5;
+				
 			};
 		
 		
@@ -430,8 +436,17 @@ void ShaderCompiler::GenerateHLSL()
 				VertexOutput o;
 				o.pos = UnityObjectToClipPos (v.vertex);
 				o.uv = v.uv;
+                o.normal= v.normal;
 
-				//VertexFactory
+				o.posWorld = mul(unity_ObjectToWorld, v.vertex);
+				fixed3 worldNormal = mul(v.normal.xyz, (float3x3)unity_WorldToObject);
+				fixed3 worldTangent =  normalize(mul((float3x3)unity_ObjectToWorld,v.tangent.xyz ));
+				fixed3 worldBinormal = cross(worldNormal, worldTangent) * v.tangent.w; 
+                o.tSpace0 = float3(worldTangent.x, worldBinormal.x, worldNormal.x);
+				o.tSpace1 = float3(worldTangent.y, worldBinormal.y, worldNormal.y);
+				o.tSpace2 = float3(worldTangent.z, worldBinormal.z, worldNormal.z);	
+
+				
 
 				return o;
 			}
@@ -439,6 +454,10 @@ void ShaderCompiler::GenerateHLSL()
 
 			fixed4 frag(VertexOutput i) : SV_Target
 			{
+
+                float3 normalDirection = normalize(i.normal);
+				fixed3 worldViewDir = normalize(_WorldSpaceCameraPos.xyz - i.posWorld.xyz);
+				
 
 				//MainImage
 
@@ -451,36 +470,49 @@ void ShaderCompiler::GenerateHLSL()
 	}
 	)";
 
+
+	// ================  SPLIT SHADER INTO VERTEX & FRAGMENT  ================
 	std::string vertexCode = ParseFromTo(BeginVertexHeader(), EndVertexHeader(), glsl_source);
 	std::string fragmentCode = ParseFromTo(BeginFragmentHeader(), EndFragmentHeader(), glsl_source);
 
+
+	// ================  REPLACE SHADER NAME  ================
 	ReplaceString(hlsl_source, "ShaderName", shaderName);
 
-	
+
+	// ================  REPLACE BLENDING  ================
+	if (graph.materialSurface == ShaderSurface::S_TRANSPARENT)
+	{
+		ReplaceString(hlsl_source, "BlendEnable", "ZWrite Off");
+		ReplaceString(hlsl_source, "BlendEquation", "Blend SrcAlpha OneMinusSrcAlpha");
+
+		ReplaceString(hlsl_source, "Opaque", "Transparent");
+		ReplaceString(hlsl_source, "Geometry", "Transparent");
+	}
 
 
 	
-
+	// ================  REPLACE DECLARATIONS (VARIABLES & FUNCTIONS)  ================
 	int beginVars = fragmentCode.find("//////// FRAG_VARIABLES_BEGIN ////////");
 	beginVars += std::string("//////// FRAG_VARIABLES_BEGIN ////////").length();
 	int endVars = fragmentCode.find("//////// FRAG_VARIABLES_END ////////");
 	std::size_t lengthVars = endVars - beginVars;
-
 	std::string fragVars = fragmentCode.substr(beginVars, lengthVars);
-	ReplaceString(hlsl_source, "//Variables", fragVars);
+	ReplaceString(hlsl_source, "//Declarations", fragVars);
 
 
 	
-	
+	// ================  REPLACE FRAGMENT MAIN  ================
 	int beginBracket = fragmentCode.find("//////// FRAG_MAIN_BEGIN ////////");
 	beginBracket += std::string("//////// FRAG_MAIN_BEGIN ////////").length();
 	int endBracket = fragmentCode.find("//////// FRAG_MAIN_END ////////");
 	std::size_t length = endBracket - beginBracket;
-
 	std::string fragData = fragmentCode.substr(beginBracket, length);
 	ReplaceString(hlsl_source, "//MainImage", fragData);
 
+
 	
+	// ================  REPLACE TYPES  ================
 	ReplaceStringAll(hlsl_source, "vec", "fixed");
 	ReplaceStringAll(hlsl_source, "half", "fixed");
 	ReplaceStringAll(hlsl_source, "float", "fixed");
@@ -488,17 +520,58 @@ void ShaderCompiler::GenerateHLSL()
 	ReplaceStringAll(hlsl_source, "mat3", "fixed3x3");
 	ReplaceStringAll(hlsl_source, "mat4", "fixed4x4");
 
-	ReplaceStringAll(hlsl_source, "fs_in", "i");
-	ReplaceStringAll(hlsl_source, "TexCoords", "uv");
-
 	
+	
+	// ================  REPLACE ESPECIFICS  ================
+	ReplaceStringAll(hlsl_source, "fs_in", "i");
+	ReplaceStringAll(hlsl_source, "normalize(i.TangentViewPos - i.TangentFragPos)", "i.tSpace0.xyz * worldViewDir.x + i.tSpace1.xyz * worldViewDir.y  + i.tSpace2.xyz * worldViewDir.z");
+	ReplaceStringAll(hlsl_source, "TexCoords", "uv");
 	ReplaceStringAll(hlsl_source, "texture", "tex2D");
 	ReplaceStringAll(hlsl_source, "FragColor =", "return");
 
 
 
 
-	int texture_count = 1;
+	// ================  REPLACE PROPERTIES  ================
+	std::string properties = "";
+	for (std::list<ShaderNode*>::iterator it = graph.nodes.begin(); it != graph.nodes.end(); ++it)
+	{
+		std::string nodeName = (*it)->name + std::to_string((*it)->UID);
+
+		if ((*it)->type == NODE_TYPE::VECTOR1)
+		{
+			properties += PlacePropertyVariable(nodeName, PROPERTY_TYPES::Float);
+			ReplaceString(hlsl_source, (*it)->GetDefinition(), "");
+		}
+		if ((*it)->type == NODE_TYPE::VECTOR4)
+		{
+			properties += PlacePropertyVariable(nodeName, PROPERTY_TYPES::Vector);
+			ReplaceString(hlsl_source, (*it)->GetDefinition(), "");
+		}
+		if ((*it)->type == NODE_TYPE::COLOR)
+		{
+			properties += PlacePropertyVariable(nodeName, PROPERTY_TYPES::Color);
+			ReplaceString(hlsl_source, (*it)->GetDefinition(), "");
+		}
+		if ((*it)->type == NODE_TYPE::TEXTURE_SAMPLER || (*it)->type == NODE_TYPE::PARALLAX_OCLUSION)
+		{
+			ReplaceStringAll(hlsl_source, nodeName, "_" + nodeName);
+			properties += PlacePropertyVariable(nodeName, PROPERTY_TYPES::Texture);
+			//ReplaceString(hlsl_source, (*it)->GetDefinition(), "");
+		}
+		if ((*it)->type == NODE_TYPE::TIME)
+		{
+			ReplaceString(hlsl_source, (*it)->GetDeclaration(), "");
+			ReplaceStringAll(hlsl_source, nodeName, "_Time");
+		}
+	}
+
+	ReplaceString(hlsl_source, "//Properties", properties);
+
+
+
+
+	/*int texture_count = 1;
 	for (std::list<ShaderNode*>::iterator it = graph.nodes.begin(); it != graph.nodes.end(); ++it)
 	{
 		std::string nodeName = (*it)->name + std::to_string((*it)->UID);
@@ -527,38 +600,40 @@ void ShaderCompiler::GenerateHLSL()
 			break;
 		}
 
-	}
+		if ((*it)->type == NODE_TYPE::PARALLAX_OCLUSION)
+		{
+			ReplaceStringAll(hlsl_source, nodeName, "_HeightMap");
+			break;
+		}
+	}*/
 
 
+	//size_t start_pos = hlsl_source.find("_MainTex");
+	//if (start_pos != std::string::npos)
+	//{
+	//	properties += PlacePropertyVariable("MainTex", PROPERTY_TYPES::Texture);
+	//}
+	//start_pos = hlsl_source.find("_SecondTex");
+	//if (start_pos != std::string::npos)
+	//{
+	//	properties += PlacePropertyVariable("SecondTex", PROPERTY_TYPES::Texture);
+	//}
+	//start_pos = hlsl_source.find("_ThirdTex");
+	//if (start_pos != std::string::npos)
+	//{
+	//	properties += PlacePropertyVariable("ThirdTex", PROPERTY_TYPES::Texture);
+	//}
+	//start_pos = hlsl_source.find("_FourthTex");
+	//if (start_pos != std::string::npos)
+	//{
+	//	properties += PlacePropertyVariable("FourthTex", PROPERTY_TYPES::Texture);
+	//}
+	//start_pos = hlsl_source.find("_Color");
+	//if (start_pos != std::string::npos)
+	//{
+	//	properties += PlacePropertyVariable("Color", PROPERTY_TYPES::Color);
+	//}
 
-	std::string properties = "";
-	size_t start_pos = hlsl_source.find("_MainTex");
-	if (start_pos != std::string::npos)
-	{
-		properties += PlacePropertyVariable("MainTex", PROPERTY_TYPES::Texture);
-	}
-	start_pos = hlsl_source.find("_SecondTex");
-	if (start_pos != std::string::npos)
-	{
-		properties += PlacePropertyVariable("SecondTex", PROPERTY_TYPES::Texture);
-	}
-	start_pos = hlsl_source.find("_ThirdTex");
-	if (start_pos != std::string::npos)
-	{
-		properties += PlacePropertyVariable("ThirdTex", PROPERTY_TYPES::Texture);
-	}
-	start_pos = hlsl_source.find("_FourthTex");
-	if (start_pos != std::string::npos)
-	{
-		properties += PlacePropertyVariable("FourthTex", PROPERTY_TYPES::Texture);
-	}
-	start_pos = hlsl_source.find("_Color");
-	if (start_pos != std::string::npos)
-	{
-		properties += PlacePropertyVariable("Color", PROPERTY_TYPES::Color);
-	}
-
-	ReplaceString(hlsl_source, "//Properties", properties);
 
 	//Serialize to file
 	WriteHLSLToFile();

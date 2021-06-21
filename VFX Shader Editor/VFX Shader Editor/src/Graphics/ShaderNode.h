@@ -267,6 +267,10 @@ public:
 	void SetValuesByType(InputSocket& input, std::string& finalOutput, VALUE_TYPE type);
 	std::string SetType(VALUE_TYPE type);
 
+	std::string GetDeclaration() const { return GLSL_Declaration; }
+	std::string GetDefinition() const { return GLSL_Definition; }
+
+
 public:
 	//core info
 	NODE_TYPE type;
