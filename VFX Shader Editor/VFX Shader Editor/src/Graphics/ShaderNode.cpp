@@ -6,7 +6,9 @@
 #include "Nodes/Parameter/VectorNode.h"
 #include "CorlorPicker.h"
 
-
+//=========================================================================================================================
+// [GRAPH SYSTEM] NODE
+//=========================================================================================================================
 ShaderNode::ShaderNode()
 {
 }
@@ -129,17 +131,6 @@ void ShaderNode::DrawNode(ShaderGraph& graph)
 	DrawBody(draw_list, m_Position, m_Size);
 	DrawTitle(draw_list, m_Position, m_Size);
 
-
-	//float2 m_TitleSize = title_size * graph.scale;
-	//float padding = 10.0f * graph.scale;
-
-	//ImGui::SetCursorScreenPos(ImVec2(m_Position.x + padding , m_Position.y + ((m_TitleSize.y)*0.5f) ));
-
-	
-
-	//draw_list->AddRectFilledMultiColorEx(ImVec2(m_Position.x, m_Position.y), ImVec2(m_Position.x + m_Size.x, m_Position.y + 15.0f * 1), color_red, color_red, color_black, color_black, 5.0f, ImDrawCornerFlags_::ImDrawCornerFlags_Top);
-	//draw_list->AddRectFilledMultiColor(ImVec2(m_Position.x, m_Position.y + 10.0f * 1), ImVec2(m_Position.x + m_Size.x, m_Position.y + 20.0f * 1), color_red, color_black, color_red, color_red);
-	//ImGui::SetCursorScreenPos(ImVec2(m_Position.x, m_Position.y));
 }
 
 void ShaderNode::DrawLines(ShaderGraph& graph)
@@ -217,11 +208,6 @@ float2 ShaderNode::CalcNodePosition(ShaderGraph& g, float2 pos)
 	pos.y += g.scrolling.y;
 	pos *= g.scale;
 
-
-	
-
-
-	
 	return pos;
 }
 
@@ -245,8 +231,7 @@ float2 ShaderNode::CalcNodeSize(ShaderGraph& graph, ShaderNode* node)
 
 bool ShaderNode::NodeHovering(ShaderGraph& graph, float2 position, float2 size)
 {
-	//ImVec2 prev = ImGui::GetCurrentWindow()->DC.CursorPos;
-
+	
 	float2 m_Pos = CalcNodePosition(graph, position);
 	float2 m_Size = CalcNodeSize(graph, this);
 
@@ -255,21 +240,20 @@ bool ShaderNode::NodeHovering(ShaderGraph& graph, float2 position, float2 size)
 
 	bool m_Hovered = ImGui::IsItemHovered();
 
-	//ImGui::SetCursorScreenPos(prev);
+	
 
 	return m_Hovered;
 }
 
 bool ShaderNode::ConnectorHovering(float2 position, float2 size)
 {
-	//ImVec2 previous = ImGui::GetCurrentWindow()->DC.CursorPos;
-
+	
 	ImGui::SetCursorScreenPos(ImVec2(position.x, position.y));
 	ImGui::InvisibleButton("node", ImVec2(size.x, size.y));
 
 	bool hovered = ImGui::IsItemHovered();
 
-	//ImGui::SetCursorScreenPos(previous);
+	
 
 	return hovered;
 }
@@ -299,7 +283,7 @@ void ShaderNode::DrawTitle(ImDrawList* draw_list, float2 pos, float2 size)
 	draw_list->AddRectFilled(ImVec2(pos.x, pos.y), ImVec2(pos.x + size.x, pos.y + 15.0f /** graph.scale*/), ImColor(120, 120, 120), 5.0f);
 	draw_list->AddRectFilled(ImVec2(pos.x, pos.y + 10.0f /** graph.scale*/), ImVec2(pos.x + size.x, pos.y + 25.0f /** graph.scale*/), ImColor(120, 120, 120));
 	ImGui::SetCursorScreenPos(ImVec2(pos.x + 10.0f, pos.y + 5.0f));
-	//ImGui::BeginGroup();
+	
 	ImGui::TextColored(ImVec4(255,255,255,255), "%s", name.c_str());
 }
 
@@ -388,48 +372,6 @@ void ShaderNode::DrawInputs(ShaderGraph& graph, unsigned int numInputs, unsigned
 			colorNode->picker.DisplayColorPicker(ImVec2(input.position.x, input.position.y), input.value3);
 		}
 
-		//ImGui::PushID(this->UID);
-		
-		//ImGui::SetNextItemWidth(2 * graph.scale);
-		//ImGui::Dummy(ImVec2(0, 40.0f * graph.scale));
-
-		//ImGui::SameLine(30.0f);
-
-		//if (input.type == VALUE_TYPE::FLOAT1)
-		//{
-		//	//ImGui::SetNextItemWidth(100 * graph.scale);
-		//	//float num = 2.0f;
-		//	//ImGui::InputFloat(input.name.c_str(), &num);
-		//	//ImGui::SetNextItemWidth(400 * graph.scale);
-		//	//ImGui::SameLine(50.0f);
-		//	//ImGui::Text(input.name.c_str());
-		//}
-		//else if (input.type == VALUE_TYPE::FLOAT2)
-		//{
-		//	//ImGui::SetNextItemWidth(100 * graph.scale);
-		//	////ImGui::SameLine();
-		//	//ImGui::InputFloat2(input.name.c_str(), &input.value2.x, "%.2f");
-		//	//ImGui::SetNextItemWidth(400 * graph.scale);
-		//	//ImGui::SameLine(50.0f);
-		//	//ImGui::Text(input.name.c_str());
-		//}
-		//else if (input.type == VALUE_TYPE::FLOAT3)
-		//{
-		//	/*ImGui::SameLine();
-		//	ImGui::InputFloat(input.name.c_str(), &input.value1);*/
-		//	//ImGui::Text(input.name.c_str());
-		//}
-		//else if (input.type == VALUE_TYPE::FLOAT4)
-		//{
-		//	/*ImGui::InputFloat(input.name.c_str(), &input.value1);*/
-		//	//ImGui::Text(input.name.c_str());
-		//}
-		//else
-		//{
-		//	//ImGui::Text(input.name.c_str());
-		//}
-
-		//ImGui::PopID();
 	}
 }
 
@@ -439,7 +381,6 @@ void ShaderNode::DrawOutputs(ShaderGraph& graph, unsigned int numOutputs, unsign
 	{
 		OutputSocket& output = this->outputs[i];
 
-		//if(output.type != ValueType::NONE)
 		DrawOutputConnector(graph, output, i);
 	}
 }
@@ -537,17 +478,6 @@ void ShaderNode::DrawOutputConnector(ShaderGraph& graph, OutputSocket& output, u
 		draw_list->AddCircleFilled(ImVec2(output.position.x, output.position.y), 10.0f - 3.0f, IM_COL32(230, 230, 230, 255));
 	}
 
-
-
-
-
-	//float2 hitbox_pos = float2(connector_pos.x - graph.scale * 20.0f, connector_pos.y - graph.scale * 20.0f);
-	//float2 hitbox_size = float2(graph.scale * 40.0f);
-
-
-
-
-	
 
 }
 
@@ -1015,50 +945,9 @@ std::string ShaderNode::SetType(VALUE_TYPE type)
 
 
 
-
-
-
-
-//void Connector::AddBezierLine(ShaderGraph& g, float2 start, float2 end, bool isLinked)
-//{
-//	float2 v_start = start;
-//	float2 v_end = end;
-//	//float2 v_start(start.x, start.y);
-//	//float2 v_end(end.x, end.y);
-//
-//	float bezier = 200.0f;
-//
-//	//float length = start.x - end.x;
-//	float length = math::Length(float2(start.x, end.x));
-//
-//	length = math::Min(length * 0.5f, 50.0f * g.scale);
-//
-//	float2 cp0, cp1;
-//
-//	if (!isLinked && start.x > end.x) {
-//		std::swap(v_start, v_end);
-//		std::swap(start, end);
-//	}
-//
-//	if (v_start.x > v_end.x && false) {
-//		cp0 = v_start - float2(length, 0);
-//		cp1 = v_end + float2(length, 0);
-//	}
-//	else {
-//		cp0 = v_start + float2(length, 0);
-//		cp1 = v_end - float2(length, 0);
-//	}
-//
-//	//ImGui::GetCurrentWindow()->DrawList->AddLine(ImVec2(start.x, start.y), ImVec2(cp0.x, cp0.y), ImColor(120, 120, 120), g.scale * 5.f);
-//	//ImGui::GetCurrentWindow()->DrawList->AddLine(ImVec2(cp0.x, cp0.y), ImVec2(cp1.x, cp1.y), ImColor(120, 120, 120), g.scale * 5.f);
-//	//ImGui::GetCurrentWindow()->DrawList->AddLine(ImVec2(cp1.x, cp1.y), ImVec2(end.x, end.y), ImColor(120, 120, 120), g.scale * 5.f);
-//
-//	ImGui::GetCurrentWindow()->DrawList->AddBezierCurve(ImVec2(start.x, start.y), ImVec2(cp0.x, cp0.y), ImVec2(cp1.x, cp1.y), ImVec2(end.x, end.y), ImColor(120, 120, 120), g.scale * 5.f);
-//
-//}
-
-
-
+//=========================================================================================================================
+// [GRAPH SYSTEM] LINK
+//=========================================================================================================================
 ShaderLink::ShaderLink(ShaderNode* input_node, unsigned int input_socket, ShaderNode* output_node, unsigned int output_socket)
 	: input_node(input_node), input_socket(input_socket), output_node(output_node), output_socket(output_socket)
 {

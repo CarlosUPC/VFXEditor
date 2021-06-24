@@ -4,6 +4,9 @@
 #include "ShaderNode.h"
 #include "CorlorPicker.h"
 
+//=========================================================================================================================
+// [NODE] VECTOR1 NODE
+//=========================================================================================================================
 class Vector1Node : public ShaderNode
 {
 public:
@@ -12,18 +15,20 @@ public:
 
 	void Update(ShaderGraph& graph) override;
 	void InspectorUpdate(ShaderGraph& graph) override;
-	std::string GLSLAbstactVarFloat(const std::string& value, const std::string& name);
+	
 
 	std::string SetGLSLDeclaration(const std::string& out_name);
 	std::string SetGLSLDefinition(const std::string& out_name, const std::string& value_x);
 
 private:
-	float output;
-	std::vector<std::string> input_code;
-	std::vector<std::string> output_code;
+	//float output;
+	//std::vector<std::string> input_code;
+	//std::vector<std::string> output_code;
 };
 
-
+//=========================================================================================================================
+// [NODE] VECTOR2 NODE
+//=========================================================================================================================
 class Vector2Node : public ShaderNode
 {
 public:
@@ -32,7 +37,7 @@ public:
 	
 	void Update(ShaderGraph& graph) override;
 	void InspectorUpdate(ShaderGraph& graph) override;
-	std::string GLSLAbstactVarVec2(const std::string& value_x, const std::string& value_y, const std::string& name);
+	
 	
 	std::string SetGLSLDeclaration(const std::string& out_name);
 	std::string SetGLSLDefinition(const std::string& out_name, const std::string& value_x, const std::string& value_y);
@@ -41,7 +46,9 @@ private:
 	
 };
 
-
+//=========================================================================================================================
+// [NODE] VECTOR3 NODE
+//=========================================================================================================================
 class Vector3Node : public ShaderNode
 {
 public:
@@ -50,7 +57,7 @@ public:
 
 	void Update(ShaderGraph& graph) override;
 	void InspectorUpdate(ShaderGraph& graph) override;
-	std::string GLSLAbstactVarVec3(const std::string& value_x, const std::string& value_y, const std::string& value_z, const std::string& name);
+	
 
 	std::string SetGLSLDeclaration(const std::string& out_name);
 	std::string SetGLSLDefinition(const std::string& out_name, const std::string& value_x, const std::string& value_y, const std::string& value_z);
@@ -60,7 +67,9 @@ private:
 
 };
 
-
+//=========================================================================================================================
+// [NODE] VECTOR4 NODE
+//=========================================================================================================================
 class Vector4Node : public ShaderNode
 {
 public:
@@ -70,7 +79,6 @@ public:
 	void Update(ShaderGraph& graph) override;
 	void InspectorUpdate(ShaderGraph& graph) override;
 	
-	std::string GLSLAbstactVarVec4(const std::string& value_x, const std::string& value_y, const std::string& value_z, const std::string& value_w, const std::string& name);
 
 	std::string SetGLSLDeclaration(const std::string& out_name);
 	std::string SetGLSLDefinition(const std::string& out_name, const std::string& value_x, const std::string& value_y, const std::string& value_z, const std::string& value_w);
@@ -80,7 +88,9 @@ private:
 };
 
 
-
+//=========================================================================================================================
+// [NODE] COLOR NODE
+//=========================================================================================================================
 class ColorNode : public ShaderNode
 {
 public:
@@ -90,17 +100,19 @@ public:
 	void Update(ShaderGraph& graph) override;
 	void InspectorUpdate(ShaderGraph& graph) override;
 
+
 	std::string SetGLSLDeclaration(const std::string& out_name);
 	std::string SetGLSLDefinition(const std::string& out_name, const std::string& value);
 
 public:
 	ColorPicker picker;
-	bool open = false;
-	ImGuiColorEditFlags m_edit_flags;
+	bool open;
 
 };
 
-
+//=========================================================================================================================
+// [NODE] TIME NODE
+//=========================================================================================================================
 class TimeNode : public ShaderNode
 {
 public:
@@ -110,12 +122,11 @@ public:
 	void Update(ShaderGraph& graph) override;
 	void InspectorUpdate(ShaderGraph& graph) override;
 
+
 	std::string SetGLSLDeclaration(const std::string& out_name);
 	std::string SetGLSLDefinition(const std::string& out_name, const std::string& value);
 
 public:
-	ColorPicker picker;
-	bool open = false;
-	ImGuiColorEditFlags m_edit_flags;
+	
 
 };

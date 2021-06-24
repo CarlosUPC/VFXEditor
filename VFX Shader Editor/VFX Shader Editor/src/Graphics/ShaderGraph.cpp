@@ -15,10 +15,14 @@
 #include "ShaderUniform.h"
 #include "Texture.h"
 #include "Application.h"
+
+//=========================================================================================================================
+// [GRAPH SYSTEM] SHADER GRAPH
+//=========================================================================================================================
 ShaderGraph::ShaderGraph(std::string m_Name)
 	:m_Name(m_Name)
 {
-	mainNode = CreateNode("PBR", NODE_TYPE::PBR, float2(1500.f, 350.f));
+	mainNode = CreateNode("Unlit", NODE_TYPE::PBR, float2(1500.f, 350.f));
 	nodes.push_back(mainNode);
 
 	//Load default assets
@@ -55,9 +59,6 @@ void ShaderGraph::Update(float dt)
 void ShaderGraph::Draw()
 {
 	
-	
-
-
 	for (std::list<ShaderLink*>::iterator it = links.begin(); it != links.end(); ++it)
 	{
 		//Draw stuff -----
@@ -71,7 +72,6 @@ void ShaderGraph::Draw()
 	{
 		ImGui::PushID((*it)->UID);
 
-		
 		//Draw stuff -------
 		(*it)->DrawLines(*this);
 		(*it)->DrawNode(*this);
@@ -81,12 +81,10 @@ void ShaderGraph::Draw()
 		//Update stuff -------
 		(*it)->Update(*this);
 
-
 		ImGui::PopID();
 
 	}
 	
-
 }
 
 void ShaderGraph::Input()
@@ -106,13 +104,10 @@ void ShaderGraph::Input()
 
 		ImGui::PushID((*it)->UID);
 
-		
-
 		//Mouse Input stuff ------
 		(*it)->InputNode(*this);
 		(*it)->InputSocketInputs(*this, (*it)->inputs.size());
 		(*it)->InputSocketOutputs(*this, (*it)->outputs.size());
-
 
 		ImGui::PopID();
 	}
@@ -373,6 +368,13 @@ void ShaderGraph::ResetNodeDefinitions()
 	}
 }
 
+
+
+
+
+//=========================================================================================================================
+// [SHADER COMPILER] SHADER COMPILER
+//=========================================================================================================================
 ShaderCompiler::ShaderCompiler( ShaderGraph& g)
 	: graph(g)
 {
@@ -389,7 +391,7 @@ void ShaderCompiler::GenerateHLSL()
 {
 	// ================  SHADERLAB DEFAULT TEMPLATE  ================
 
-	hlsl_source = R"(Shader "Umbra/ShaderName"
+	hlsl_source = R"(Shader "Custom/ShaderName"
 	{
 		Properties{
 			//Properties
@@ -518,10 +520,6 @@ void ShaderCompiler::GenerateHLSL()
 
 	
 	
-
-
-
-
 	// ================  REPLACE PROPERTIES  ================
 	std::string properties = "";
 	for (std::list<ShaderNode*>::iterator it = graph.nodes.begin(); it != graph.nodes.end(); ++it)
@@ -588,71 +586,6 @@ void ShaderCompiler::GenerateHLSL()
 	ReplaceStringAll(hlsl_source, "FragColor =", "return");
 
 
-
-	/*int texture_count = 1;
-	for (std::list<ShaderNode*>::iterator it = graph.nodes.begin(); it != graph.nodes.end(); ++it)
-	{
-		std::string nodeName = (*it)->name + std::to_string((*it)->UID);
-
-		if ((*it)->type == NODE_TYPE::TEXTURE_SAMPLER && texture_count == 1)
-		{
-			ReplaceStringAll(hlsl_source, nodeName, "_MainTex");
-			texture_count++;
-			
-		}
-		else if ((*it)->type == NODE_TYPE::TEXTURE_SAMPLER && texture_count == 2)
-		{
-			ReplaceStringAll(hlsl_source, nodeName, "_SecondTex");
-			texture_count++;
-			
-		}
-		else if ((*it)->type == NODE_TYPE::TEXTURE_SAMPLER && texture_count == 3)
-		{
-			ReplaceStringAll(hlsl_source, nodeName, "_ThirdTex");
-			texture_count++;
-			
-		}
-		else if ((*it)->type == NODE_TYPE::TEXTURE_SAMPLER && texture_count == 4)
-		{
-			ReplaceStringAll(hlsl_source, nodeName, "_FourthTex");
-			break;
-		}
-
-		if ((*it)->type == NODE_TYPE::PARALLAX_OCLUSION)
-		{
-			ReplaceStringAll(hlsl_source, nodeName, "_HeightMap");
-			break;
-		}
-	}*/
-
-
-	//size_t start_pos = hlsl_source.find("_MainTex");
-	//if (start_pos != std::string::npos)
-	//{
-	//	properties += PlacePropertyVariable("MainTex", PROPERTY_TYPES::Texture);
-	//}
-	//start_pos = hlsl_source.find("_SecondTex");
-	//if (start_pos != std::string::npos)
-	//{
-	//	properties += PlacePropertyVariable("SecondTex", PROPERTY_TYPES::Texture);
-	//}
-	//start_pos = hlsl_source.find("_ThirdTex");
-	//if (start_pos != std::string::npos)
-	//{
-	//	properties += PlacePropertyVariable("ThirdTex", PROPERTY_TYPES::Texture);
-	//}
-	//start_pos = hlsl_source.find("_FourthTex");
-	//if (start_pos != std::string::npos)
-	//{
-	//	properties += PlacePropertyVariable("FourthTex", PROPERTY_TYPES::Texture);
-	//}
-	//start_pos = hlsl_source.find("_Color");
-	//if (start_pos != std::string::npos)
-	//{
-	//	properties += PlacePropertyVariable("Color", PROPERTY_TYPES::Color);
-	//}
-
-
 	//Serialize to file
 	WriteHLSLToFile();
 }
@@ -702,10 +635,7 @@ void ShaderCompiler::ReplaceProperty(std::string& str, const std::string& from, 
 	if (start_pos == std::string::npos)
 		return;
 	
-	//tex.append(from, from.length()+9);
-	//tex.substr();
-
-
+	
 	str.replace(start_pos, from.length()+9, to);
 
 }
@@ -750,15 +680,14 @@ std::string ShaderCompiler::PlacePropertyVariable(std::string name, PROPERTY_TYP
 		Initialize = "0";
 		break;
 	}
-	//CorrespondingVariable += " _" + name + ";";//for example sampler2D _MainTex;
+	
 
 	std::string Properties = "_name (\"" + name + "\", type) = initialize";
 	ReplaceString(Properties, "name", name);
 	ReplaceString(Properties, "type", VariableType);
 	ReplaceString(Properties, "initialize", Initialize);
 	
-	//ReplaceString("//Properties", Properties);
-	//BaseReplace("//Variables", "$0\n" + CorrespondingVariable);
+	
 	return Properties + "\n";
 }
 
@@ -787,10 +716,6 @@ void ShaderCompiler::Generate()
 
 	//Serialize shader to file
 	WriteShaderToFile();
-
-	//Create resource shader
-	//ResourceShader* shader = new ResourceShader(SplitShaderSource(ShaderType::VERTEX).c_str(), SplitShaderSource(ShaderType::VERTEX).c_str());
-
 
 }
 
@@ -1002,8 +927,7 @@ std::string ShaderCompiler::OutputVertexHeader()
 	code += OutputTabbedLine("vec3 TangentFragPos;");
 	code += OutputLine("} vs_out;");
 
-	//code += OutputLine("out vec2 TexCoord;");
-
+	
 	return code;
 }
 
@@ -1028,10 +952,6 @@ std::string ShaderCompiler::OutputVertex()
 	//more stuff ...
 	std::string code = "";
 
-	
-	//TexCoord
-	//code += OutputTabbedLine("TexCoord = vec2(aTexCoord.x, aTexCoord.y);\n");
-
 	code += OutputTabbedLine("vs_out.FragPos = vec3(u_Model * vec4(aPos, 1.0));\n");
 	code += OutputTabbedLine("vs_out.TexCoords = aTexCoords;\n");
 
@@ -1044,10 +964,7 @@ std::string ShaderCompiler::OutputVertex()
 	code += OutputTabbedLine("vs_out.TangentViewPos = TBN * viewPos;\n");
 	code += OutputTabbedLine("vs_out.TangentFragPos = TBN * vs_out.FragPos;\n");
 
-	//code += OutputLine("light = lightPos2;");
-	//code += OutputLine("view = viewPos;");
-
-
+	
 	// Final position output 
 	code += OutputTabbedLine("gl_Position = u_Projection * u_View * u_Model * vec4(aPos, 1.0);\n");
 
@@ -1092,11 +1009,9 @@ std::string ShaderCompiler::OutputFragmentHeader()
 	// Outs
 	code += OutputLine("layout(location = 0) out vec4 FragColor;\n");
 
-	//code += OutputLine("in vec3 light;");
-	//code += OutputLine("in vec3 view;");
-
-	code += OutputLine("//////// FRAG_VARIABLES_BEGIN ////////");
+	
 	//Declarations
+	code += OutputLine("//////// FRAG_VARIABLES_BEGIN ////////");
 	InputSocket inputDiffuse = graph.mainNode->GetInputSocketbyName("Albedo");
 	if (inputDiffuse.isLinked)
 	{
@@ -1206,10 +1121,10 @@ std::string ShaderCompiler::OutputFragment()
 			std::string type_code = out_node->outputs[inputOpacity.link_ref->output_socket].type_str;
 
 			//Check and transform typing
-			//out_code = CheckTypeOutput(out_code, type_code, "float");
+			out_code = CheckTypeOutput(out_code, type_code, "float");
 
 			//Update Diffuse Color
-			code += OutputTabbedLine("float Opacity = " + out_code + ".a" + ";\n");
+			code += OutputTabbedLine("float Opacity = " + out_code +  ";\n");
 		}
 
 	}
@@ -1258,10 +1173,7 @@ std::string ShaderCompiler::OutputFragment()
 	code += OutputTabbedLine("FragColor = vec4(AlbedoColor, Opacity);\n");
 
 	code += OutputLine("//////// FRAG_MAIN_END ////////");
-	//more stuff ...
-	//std::string tmp_color = "vec4(1.0f, 0.0f, 0.0f, 1.0f)"; // it should be take it from shadergraph reference
-
-	//code += OutputTabbedLine("FragColor = DiffuseColor;\n");
+	
 	return code;
 }
 

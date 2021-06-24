@@ -2,7 +2,9 @@
 
 #include "ShaderNode.h"
 
-
+//=========================================================================================================================
+// [NODE] PARALLAX OCLUSION NODE
+//=========================================================================================================================
 class ParallaxOclusionNode : public ShaderNode
 {
 public:
@@ -16,7 +18,6 @@ public:
 	std::string SetGLSLDefinition(const std::string& out_name, const std::string& uv, const std::string& amplitude, const std::string& min_layers, const std::string& max_layers);
 
 private:
-
 
 
 };

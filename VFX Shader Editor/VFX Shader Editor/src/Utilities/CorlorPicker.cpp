@@ -53,13 +53,13 @@ void ColorPicker::OpenPicker(bool open, float3& color)
 		ImGui::ColorPicker4("##pickercolor", (float*)&m_color, m_edit_flags);
 		ImGui::SameLine();
 
-		ImGui::BeginGroup();
+		/*ImGui::BeginGroup();
 		ImGui::Text("Current");
 		ImGui::ColorButton(m_current_name.c_str(), m_color, ImGuiColorEditFlags_NoPicker | ImGuiColorEditFlags_AlphaPreviewHalf, ImVec2(60, 40));
 		ImGui::Text("Previous");
 		if (ImGui::ColorButton(m_previous_name.c_str(), m_backup_color, ImGuiColorEditFlags_NoPicker | ImGuiColorEditFlags_AlphaPreviewHalf, ImVec2(60, 40)))
 			m_color = m_backup_color;
-		ImGui::EndGroup();
+		ImGui::EndGroup();*/
 		ImGui::EndPopup();
 	}
 

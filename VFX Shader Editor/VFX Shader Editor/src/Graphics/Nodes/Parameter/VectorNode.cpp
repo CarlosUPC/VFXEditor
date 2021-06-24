@@ -2,8 +2,10 @@
 #include <string>
 #include "ShaderGraph.h"
 #include "ShaderUniform.h"
-//#include "MathGeoLib/Math/float4.h"
 
+//=========================================================================================================================
+// [NODE] VECTOR1 NODE
+//=========================================================================================================================
 Vector1Node::Vector1Node()
 {
 }
@@ -29,25 +31,9 @@ void Vector1Node::Update(ShaderGraph& graph)
 
 	outputs[0].type_str = ShaderCompiler::SetOutputType(outputs[0].type);
 	
-	//this->code_str = GLSLAbstactVarFloat(inputs[0].value_str, outputs[0].data_str);
-
+	
 	this->GLSL_Declaration = SetGLSLDeclaration(outputs[0].data_str);
 	this->GLSL_Definition = SetGLSLDefinition(outputs[0].data_str, inputs[0].value_str);
-
-
-	/*for (unsigned int i = 0; i < inputs.size(); i++)
-	{
-		InputSocket& input = this->inputs[i];
-
-		if (input.type == VALUE_TYPE::FLOAT1)
-		{
-			input.input_str = std::to_string(input.value1);
-
-
-			
-		}
-	}*/
-
 
 }
 
@@ -85,6 +71,10 @@ std::string Vector1Node::SetGLSLDefinition(const std::string& out_name, const st
 	return std::string(out_name + " = " + value_x + ";\n");
 }
 
+
+//=========================================================================================================================
+// [NODE] VECTOR2 NODE
+//=========================================================================================================================
 Vector2Node::Vector2Node()
 {
 }
@@ -114,8 +104,6 @@ void Vector2Node::Update(ShaderGraph& graph)
 	outputs[0].type_str = ShaderCompiler::SetOutputType(outputs[0].type);
 
 	//Abstract to GLSL code
-	//this->code_str = GLSLAbstactVarVec2(inputs[0].values_str[0], inputs[0].values_str[1], outputs[0].data_str);
-
 	this->GLSL_Declaration = SetGLSLDeclaration(outputs[0].data_str);
 	this->GLSL_Definition = SetGLSLDefinition(outputs[0].data_str, inputs[0].values_str[0], inputs[0].values_str[1]);
 }
@@ -139,8 +127,6 @@ void Vector2Node::InspectorUpdate(ShaderGraph& graph)
 	}
 }
 
-
-
 std::string Vector2Node::SetGLSLDeclaration(const std::string& out_name)
 {
 	return std::string("vec2 " + out_name + ";\n");
@@ -151,6 +137,10 @@ std::string Vector2Node::SetGLSLDefinition(const std::string& out_name, const st
 	return std::string(out_name + " = " + "vec2(" + value_x + "," + value_y + ");\n");
 }
 
+
+//=========================================================================================================================
+// [NODE] VECTOR3 NODE
+//=========================================================================================================================
 Vector3Node::Vector3Node()
 {
 }
@@ -180,8 +170,6 @@ void Vector3Node::Update(ShaderGraph& graph)
 	outputs[0].type_str = ShaderCompiler::SetOutputType(outputs[0].type);
 
 	//Abstract to GLSL code
-	//this->code_str = GLSLAbstactVarVec3(inputs[0].values_str[0], inputs[0].values_str[1], inputs[0].values_str[2], outputs[0].data_str);
-
 	this->GLSL_Declaration = SetGLSLDeclaration(outputs[0].data_str);
 	this->GLSL_Definition = SetGLSLDefinition(outputs[0].data_str, inputs[0].values_str[0], inputs[0].values_str[1], inputs[0].values_str[2]);
 }
@@ -217,6 +205,10 @@ std::string Vector3Node::SetGLSLDefinition(const std::string& out_name, const st
 	return std::string(out_name + " = " + "vec3(" + value_x + "," + value_y + "," + value_z + ");\n");
 }
 
+
+//=========================================================================================================================
+// [NODE] VECTOR4 NODE
+//=========================================================================================================================
 Vector4Node::Vector4Node()
 {
 }
@@ -247,7 +239,6 @@ void Vector4Node::Update(ShaderGraph& graph)
 	outputs[0].type_str = ShaderCompiler::SetOutputType(outputs[0].type);
 
 	//Abstract to GLSL code
-	//this->code_str = GLSLAbstactVarVec4(inputs[0].values_str[0], inputs[0].values_str[1], inputs[0].values_str[2], inputs[0].values_str[3], outputs[0].data_str);
 	this->GLSL_Declaration = SetGLSLDeclaration(outputs[0].data_str);
 	this->GLSL_Definition = SetGLSLDefinition(outputs[0].data_str, inputs[0].values_str[0], inputs[0].values_str[1], inputs[0].values_str[2], inputs[0].values_str[3]);
 }
@@ -284,7 +275,9 @@ std::string Vector4Node::SetGLSLDefinition(const std::string& out_name, const st
 }
 
 
-
+//=========================================================================================================================
+// [NODE] COLOR NODE
+//=========================================================================================================================
 ColorNode::ColorNode()
 {
 }
@@ -345,6 +338,10 @@ std::string ColorNode::SetGLSLDefinition(const std::string& out_name, const std:
 	return std::string(out_name + " = " + "vec4(" + value + ", 1.0);\n");
 }
 
+
+//=========================================================================================================================
+// [NODE] TIME NODE
+//=========================================================================================================================
 TimeNode::TimeNode()
 {
 }
@@ -397,9 +394,6 @@ void TimeNode::InspectorUpdate(ShaderGraph& graph)
 			ImGui::InputFloat("Time", &timer, 0.0f, 0.0f, "%.3f", ImGuiInputTextFlags_ReadOnly);
 		}
 	}
-
-
-
 }
 
 std::string TimeNode::SetGLSLDeclaration(const std::string& out_name)

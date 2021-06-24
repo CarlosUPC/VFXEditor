@@ -2,6 +2,9 @@
 
 #include "ShaderNode.h"
 
+//=========================================================================================================================
+// [NODE] UNLIT NODE
+//=========================================================================================================================
 class PBRNode : public ShaderNode
 {
 public:
@@ -12,6 +15,5 @@ public:
 	virtual void InspectorUpdate(ShaderGraph& graph) override;
 
 public:
-	//bool clip_alpha;
-	//ShaderSurface materialSurface = ShaderSurface::S_OPAQUE;
+	
 };

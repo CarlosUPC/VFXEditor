@@ -1,6 +1,9 @@
 #include "UVNode.h"
 #include "ShaderGraph.h"
 
+//=========================================================================================================================
+// [NODE] UV NODE
+//=========================================================================================================================
 UVNode::UVNode()
 {
 }
@@ -87,8 +90,9 @@ std::string UVNode::SetGLSLDefinition(const std::string& out_name, const std::st
 
 
 
-
-
+//=========================================================================================================================
+// [NODE] TILING & OFFSET NODE
+//=========================================================================================================================
 TilingOffsetNode::TilingOffsetNode()
 {
 }
@@ -193,8 +197,9 @@ std::string TilingOffsetNode::SetGLSLDefinition(const std::string& out_name, con
 
 
 
-
-
+//=========================================================================================================================
+// [NODE] PANNER NODE
+//=========================================================================================================================
 PannerNode::PannerNode()
 {
 }
@@ -260,15 +265,12 @@ void PannerNode::InspectorUpdate(ShaderGraph& graph)
 			ImGui::PopID();
 		}
 
-
 	}
 
 	if (ImGui::CollapsingHeader("GLSL Abstraction", ImGuiTreeNodeFlags_DefaultOpen))
 	{
 		ImGui::Text(GLSL_Definition.c_str());
 	}
-
-
 
 }
 

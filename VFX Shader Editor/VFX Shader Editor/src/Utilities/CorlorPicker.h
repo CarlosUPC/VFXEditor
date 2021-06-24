@@ -25,8 +25,8 @@ private:
 	float3 m_ret_color;
 	std::string	m_popup_name;
 	
-	std::string	m_current_name;
-	std::string	m_previous_name;
+	/*std::string	m_current_name;
+	std::string	m_previous_name;*/
 	
 	
 };
