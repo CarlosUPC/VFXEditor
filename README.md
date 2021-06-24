@@ -71,9 +71,9 @@ You can see a demo video of my project's application: [here](https://www.youtube
 
 ## Source Code
 
-GitHub repository: [https://github.com/CarlosUPC/VFXEditor](https://github.com/CarlosUPC/VFXEditor)
-Demo Release: [https://github.com/CarlosUPC/VFXEditor](https://github.com/CarlosUPC/VFXEditor/releases/tag/v1.0)
+* GitHub repository: [https://github.com/CarlosUPC/VFXEditor](https://github.com/CarlosUPC/VFXEditor)
+* Demo Release: [https://github.com/CarlosUPC/VFXEditor](https://github.com/CarlosUPC/VFXEditor/releases/tag/v1.0)
 
 ## Author
 
-* Carlos Peña Hernando
+* Carlos Peña Hernando [CarlosUPC](https://github.com/CarlosUPC)
