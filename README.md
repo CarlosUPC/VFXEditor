@@ -23,7 +23,7 @@ You can see a demo video of my project's application: [here](https://www.youtube
 * Node Graph Editor:
     * Drag node
     * Hover node
-    * Select node (doble-click)
+    * Select node (click)
     * Drag spline from a socket
     * Connect splines from output socket's node to input socket's node and vice-versa
     * Right click in the node to delete it
