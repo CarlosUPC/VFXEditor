@@ -1103,18 +1103,18 @@ void InputSocket::DisplayInputSocketDetails(ShaderGraph& graph, ShaderNode& node
 	if (type == VALUE_TYPE::FLOAT1)
 	{
 		ImGui::Text("value: "); ImGui::SameLine();
-		ImGui::DragFloat(name.c_str(), &value1, 0.1f, 0.0f, 9999999.0f, "%.2f");
+		ImGui::DragFloat("##name", &value1, 0.1f, 0.0f, 9999999.0f, "%.2f");
 	}
 	else if (type == VALUE_TYPE::FLOAT2)
 	{
 		ImGui::PushID("##X");
 		ImGui::Text("X: "); ImGui::SameLine();
-		ImGui::DragFloat(name.c_str(), &value2.x, 0.1f, 0.0f, 9999999.0f, "%.2f");
+		ImGui::DragFloat("##name", &value2.x, 0.1f, 0.0f, 9999999.0f, "%.2f");
 		ImGui::PopID();
 
 		ImGui::PushID("##Y");
 		ImGui::Text("Y: "); ImGui::SameLine();
-		ImGui::DragFloat(name.c_str(), &value2.y, 0.1f, 0.0f, 9999999.0f, "%.2f");
+		ImGui::DragFloat("##name", &value2.y, 0.1f, 0.0f, 9999999.0f, "%.2f");
 		ImGui::PopID();
 
 	}
@@ -1122,39 +1122,39 @@ void InputSocket::DisplayInputSocketDetails(ShaderGraph& graph, ShaderNode& node
 	{
 		ImGui::PushID("##X");
 		ImGui::Text("X: "); ImGui::SameLine();
-		ImGui::DragFloat(name.c_str(), &value3.x, 0.1f, 0.0f, 9999999.0f, "%.2f");
+		ImGui::DragFloat("##name", &value3.x, 0.1f, 0.0f, 9999999.0f, "%.2f");
 		ImGui::PopID();
 
 		ImGui::PushID("##Y");
 		ImGui::Text("Y: "); ImGui::SameLine();
-		ImGui::DragFloat(name.c_str(), &value3.y, 0.1f, 0.0f, 9999999.0f, "%.2f");
+		ImGui::DragFloat("##name", &value3.y, 0.1f, 0.0f, 9999999.0f, "%.2f");
 		ImGui::PopID();
 
 		ImGui::PushID("##Z");
 		ImGui::Text("Z: "); ImGui::SameLine();
-		ImGui::DragFloat(name.c_str(), &value3.z, 0.1f, 0.0f, 9999999.0f, "%.2f");
+		ImGui::DragFloat("##name", &value3.z, 0.1f, 0.0f, 9999999.0f, "%.2f");
 		ImGui::PopID();
 	}
 	else if (type == VALUE_TYPE::FLOAT4)
 	{
 		ImGui::PushID("##X");
 		ImGui::Text("X: "); ImGui::SameLine();
-		ImGui::DragFloat(name.c_str(), &value3.x, 0.1f, 0.0f, 9999999.0f, "%.2f");
+		ImGui::DragFloat("##name", &value3.x, 0.1f, 0.0f, 9999999.0f, "%.2f");
 		ImGui::PopID();
 
 		ImGui::PushID("##Y");
 		ImGui::Text("Y: "); ImGui::SameLine();
-		ImGui::DragFloat(name.c_str(), &value3.y, 0.1f, 0.0f, 9999999.0f, "%.2f");
+		ImGui::DragFloat("##name", &value3.y, 0.1f, 0.0f, 9999999.0f, "%.2f");
 		ImGui::PopID();
 
 		ImGui::PushID("##Z");
 		ImGui::Text("Z: "); ImGui::SameLine();
-		ImGui::DragFloat(name.c_str(), &value3.z, 0.1f, 0.0f, 9999999.0f, "%.2f");
+		ImGui::DragFloat("##name", &value3.z, 0.1f, 0.0f, 9999999.0f, "%.2f");
 		ImGui::PopID();
 
 		ImGui::PushID("##W");
 		ImGui::Text("W: "); ImGui::SameLine();
-		ImGui::DragFloat(name.c_str(), &value4.w, 0.1f, 0.0f, 9999999.0f, "%.2f");
+		ImGui::DragFloat("##name", &value4.w, 0.1f, 0.0f, 9999999.0f, "%.2f");
 		ImGui::PopID();
 	}
 	else if (type == VALUE_TYPE::TEXTURE2D)

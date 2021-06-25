@@ -173,6 +173,9 @@ void ShaderGraph::PostUpdate(float dt)
 				}
 			}
 
+			if ((*it) == this->mainNode)
+				mainNode = nullptr;
+
 			//delete node
 			RELEASE((*it));
 			it = nodes.erase(it);
@@ -218,6 +221,7 @@ ShaderNode* ShaderGraph::CreateNode(const char* name, int type, float2 position)
 	{
 	case NODE_TYPE::PBR:
 		node = new PBRNode(name, (NODE_TYPE)type, position);
+		this->mainNode = node;
 		break;
 	case NODE_TYPE::VECTOR1:
 		node = new Vector1Node(name, (NODE_TYPE)type, position);
@@ -693,6 +697,10 @@ std::string ShaderCompiler::PlacePropertyVariable(std::string name, PROPERTY_TYP
 
 void ShaderCompiler::Generate()
 {
+	if (graph.mainNode == nullptr)
+		return;
+
+
 	//Compile and modify the shadergraph reference
 	
 	//Reset time

@@ -350,7 +350,7 @@ void PanelShaderEditor::AddNewNodePopUp()
 				node_pos.x = hit_pos.x - canvas.m_Scroll.x;
 				node_pos.y = hit_pos.y - canvas.m_Scroll.y;
 
-				CreateNodeOption("PBR", NODE_TYPE::PBR, float2(node_pos.x, node_pos.y), current_shader, current_shader->graph);
+				CreateNodeOption("Unlit", NODE_TYPE::PBR, float2(node_pos.x, node_pos.y), current_shader, current_shader->graph);
 
 				ImGui::TreePop();
 			}
